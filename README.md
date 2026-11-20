@@ -1,14 +1,13 @@
-# Clay of Bhaktapur
+# Shadow Walker
 
-A cozy pottery prototype for the phone, inspired by the Pottery Square in Bhaktapur. Spin a heavy stick-spun wheel, center the clay, open it, and shape pots for townspeople's orders.
+A quiet isometric puzzle game for the phone. The wanderer can only walk in shadow.
 
-- Swipe the wheel to spin it; it slows down, so keep it going
-- Hold still to center, press into the top to open, drag the walls to shape, drag up at the rim to pull taller
-- Clay volume is conserved: thin walls make a taller pot, but too thin, too tall or too flared and it collapses
-- Keep the clay wet or it drags and wobbles
-- Orders: juju dhau curd cup, diyo oil lamp, chiya tumbler, flower vase, ghaito water pot
-- Synthesized sound, works offline
+- **Move the sun** along the sky arc, from dawn on the left to dusk on the right. Shadows swing around the towers, and a low sun casts long shadows.
+- **Tap a shaded stone** to walk there. The wanderer won't step into sunlight.
+- **Singing bowls** come in chakra colours, each tuned to its own note. Stand on a bowl and tap the wanderer to strike it, and every stone of that colour rises or sinks. Moving stones change the shadows too.
+- Four chapters: The First Shade, The Root Bowl, Two Voices, The Crown.
+- Generative ambient music, rain and wind, all synthesized live. Works offline.
 
 Play: https://formis77.github.io/Summit/ → Share → Add to Home Screen.
 
-(The earlier Summit expedition game is in the git history, commit 14aad91.)
+Earlier prototypes in this repo (the Summit expedition game, the Clay of Bhaktapur pottery game) are in the git history.
