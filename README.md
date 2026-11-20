@@ -1,11 +1,14 @@
-# Summit 🏔️
+# Clay of Bhaktapur
 
-A small Himalayan expedition roguelike for the phone. Lead three climbers to the top of an 8000 m peak, then get everyone back down to Base Camp.
+A cozy pottery prototype for the phone, inspired by the Pottery Square in Bhaktapur. Spin a heavy stick-spun wheel, center the clay, open it, and shape pots for townspeople's orders.
 
-- Pick your team (Sherpa, medic, photographer, veteran, rookie, cook), each with a random trait
-- Pack food, fuel and oxygen at Base Camp under a weight limit
-- Choose routes on a branching map, manage energy, morale and acclimatization
-- Unreliable 3-day weather forecast, storms, crevasses, icefalls, and a yak traffic jam on the bridge
-- Works fully offline (service worker) and saves your run automatically
+- Swipe the wheel to spin it; it slows down, so keep it going
+- Hold still to center, press into the top to open, drag the walls to shape, drag up at the rim to pull taller
+- Clay volume is conserved: thin walls make a taller pot, but too thin, too tall or too flared and it collapses
+- Keep the clay wet or it drags and wobbles
+- Orders: juju dhau curd cup, diyo oil lamp, chiya tumbler, flower vase, ghaito water pot
+- Synthesized sound, works offline
 
 Play: https://formis77.github.io/Summit/ → Share → Add to Home Screen.
+
+(The earlier Summit expedition game is in the git history, commit 14aad91.)

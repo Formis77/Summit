@@ -1,13 +1,13 @@
 {
-  "name": "Summit",
-  "short_name": "Summit",
-  "description": "A Himalayan expedition roguelike. Reach the top. Get back down.",
+  "name": "Clay of Bhaktapur",
+  "short_name": "Clay",
+  "description": "A cozy pottery prototype set on Bhaktapur's Pottery Square.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0b1320",
-  "theme_color": "#0b1320",
+  "background_color": "#2b1a12",
+  "theme_color": "#2b1a12",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
