@@ -163,7 +163,7 @@ const WORLD={
   trees:[[2,3],[1,6],[0,2],[2,2],[9,0]],
   start:[0,11],goal:[7,0],
 };
-const TOL=14;              // cents
+const TOL=22;              // cents
 const PHRASE_WINDOW=25;    // seconds between phrase notes
 const cents=(f,t)=>1200*Math.log2(f/t);
 
@@ -382,14 +382,14 @@ function bowlPhysics(dt){
   if(performance.now()-b.lastMove>70)b.omega*=Math.pow(0.02,dt);
   b.speed=Math.abs(b.omega)/TAU;b.rubbing=!!rubPtr&&b.speed>0.12;
   if(b.rubbing){
-    const steady=1/(1+b.jerk*0.9);
-    // low voice: ~0.5-1 turn per second.  high voice: ~1.5-2.5, and it needs a steadier hand
-    const d0=smooth(0.2,0.55,b.speed)*(1-smooth(1.0,1.3,b.speed));
-    const d1=smooth(1.35,1.6,b.speed)*(1-smooth(2.6,3.1,b.speed));
-    const t0=d0*steady,t1=d1*Math.pow(steady,1.6);
+    const steady=1/(1+b.jerk*0.35);
+    // low voice: under ~1 turn per second.  high voice: anything faster than ~1.2
+    const d0=smooth(0.15,0.45,b.speed)*(1-smooth(1.0,1.15,b.speed));
+    const d1=smooth(1.1,1.3,b.speed)*(1-smooth(3.8,4.4,b.speed));
+    const t0=d0*steady,t1=d1*Math.sqrt(steady);
     b.A0+=(t0-b.A0)*(1-Math.exp(-dt/(t0>b.A0?0.85:1.6)));
-    b.A1+=(t1-b.A1)*(1-Math.exp(-dt/(t1>b.A1?1.1:1.2)));
-    const unstable=(b.speed>1.05&&b.speed<1.35&&b.A0>0.4)||b.speed>2.9;
+    b.A1+=(t1-b.A1)*(1-Math.exp(-dt/(t1>b.A1?0.75:1.4)));
+    const unstable=b.speed>4.2;
     b.chatter=unstable?Math.min(1,b.chatter+dt*3.5):Math.max(0,b.chatter-dt*2.5);
     b.A0=Math.max(0,b.A0-b.chatter*dt*0.7);b.A1=Math.max(0,b.A1-b.chatter*dt*0.7);
     b.stickVis=Math.min(1,b.stickVis+dt*6);
@@ -398,7 +398,7 @@ function bowlPhysics(dt){
   b.slosh*=Math.exp(-dt/0.5);b.wobble=Math.sin(levelT*6.3)*0.0035*Math.min(1,b.slosh)+Math.sin(levelT*0.7)*0.0004;
   b.pourRate*=Math.exp(-dt/0.15);b.blocked=Math.max(0,b.blocked-dt);
   if(b.slosh>0.25){b.gurgleT-=dt;if(b.gurgleT<=0){b.gurgleT=0.06+Math.random()*0.14;burst(0.09+Math.random()*0.08,'bandpass',300+Math.random()*700,200+Math.random()*300,0.03*Math.min(1,b.slosh),6,0.25);}}
-  b.voice=b.A1>b.A0*0.9&&b.A1>0.25?1:0;b.Asound=b.voice?b.A1:b.A0;b.soundF=b.freq*(b.voice?OVERTONE:1)*(1+b.wobble);
+  b.voice=b.A1>b.A0*0.8&&b.A1>0.2?1:0;b.Asound=b.voice?b.A1:b.A0;b.soundF=b.freq*(b.voice?OVERTONE:1)*(1+b.wobble);
   updateBowlVoice();
 }
 function strikeBowl(){const b=bowlState;b.A0=Math.min(1,Math.max(b.A0,0.5)+0.25);b.strikeE=1;burst(0.04,'bandpass',3800,2200,0.12,2.2,0.2);bowlRipples.push({t:0});}
@@ -423,11 +423,11 @@ function updateStones(dt){
     s.hears=stoneDist(s)<=RANGE+0.01;
     if(s.hears&&stoneDist(s)<nd){nd=stoneDist(s);near=s;}
     s.c=cents(b.soundF,s.f);
-    s.inTune=s.hears&&Math.abs(s.c)<TOL&&b.Asound>0.35&&b.chatter<0.5;
+    s.inTune=s.hears&&Math.abs(s.c)<TOL&&b.Asound>0.3&&b.chatter<0.5;
     if(s.ringT>0)s.ringT-=dt;
     if(!s.armed){if(!s.inTune){s.offT+=dt;if(s.offT>0.8){s.armed=true;s.progress=0;}}else s.offT=0;}
     else if(!busyNow){
-      s.progress=s.inTune?Math.min(1,s.progress+dt/1.5):Math.max(0,s.progress-dt*0.8);
+      s.progress=s.inTune?Math.min(1,s.progress+dt/1.2):Math.max(0,s.progress-dt*0.6);
       if(s.progress>=1)lockStone(s);
     }
     s.glow+=(((s.ringT>0||(s.phrase&&phrase.prog>=s.phrase))?1:s.progress)-s.glow)*Math.min(1,dt*4);
@@ -721,6 +721,11 @@ function drawVoiceMeter(g){
   const b=bowlState,x=g.vx;ctx.textAlign='center';
   ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,g.vy0);ctx.lineTo(x,g.vy1);ctx.stroke();
   const dot=(y,a,lab)=>{ctx.fillStyle=`rgba(255,255,255,${0.25+0.75*a})`;ctx.beginPath();ctx.arc(x,y,4+a*4,0,TAU);ctx.fill();ctx.font='italic 11px '+FONT;ctx.fillStyle=`rgba(255,255,255,${0.45+0.4*a})`;ctx.fillText(lab,x,y+(lab==='high'?-14:20));};
+  // zones: low voice below, high voice above; the marker shows how fast you circle
+  const sy=s=>lerp(g.vy1,g.vy0,clamp(s/2.2,0,1));
+  ctx.strokeStyle='rgba(255,236,190,.55)';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,sy(0.35));ctx.lineTo(x,sy(1.0));ctx.stroke();
+  ctx.strokeStyle='rgba(225,232,255,.6)';ctx.beginPath();ctx.moveTo(x,sy(1.25));ctx.lineTo(x,sy(2.2));ctx.stroke();ctx.lineCap='butt';
+  if(b.rubbing||b.speed>0.05){const yy=sy(b.speed);ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(x+9,yy);ctx.lineTo(x+16,yy-5);ctx.lineTo(x+16,yy+5);ctx.closePath();ctx.fill();}
   dot(g.vy0,b.A1,'high');dot(g.vy1,b.A0,'low');
   ctx.font='italic 11px '+FONT;ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillText('voice',x,g.vy1+38);
 }
@@ -778,12 +783,12 @@ function sheetHint(){
   const b=bowlState,s=tuneInfo;
   if(b.blocked>0)return'There is no spring here. Water can only be poured out';
   if(!hintState.sang)return'Circle the rim slowly and steadily, like stirring tea';
-  if(b.chatter>0.3)return b.speed>2.5?'Too fast. The stick is chattering':'Between voices the stick chatters. Go slower, or much faster';
+  if(b.chatter>0.3)return'Too fast. The stick is chattering';
   if(!s)return lastAnswer&&levelT-lastAnswer.t<4?'Close the bowl and walk on':'Walk closer to a stone. Its hum will guide you';
   if(s.phrase&&!hintState.phrase)return'These three must hear you in order, one after another';
   if(!s.armed)return'The stone answered. Let the bowl fall quiet before singing to it again';
   if(s.inTune)return'Hold it… let the stone join in';
-  if(s.mode&&b.voice===0&&b.Asound>0.3)return hintState.high?'This stone wants the high voice':'This stone sings above your bowl. Circle much faster, but steadily, to wake its high voice';
+  if(s.mode&&b.voice===0&&b.Asound>0.3)return hintState.high?'This stone wants the high voice. Circle fast':'This stone sings above your bowl. Circle fast to wake its high voice';
   if(!s.mode&&b.voice===1&&b.Asound>0.3)return'This stone wants the low voice. Circle slowly';
   if(b.Asound>0.3&&Math.abs(s.c)<70)return'Hear the wobble? It slows as you get closer';
   if(b.Asound>0.3){if(s.c>0)return b.level>0.98?'Your bowl is full and still too high':'Too high. More water lowers the pitch';
@@ -852,7 +857,7 @@ cv.addEventListener('pointerdown',e=>{
   if(sheetOpen&&sheetT>0.6&&y>sheetGeo().top-10){
     const g=sheetGeo();
     if(Math.hypot(x-g.closeX,y-g.closeY)<30)p.kind='close';
-    else if(Math.abs(x-g.wx)<34&&y>g.wy0-34&&y<g.wy1+34){p.kind='water';setWaterFrom(y);}
+    else if(Math.abs(x-g.wx)<40&&y>g.wy0-40&&y<g.wy1+40){p.kind='water';p.l0=bowlState.level;}
     else{const nx=(x-g.cx)/g.r,ny=(y-g.cy)/g.ry;if(Math.hypot(nx,ny*0.6)<2.4){p.kind='bowl';p.lastA=Math.atan2(ny,nx);p.acc=0;p.lt=performance.now();}else p.kind='none';}
   }else if(!sheetOpen&&!cam.over&&Math.hypot(x-W/2,y-(H-50-SAFE_B))<32&&!won)p.kind='openBowl';
   ptrs.set(e.pointerId,p);
@@ -860,7 +865,7 @@ cv.addEventListener('pointerdown',e=>{
 function setWaterFrom(y){const g=sheetGeo();setWater((g.wy1-y)/(g.wy1-g.wy0));}
 cv.addEventListener('pointermove',e=>{
   const p=ptrs.get(e.pointerId);if(!p)return;p.x=e.clientX;p.y=e.clientY;
-  if(p.kind==='water')setWaterFrom(p.y);
+  if(p.kind==='water'){const g=sheetGeo();const dy=p.ly-p.y;const gain=0.45+Math.min(1,Math.abs(dy)/14)*1.1;setWater(bowlState.level+dy/(g.wy1-g.wy0)*gain);}
   else if(p.kind==='bowl'||p.kind==='rub'){
     const g=sheetGeo();const nx=(p.x-g.cx)/g.r,ny=(p.y-g.cy)/g.ry;const a=Math.atan2(ny,nx);const rad=Math.hypot(nx,ny);
     let d=a-p.lastA;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;p.lastA=a;const now=performance.now(),dt=Math.max(4,now-p.lt)/1000;p.lt=now;
