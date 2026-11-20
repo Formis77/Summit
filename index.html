@@ -95,16 +95,16 @@ svg{display:block}
     <h1>Clay of Bhaktapur</h1>
     <div class="steps">
       <div class="step">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 34c-2-5-3-9-3-14s1.5-9 3-12M26 34c2-5 3-9 3-14s-1.5-9-3-12"/><path d="M33 20h-6M30 17l-3 3 3 3"/><circle cx="35" cy="20" r="2" fill="#e9a23b"/></svg>
-        <div><b>Drag the side</b> of the clay in or out. The wall follows your finger.</div>
+        <svg width="44" height="40" viewBox="0 0 44 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 36V12M24 36V12"/><path d="M12 12h12" stroke-dasharray="2 3"/><circle cx="20" cy="26" r="3.2" fill="#e9a23b"/><circle cx="32" cy="26" r="3.2" fill="#e9a23b"/><path d="M28 21l-2 5 2 5M24 21l2 5-2 5" stroke-width="1.4"/></svg>
+        <div><b>Two fingers on the wall</b>: one inside, one outside. Squeeze them together to thin the wall.</div>
       </div>
       <div class="step">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 34V16M29 34V16"/><ellipse cx="20" cy="16" rx="9" ry="3"/><path d="M20 11V4M17 7l3-3 3 3"/></svg>
-        <div><b>Drag the rim</b> up or down to make it taller or shorter.</div>
+        <svg width="44" height="40" viewBox="0 0 44 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 36V16M24 36V16"/><circle cx="20" cy="22" r="3.2" fill="#e9a23b"/><circle cx="32" cy="22" r="3.2" fill="#e9a23b"/><path d="M26 15V5M22 9l4-4 4 4"/></svg>
+        <div><b>Slide both up</b> to the rim. That's a pull: the squeezed clay rises and the pot grows taller.</div>
       </div>
       <div class="step">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6c3 5 7 8 7 13a7 7 0 0 1-14 0c0-5 4-8 7-13z"/></svg>
-        <div><b>Water</b> keeps it smooth. When it matches the outline, <b>Fire</b> it.</div>
+        <svg width="44" height="40" viewBox="0 0 44 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 36c-3-6-3-12 2-16s4-8 2-12M30 36c3-6 3-12-2-16s-4-8-2-12"/><path d="M36 20h5M38 17l3 3-3 3"/></svg>
+        <div><b>Lean the pinch</b> in or out while pulling to shape the belly and neck. Too thin or too wide and it collapses.</div>
       </div>
     </div>
     <p class="small">Sound on: turn off the silent switch.</p>
@@ -121,28 +121,31 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 const $=id=>document.getElementById(id);
 
 // ---------- constants ----------
-const N=96;          // profile samples bottom -> top
+const N=128;         // wall samples, one every DY units from the wheel up
+const DY=2.5;
+const HMAX=(N-1)*DY;
 const K=0.22;        // camera tilt: ellipse squash
 const WRU=100;       // wheel head radius in units
-const WALL=10;       // wall thickness (units)
-const RMIN=WALL+5, RMAX=90;
-const START_R=46, START_H=125;
+const BASE=8;        // floor thickness: pulls start above this
+const SIG=9;         // how tall a band your fingers grab (units)
+const RMAX=92;
+const IDEAL_WALL=8;
 
 const ORDERS=[
   {id:'round', who:'Tourist from Lyon', what:'Round belly vase', H:200, price:40,
    pts:[[0,40],[0.35,72],[0.7,42],[0.86,28],[1,36]],
    react:['"Magnifique! This goes on my shelf in France."','"Very nice, I will take it."','"It has character. A souvenir is a souvenir."']},
-  {id:'tulip', who:'Flower seller, Taumadhi', what:'Tulip vase', H:210, price:35,
-   pts:[[0,34],[0.45,50],[0.75,40],[1,64]],
+  {id:'tulip', who:'Flower seller, Taumadhi', what:'Tulip vase', H:200, price:35,
+   pts:[[0,34],[0.45,48],[0.75,40],[1,60]],
    react:['"My marigolds will look like a festival in this."','"Good. It stands straight and holds water."','"Hm. The flowers won\'t mind."']},
-  {id:'ghaito', who:'Grandmother next door', what:'Ghaito water pot', H:170, price:55,
-   pts:[[0,44],[0.42,82],[0.75,56],[0.9,30],[1,40]],
+  {id:'ghaito', who:'Grandmother next door', what:'Ghaito water pot', H:165, price:55,
+   pts:[[0,44],[0.42,80],[0.75,56],[0.9,30],[1,38]],
    react:['"Just like the ones my mother carried. Thank you, child."','"It will carry water. Well done."','"It holds water. Mostly."']},
-  {id:'bottle', who:'Monk from the monastery', what:'Tall bottle vase', H:250, price:50,
-   pts:[[0,38],[0.32,56],[0.6,38],[0.82,18],[1,24]],
+  {id:'bottle', who:'Monk from the monastery', what:'Tall bottle vase', H:240, price:50,
+   pts:[[0,38],[0.32,54],[0.6,38],[0.82,20],[1,25]],
    react:['"Patience made this. It shows."','"A good vessel for the altar."','"Every pot teaches something."']},
-  {id:'bowl', who:'Curd shop owner', what:'Wide flower bowl', H:110, price:30,
-   pts:[[0,40],[0.6,70],[1,82]],
+  {id:'bowl', who:'Curd shop owner', what:'Wide flower bowl', H:105, price:30,
+   pts:[[0,40],[0.6,68],[1,80]],
    react:['"Wide and generous. Perfect."','"Good bowl, good price."','"A bit wobbly, but I\'ll use it."']},
 ];
 function profAt(pts,t){
@@ -150,13 +153,18 @@ function profAt(pts,t){
   for(let i=1;i<pts.length;i++){if(t<=pts[i][0]){const a=pts[i-1],b=pts[i];const u=(t-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*(1-Math.cos(u*Math.PI))/2;}}
   return pts[pts.length-1][1];
 }
-function rAt(r,t){const f=clamp(t,0,1)*(N-1);const i=Math.floor(f);if(i>=N-1)return r[N-1];const u=f-i;return r[i]*(1-u)+r[i+1]*u;}
+// value of a wall array at height y (units)
+function at(arr,y){const f=clamp(y/DY,0,N-1);const i=Math.floor(f);if(i>=N-1)return arr[N-1];const u=f-i;return arr[i]*(1-u)+arr[i+1]*u;}
+// clay volume of one sample ring, and the wall thickness that holds volume v at radius r
+const vs=(r,w)=>Math.PI*(2*r*w-w*w)*DY;
+function wFor(r,v){const a=r*r-v/(Math.PI*DY);return a<=0?r:r-Math.sqrt(a);}
 
 // ---------- save ----------
 let save={coins:0,made:0,order:0,best:{}};
-try{const s=JSON.parse(localStorage.getItem('clay-save2')||'null');if(s)save=Object.assign(save,s);}catch(e){}
-function persist(){try{localStorage.setItem('clay-save2',JSON.stringify(save));}catch(e){}}
+try{const s=JSON.parse(localStorage.getItem('clay-save3')||'null');if(s)save=Object.assign(save,s);}catch(e){}
+function persist(){try{localStorage.setItem('clay-save3',JSON.stringify(save));}catch(e){}}
 const order=()=>ORDERS[save.order%ORDERS.length];
+
 
 // ---------- layers / layout ----------
 const under=$('under'),ug=under.getContext('2d');
@@ -234,13 +242,13 @@ const VS=`attribute vec2 aPos;uniform vec2 uRes;varying vec2 vPix;
 void main(){vPix=aPos;gl_Position=vec4(aPos.x/uRes.x*2.0-1.0,1.0-aPos.y/uRes.y*2.0,0.0,1.0);}`;
 const FS=`precision highp float;
 varying vec2 vPix;
-uniform sampler2D uProf;uniform float uN;
+uniform sampler2D uProf;uniform float uN,uHmax;
 uniform vec2 uC;uniform float uS,uH,uWall,uTheta,uWet,uFired,uK,uSmoke;
-uniform vec4 uTouch; // t, side, strength, mode(0 shape,1 rim)
+uniform vec4 uTouch; // y, side, strength, unused
 float dec(vec4 a){return (a.r*255.0*256.0+a.g*255.0)/65535.0*200.0;}
-float prof(float t){t=clamp(t,0.0,1.0);float f=t*(uN-1.0);float i=floor(f);float u=f-i;
+float prof(float y){float f=clamp(y/uHmax,0.0,1.0)*(uN-1.0);float i=floor(f);float u=f-i;
   float ra=dec(texture2D(uProf,vec2((i+0.5)/uN,0.5)));float rb=dec(texture2D(uProf,vec2((min(i+1.0,uN-1.0)+0.5)/uN,0.5)));return mix(ra,rb,u);}
-float fresh(float t){t=clamp(t,0.0,1.0);return texture2D(uProf,vec2((floor(t*(uN-1.0)+0.5)+0.5)/uN,0.5)).b;}
+float fresh(float y){float f=clamp(y/uHmax,0.0,1.0)*(uN-1.0);return texture2D(uProf,vec2((floor(f+0.5)+0.5)/uN,0.5)).b;}
 float hash(vec3 p){p=fract(p*0.3183099+0.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
 float noise(vec3 x){vec3 i=floor(x);vec3 f=fract(x);f=f*f*(3.0-2.0*f);
   return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
@@ -262,9 +270,9 @@ vec3 shade(vec3 n,vec3 c,float wetness,float extra){
 }
 void main(){
   float x=(vPix.x-uC.x)/uS;float y=(uC.y-vPix.y)/uS;
-  float Rt=prof(1.0);float Ri=max(Rt-uWall,0.0);
+  float Rt=prof(uH);float Ri=max(Rt-uWall,0.0);
   float rimD=length(vec2(x,(y-uH)/uK));
-  float px=1.0/uS; // one screen pixel in units
+  float px=1.0/uS;
   vec3 col;float alpha=1.0;
   if(rimD<Rt+px){
     alpha=clamp((Rt-rimD)/px+0.5,0.0,1.0);
@@ -272,8 +280,7 @@ void main(){
     float grain=noise(vec3(cos(a)*rimD,sin(a)*rimD,uH)*0.14);
     vec3 c=baseCol(grain);
     if(rimD<Ri){
-      // looking down into the pot
-      float v=(y-uH)/uK/max(Ri,0.001); // -1 front .. 1 back
+      float v=(y-uH)/uK/max(Ri,0.001);
       float depth=smoothstep(-1.0,1.0,v);
       vec3 inner=c*(0.14+0.55*depth*depth)+vec3(0.06,0.03,0.02)*uWet*depth;
       float edge=smoothstep(Ri-1.5,Ri,rimD);
@@ -286,33 +293,30 @@ void main(){
       col=shade(n,c*1.05,uWet,0.0);
     }
   }else{
-    float t=y/uH;
+    float yy=y;
     float r0=prof(0.0);
-    if(t<0.0){
+    if(y<0.0){
       float d=length(vec2(x,y/uK));if(d>r0+px)discard;
-      alpha=clamp((r0-d)/px+0.5,0.0,1.0);t=0.0;
-    }else if(t>1.0){discard;}
-    float R=prof(t);
+      alpha=clamp((r0-d)/px+0.5,0.0,1.0);yy=0.0;
+    }else if(y>uH){discard;}
+    float R=prof(yy);
     if(abs(x)>R+px)discard;
     if(y>=0.0)alpha=clamp((R-abs(x))/px+0.5,0.0,1.0);
     float u=clamp(x/R,-0.999,0.999);float nz=sqrt(1.0-u*u);
-    float e=1.5/uH;float slope=(prof(t+e)-prof(t-e))/(2.0*e*uH);
+    float slope=(prof(yy+2.0)-prof(yy-2.0))/4.0;
     float a=asin(u)-uTheta;
-    float fr=fresh(t);
-    // throwing rings: a gentle spiral groove, sharper where freshly shaped
-    float ph=y*0.62+a*0.16;
+    float fr=fresh(yy);
+    float ph=yy*0.62+a*0.16;
     float ridge=cos(ph)*(0.07+0.22*fr)+cos(ph*2.3+1.0)*0.04;
     vec3 n=normalize(vec3(u,-slope+ridge,nz));
-    vec3 q=vec3(cos(a)*R,sin(a)*R,y);
+    vec3 q=vec3(cos(a)*R,sin(a)*R,yy);
     float grain=noise(q*0.16)*0.6+noise(q*0.5)*0.4;
     vec3 c=baseCol(grain);
-    // slip smears (wet clay streaks)
-    float smear=smoothstep(0.58,0.82,noise(vec3(cos(a)*3.0,sin(a)*3.0,y*0.08)));
+    float smear=smoothstep(0.58,0.82,noise(vec3(cos(a)*3.0,sin(a)*3.0,yy*0.08)));
     c=mix(c,c*1.25+vec3(0.04,0.03,0.02),smear*0.35*uWet*(1.0-uFired));
     float extra=0.0;
-    if(uTouch.z>0.0&&uTouch.w<0.5){float dt=(t-uTouch.x)*uH;extra=exp(-dt*dt/240.0)*1.4*uTouch.z*smoothstep(0.0,0.7,u*uTouch.y);}
+    if(uTouch.z>0.0){float dt=yy-uTouch.x;extra=exp(-dt*dt/260.0)*1.5*uTouch.z*smoothstep(0.0,0.7,u*uTouch.y);}
     col=shade(n,c,clamp(uWet+fr*0.25,0.0,1.0),extra);
-    // edge darkening for roundness, contact shadow at the base
     col*=mix(0.62,1.0,pow(nz,0.6));
     col*=mix(0.55,1.0,smoothstep(0.0,10.0,y));
     if(uSmoke>0.0)col*=1.0-uSmoke*smoothstep(0.2,-0.9,u)*0.65*(0.6+0.4*noise(q*0.05));
@@ -326,35 +330,38 @@ if(glOK){
     prog=gl.createProgram();gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
     if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));
     gl.useProgram(prog);
-    ['uRes','uProf','uN','uC','uS','uH','uWall','uTheta','uWet','uFired','uK','uTouch','uSmoke'].forEach(n=>uni[n]=gl.getUniformLocation(prog,n));
+    ['uRes','uProf','uN','uHmax','uC','uS','uH','uWall','uTheta','uWet','uFired','uK','uTouch','uSmoke'].forEach(n=>uni[n]=gl.getUniformLocation(prog,n));
     buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
     const loc=gl.getAttribLocation(prog,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
     tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    gl.uniform1i(uni.uProf,0);gl.uniform1f(uni.uN,N);
+    gl.uniform1i(uni.uProf,0);gl.uniform1f(uni.uN,N);gl.uniform1f(uni.uHmax,HMAX);
   }catch(e){console.error(e);glOK=false;}
 }
-function drawClay(pot,touch){
+// v = {r (display radii), fresh, H, wTop, wet, fired, smoke}
+function drawClay(v,touchU){
   if(!glOK)return;
   gl.viewport(0,0,glc.width,glc.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+  let Rm=0;
   for(let k=0;k<N;k++){
-    const v=Math.round(clamp(pot.r[k],0,199.9)/200*65535);
-    profBytes[k*4]=v>>8;profBytes[k*4+1]=v&255;profBytes[k*4+2]=Math.round(clamp(pot.fresh[k],0,1)*255);profBytes[k*4+3]=255;
+    const rr=v.r[k];if(k*DY<=v.H+DY)Rm=Math.max(Rm,rr);
+    const q=Math.round(clamp(rr,0,199.9)/200*65535);
+    profBytes[k*4]=q>>8;profBytes[k*4+1]=q&255;profBytes[k*4+2]=Math.round(clamp(v.fresh[k],0,1)*255);profBytes[k*4+3]=255;
   }
   gl.bindTexture(gl.TEXTURE_2D,tex);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,N,1,0,gl.RGBA,gl.UNSIGNED_BYTE,profBytes);
   const sc=S*GDPR,X=cx*GDPR,Y=baseY*GDPR;
-  let Rm=0;for(let k=0;k<N;k++)Rm=Math.max(Rm,pot.r[k]);
-  const x0=X-(Rm+4)*sc,x1=X+(Rm+4)*sc,y0=Y-(pot.H+Rm*K+6)*sc,y1=Y+(pot.r[0]*K+4)*sc;
+  const x0=X-(Rm+4)*sc,x1=X+(Rm+4)*sc,y0=Y-(v.H+Rm*K+6)*sc,y1=Y+(v.r[0]*K+4)*sc;
   gl.bindBuffer(gl.ARRAY_BUFFER,buf);
   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([x0,y0,x1,y0,x0,y1,x0,y1,x1,y0,x1,y1]),gl.DYNAMIC_DRAW);
   gl.uniform2f(uni.uRes,glc.width,glc.height);gl.uniform2f(uni.uC,X,Y);gl.uniform1f(uni.uS,sc);
-  gl.uniform1f(uni.uH,pot.H);gl.uniform1f(uni.uWall,WALL);gl.uniform1f(uni.uTheta,theta%(Math.PI*2));
-  gl.uniform1f(uni.uWet,pot.wet);gl.uniform1f(uni.uFired,pot.fired);gl.uniform1f(uni.uK,K);gl.uniform1f(uni.uSmoke,pot.smoke||0);
-  gl.uniform4f(uni.uTouch,touch?touch.t:0,touch?touch.side:1,touch?touch.str:0,touch?touch.mode:0);
+  gl.uniform1f(uni.uH,v.H);gl.uniform1f(uni.uWall,v.wTop);gl.uniform1f(uni.uTheta,theta%(Math.PI*2));
+  gl.uniform1f(uni.uWet,v.wet);gl.uniform1f(uni.uFired,v.fired);gl.uniform1f(uni.uK,K);gl.uniform1f(uni.uSmoke,v.smoke||0);
+  gl.uniform4f(uni.uTouch,touchU?touchU.y:0,touchU?touchU.side:1,touchU?touchU.str:0,0);
   gl.drawArrays(gl.TRIANGLES,0,6);
 }
+
 
 // ---------- wheel (2D, under the clay) ----------
 function band(g,R,y,h,c1,c2){
@@ -419,26 +426,35 @@ const sfx={
   crackle(){for(let i=0;i<22;i++)setTimeout(()=>burst(0.05,'highpass',2500+Math.random()*3500,1800,0.06+Math.random()*0.08),i*60+Math.random()*50);},
   whoosh(){burst(1.2,'lowpass',300,1400,0.18,0.7);},
 };
+sfx.thud=()=>{tone(95,0.45,0.45,38);burst(0.4,'lowpass',900,120,0.3);};
+sfx.pull=()=>{[1,2.76].forEach((m,i)=>tone(392*m,[1.4,0.8][i],[0.06,0.025][i]));};
 function updateAudio(){
   if(!AC)return;const t=AC.currentTime;
   hum.gain.setTargetAtTime(firing?0.03:clamp(Math.abs(omega)/8,0,1.4)*0.16*(1+0.12*Math.sin(theta)),t,0.08);
   humF.frequency.setTargetAtTime(100+Math.abs(omega)*22,t,0.1);
   let g=0,f=600;
-  if(touch&&touch.mode!==2&&!firing){
-    const m=touch.speed;
-    g=(touch.mode===1?0.10:0.06)+Math.min(0.16,m*0.0006);
-    f=P.wet<0.2?1700+Math.sin(theta*4)*250:(touch.mode===1?320:480)+Math.min(900,m*1.4)+Math.sin(theta*3)*70;
-  }
+  if(pinch&&!firing&&!collapse){
+    g=0.06+Math.min(0.2,pinch.squeeze*0.012+pinch.speed*0.0006);
+    f=(P.wet<0.2?1500:360)+Math.min(900,pinch.speed*1.2)+pinch.squeeze*12+Math.sin(theta*3)*60;
+  }else if(ribActive&&!firing&&!collapse){g=0.045;f=650+Math.sin(theta*2)*80;}
   squish.gain.setTargetAtTime(g,t,0.04);squishF.frequency.setTargetAtTime(f,t,0.04);
 }
 
 // ---------- state ----------
-let P=null,omega=7,theta=0,touch=null,guide=true,firing=null,intro=0;
+let P=null,omega=7,theta=0,guide=true,firing=null,intro=0,collapse=null,instT=0,inst={v:0};
+const pointers=new Map();
+let pinch=null,ribActive=false,everPinched=false;
 const parts=[];
-let shapedAmt=0,stretched=0;
+const topK=()=>Math.min(N-1,Math.floor(P.H/DY));
+function fillAbove(){const kt=topK();for(let k=kt+1;k<N;k++){P.r[k]=P.r[kt];P.w[k]=P.w[kt];}}
+function totalV(){let v=0;const kt=topK();for(let k=0;k<=kt;k++)v+=vs(P.r[k],P.w[k]);return v;}
 function newPot(){
-  P={r:new Float32Array(N).fill(START_R),fresh:new Float32Array(N),H:START_H,wet:1,fired:0,smoke:0};
-  intro=0.0001;firing=null;touch=null;parts.length=0;
+  const o=order();
+  let V=0;for(let y=0;y<=o.H;y+=DY)V+=vs(profAt(o.pts,y/o.H),IDEAL_WALL);
+  const H0=70;const r0=clamp(Math.sqrt(V/(Math.PI*0.6975*H0)),30,82);const w0=0.45*r0;
+  P={r:new Float32Array(N).fill(r0),w:new Float32Array(N).fill(w0),fresh:new Float32Array(N),rd:new Float32Array(N).fill(r0),
+     H:H0,H0,r0,w0,carry:0,wet:1,fired:0,smoke:0,pulls:0};
+  intro=0.0001;firing=null;collapse=null;pinch=null;pointers.clear();parts.length=0;instT=0;inst={v:0};
   $('who').textContent=order().who;$('what').textContent=order().what;
   $('bFire').disabled=false;
 }
@@ -447,90 +463,201 @@ function newPot(){
 function units(e){return{ux:(e.clientX-cx)/S,uy:(baseY-e.clientY)/S};}
 fx.addEventListener('pointerdown',e=>{
   e.preventDefault();initAudio();
-  if(firing||!P||touch)return;
-  try{fx.setPointerCapture(e.pointerId);}catch(_){}
-  const {ux,uy}=units(e);const Rt=rAt(P.r,1);
-  const t0={id:e.pointerId,ux,uy,lastUx:ux,lastUy:uy,lastT:performance.now(),speed:0,str:0};
-  if(uy>P.H-22&&uy<P.H+40&&Math.abs(ux)<Rt+34){
-    Object.assign(t0,{mode:1,startH:P.H,startUy:uy,side:Math.sign(ux)||1,t:1});
-  }else if(uy>=-4&&uy<=P.H){
-    const R=rAt(P.r,uy/P.H);
-    if(Math.abs(Math.abs(ux)-R)<30)Object.assign(t0,{mode:0,side:Math.sign(ux)||1,t:uy/P.H});
-    else return;
-  }else if(uy<-4){Object.assign(t0,{mode:2});}
+  if(!P||firing||collapse||intro>0)return;
+  const {ux,uy}=units(e);
+  let mode;
+  if(uy<-6)mode='wheel';
+  else if(uy<=P.H+70&&Math.abs(ux)<RMAX+60)mode='clay';
   else return;
-  touch=t0;
+  try{fx.setPointerCapture(e.pointerId);}catch(_){}
+  pointers.set(e.pointerId,{id:e.pointerId,mode,ux,uy,startUx:ux,startUy:uy,lastUx:ux,lastUy:uy,lastT:performance.now(),speed:0,dUy:0});
 });
 fx.addEventListener('pointermove',e=>{
-  if(!touch||touch.id!==e.pointerId)return;e.preventDefault();
-  const now=performance.now(),dt=Math.max(4,now-touch.lastT)/1000;
+  const p=pointers.get(e.pointerId);if(!p)return;e.preventDefault();
+  const now=performance.now(),dt=Math.max(4,now-p.lastT)/1000;
   const {ux,uy}=units(e);
-  const v=Math.hypot(ux-touch.lastUx,uy-touch.lastUy)/dt;touch.speed=touch.speed*0.5+v*0.5;
-  if(touch.mode===2)omega=clamp(omega+(ux-touch.lastUx)*0.06,-16,16);
-  touch.ux=ux;touch.uy=uy;touch.lastUx=ux;touch.lastUy=uy;touch.lastT=now;
+  p.speed=p.speed*0.5+Math.hypot(ux-p.lastUx,uy-p.lastUy)/dt*0.5;
+  if(p.mode==='wheel')omega=clamp(omega+(ux-p.lastUx)*0.06,-16,16);
+  p.dUy+=uy-p.lastUy;
+  p.ux=ux;p.uy=uy;p.lastUx=ux;p.lastUy=uy;p.lastT=now;
 });
-const endTouch=e=>{if(touch&&touch.id===e.pointerId)touch=null;};
-fx.addEventListener('pointerup',endTouch);fx.addEventListener('pointercancel',endTouch);
+const endP=e=>{pointers.delete(e.pointerId);};
+fx.addEventListener('pointerup',endP);fx.addEventListener('pointercancel',endP);
 
 $('bWater').onclick=()=>{
-  initAudio();if(!P||firing)return;P.wet=1;sfx.splash();
+  initAudio();if(!P||firing||collapse)return;P.wet=1;sfx.splash();
   const top=baseY-P.H*S;
-  for(let i=0;i<34;i++)parts.push({x:cx+(Math.random()-.5)*rAt(P.r,1)*S*1.2,y:top-140*S-Math.random()*60*S,vx:(Math.random()-.5)*30,vy:220+Math.random()*120,life:1.2,r:(1.6+Math.random()*2.4)*S,water:true});
+  for(let i=0;i<34;i++)parts.push({x:cx+(Math.random()-.5)*at(P.r,P.H)*S*1.2,y:top-140*S-Math.random()*60*S,vx:(Math.random()-.5)*30,vy:220+Math.random()*120,life:1.2,r:(1.6+Math.random()*2.4)*S,water:true});
 };
 $('bGuide').onclick=()=>{guide=!guide;$('bGuide').classList.toggle('on',guide);};
 $('bReset').onclick=()=>{initAudio();sfx.plop();newPot();};
-$('bFire').onclick=()=>{initAudio();if(!P||firing||intro>0)return;firing={t:0};touch=null;$('bFire').disabled=true;sfx.whoosh();setTimeout(sfx.crackle,300);P.smoke=Math.random()<0.25?1:0;};
+$('bFire').onclick=()=>{initAudio();if(!P||firing||collapse||intro>0)return;pinch=null;pointers.clear();firing={t:0};$('bFire').disabled=true;sfx.whoosh();setTimeout(sfx.crackle,300);P.smoke=Math.random()<0.25?1:0;};
 $('bStart').onclick=()=>{initAudio();$('start').classList.add('hidden');sfx.bowl(196);};
+
+// ---------- hands ----------
+function resolveHands(){
+  const clay=[...pointers.values()].filter(p=>p.mode==='clay');
+  let pair=null;
+  if(clay.length>=2){
+    const a=clay[0],b=clay[1];
+    if(Math.sign(a.ux)===Math.sign(b.ux)||Math.abs(a.ux)<10||Math.abs(b.ux)<10)pair=[a,b];
+  }
+  if(pair){
+    if(!pinch||pinch.a!==pair[0].id||pinch.b!==pair[1].id){
+      endPinch();
+      pinch={a:pair[0].id,b:pair[1].id,depos:0,speed:0,squeeze:0,str:0,startY:(pair[0].uy+pair[1].uy)/2};
+      everPinched=true;
+    }
+    const [p,q]=pair;
+    const A=Math.min(Math.abs(p.ux),Math.abs(q.ux)),B=Math.max(Math.abs(p.ux),Math.abs(q.ux));
+    pinch.side=Math.sign(p.ux+q.ux)||1;
+    pinch.inner=A;pinch.outer=B;
+    pinch.wt=clamp((B-A)-16,5,50);
+    pinch.rT=clamp((A+B)/2+pinch.wt/2,pinch.wt+4,RMAX);
+    pinch.y=(p.uy+q.uy)/2;
+    pinch.speed=(p.speed+q.speed)/2;
+  }else if(pinch)endPinch();
+  return clay.filter(c=>!pair||(c!==pair[0]&&c!==pair[1]));
+}
+function deposit(vol,y){
+  // leftover clay settles as a thicker ring around height y
+  let ws=0;const g=[];
+  for(let k=0;k<=topK();k++){const v=Math.exp(-Math.pow((k*DY-y)/SIG,2));g.push(v);ws+=v;}
+  if(ws<=0)return;
+  for(let k=0;k<g.length;k++){if(g[k]<0.01)continue;P.w[k]=Math.min(P.r[k]-3,wFor(P.r[k],vs(P.r[k],P.w[k])+vol*g[k]/ws));}
+}
+function growTop(vol){
+  const kt=topK();const per=vs(P.r[kt],P.w[kt])/DY;
+  const room=Math.max(0,maxH-P.H);const dh=Math.min(room,vol/per);
+  P.H+=dh;fillAbove();
+  const left=vol-dh*per;if(left>1)deposit(left,P.H-6);
+}
+function endPinch(){
+  if(!pinch)return;
+  if(P.carry>0){
+    if(pinch.y>=P.H-16){growTop(P.carry);pinch.depos+=P.carry;}else deposit(P.carry,clamp(pinch.y,BASE,P.H));
+    P.carry=0;
+  }
+  if(pinch.depos>totalV()*0.04){P.pulls++;sfx.pull();}
+  pinch=null;
+}
+function pinchStep(dt){
+  const spin=clamp(Math.abs(omega)/5,0,1),dry=P.wet<0.2?0.5:1;
+  pinch.str=Math.min(1,pinch.str+dt*6);
+  if(pinch.y>P.H+45)return;
+  const y=clamp(pinch.y,0,P.H);
+  const rateW=1-Math.exp(-14*spin*dry*dt),rateR=1-Math.exp(-9*spin*dry*dt);
+  const kt=topK();let sq=0;
+  for(let k=0;k<=kt;k++){
+    const yk=k*DY;const g=Math.exp(-Math.pow((yk-y)/SIG,2));if(g<0.02)continue;
+    const r=P.r[k],w=P.w[k];
+    let wn=w;if(yk>BASE&&w>pinch.wt)wn=w-(w-pinch.wt)*g*rateW;
+    const thin=vs(r,w)-vs(r,wn);P.carry+=thin;sq+=w-wn;
+    let rn=r+(pinch.rT-r)*g*rateR;
+    let w2=wFor(rn,vs(r,wn));
+    if(rn<w2+4){rn=w2+4;}
+    P.r[k]=Math.min(rn,RMAX);P.w[k]=wFor(P.r[k],vs(r,wn));
+    P.fresh[k]=Math.max(P.fresh[k],g);
+  }
+  pinch.squeeze=pinch.squeeze*0.8+sq/dt*0.2*0.05;
+  // squeezed clay rides up with your fingers and becomes height at the rim
+  if(pinch.y>=P.H-8&&P.carry>0){
+    const dep=Math.min(P.carry,P.carry*(1-Math.exp(-9*dt))+vs(P.r[kt],P.w[kt])*3*dt);
+    growTop(dep);P.carry-=dep;pinch.depos+=dep;
+  }
+  P.wet=Math.max(0,P.wet-(0.02+pinch.speed*0.00005)*dt);
+  if(pinch.speed>40&&Math.random()<Math.min(0.7,pinch.speed*0.004)*dt*20){
+    const R=at(P.r,y)*S;
+    parts.push({x:cx+pinch.side*R,y:baseY-y*S,vx:(pinch.side*(60+Math.random()*130)+70)*S,vy:-(30+Math.random()*130)*S,life:0.8,r:(1+Math.random()*1.8)*S});
+  }
+}
+function ribStep(p,dt){
+  const rTop=at(P.r,P.H);
+  if(p.press===undefined)p.press=p.startUy>P.H-16&&Math.abs(p.startUx)<rTop+26;
+  if(p.press){
+    const down=Math.max(0,-p.dUy);p.dUy=0;
+    if(down>0&&P.H>40){
+      const kt=topK();const dh=Math.min(down,P.H-40);const vol=vs(P.r[kt],P.w[kt])/DY*dh;
+      P.H-=dh;deposit(vol,P.H-5);fillAbove();
+      for(let k=Math.max(0,topK()-6);k<N;k++)P.fresh[k]=Math.max(P.fresh[k],0.7);
+    }
+    return true;
+  }
+  p.dUy=0;
+  const y=clamp(p.uy,0,P.H),R=at(P.r,y);
+  if(Math.abs(Math.abs(p.ux)-R)>34)return false;
+  const rate=1-Math.exp(-7*dt);const tgt=clamp(Math.abs(p.ux),5,RMAX);
+  const old=P.r.slice();
+  for(let k=1;k<topK();k++){
+    const g=Math.exp(-Math.pow((k*DY-y)/12,2));if(g<0.02)continue;
+    const smooth=0.5*(old[k-1]+old[k+1]);
+    const rn=old[k]+((smooth-old[k])*0.8+(tgt-old[k])*0.2)*g*rate;
+    const v=vs(old[k],P.w[k]);
+    P.r[k]=Math.max(rn,P.w[k]+4);P.w[k]=wFor(P.r[k],v);
+    P.fresh[k]=Math.max(P.fresh[k],g*0.6);
+  }
+  return true;
+}
+function instability(){
+  const kt=topK();let best={v:0};let wLow=1e9;
+  for(let k=0;k<=kt;k++){
+    const yk=k*DY;if(yk<BASE)continue;
+    const w=P.w[k];if(yk<P.H*0.5)wLow=Math.min(wLow,w);
+    const tear=(4.6-w)/1.4;if(tear>best.v)best={v:tear,reason:'The wall got too thin and tore.',warn:'The wall is very thin here'};
+    if(k+2<=kt){const s=(P.r[k+2]-P.r[k])/(2*DY);const allowed=0.55+w/9;const fl=(s/allowed-0.7)/0.3;
+      if(fl>best.v)best={v:fl,reason:'It flared out too far and the wall flopped down.',warn:'Flaring out too far'};}
+  }
+  const tall=(P.H/Math.max(wLow,1)-26)/10;
+  if(tall>best.v)best={v:tall,reason:'Too tall for walls that thin. It folded.',warn:'Too tall for these walls'};
+  return best;
+}
+function startCollapse(reason){
+  collapse={t:0,reason,r:P.r.slice(),H:P.H,wTop:at(P.w,P.H),lean:Math.random()<.5?-1:1};
+  pinch=null;pointers.clear();P.carry=0;sfx.thud();
+}
 
 // ---------- simulation ----------
 function step(dt){
-  // wheel: a helper keeps it turning at a steady pace; flick the wheel to speed it up for a while
-  const target=firing?0:7;
-  omega+=(target-omega)*(1-Math.exp(-(firing?1.6:0.6)*dt));
+  const target=firing||collapse?0:7;
+  omega+=(target-omega)*(1-Math.exp(-(firing||collapse?1.6:0.6)*dt));
   theta+=omega*dt;
   if(!P)return;
-
   if(intro>0){
-    intro+=dt/0.7;const u=Math.min(1,intro);const e=1-Math.pow(1-u,3);
-    P.H=lerp(40,START_H,e);P.r.fill(lerp(72,START_R,e));
+    intro+=dt/0.7;const u=Math.min(1,intro),e=1-Math.pow(1-u,3);
+    P.H=lerp(30,P.H0,e);P.r.fill(lerp(P.r0*1.35,P.r0,e));P.w.fill(P.w0);
     if(u>=1)intro=0;
   }
-
-  if(touch&&touch.mode!==2&&!firing&&intro===0){
-    if(performance.now()-touch.lastT>60)touch.speed*=Math.pow(0.01,dt);
-    const spin=clamp(Math.abs(omega)/5,0,1);
-    const dryMul=P.wet<0.2?0.55:1;
-    touch.str=Math.min(1,touch.str+dt*6);
-    if(touch.mode===0){
-      const t=clamp(touch.uy/P.H,0,1);touch.t=t;
-      const side=Math.sign(touch.ux)||touch.side;touch.side=side;
-      const targetR=clamp(Math.abs(touch.ux),RMIN,RMAX);
-      const sig=15/P.H;const rate=1-Math.exp(-16*spin*dryMul*dt);
-      let moved=0;
-      for(let k=0;k<N;k++){
-        const g=Math.exp(-Math.pow((k/(N-1)-t)/sig,2));if(g<0.01)continue;
-        const d=(targetR-P.r[k])*g*rate;P.r[k]+=d;moved+=Math.abs(d);
-        P.fresh[k]=Math.max(P.fresh[k],g*0.9);
-      }
-      shapedAmt+=moved;
-      P.wet=Math.max(0,P.wet-(0.012+touch.speed*0.00004)*dt);
-      if(spin>0.5&&Math.random()<(0.15+Math.min(0.6,touch.speed*0.004))*dt*20){
-        const R=rAt(P.r,t)*S;
-        parts.push({x:cx+side*R,y:baseY-t*P.H*S,vx:(side*(60+Math.random()*130)+70)*S,vy:-(30+Math.random()*130)*S,life:0.8,r:(1+Math.random()*1.8)*S});
-      }
-    }else if(touch.mode===1){
-      const want=clamp(touch.startH+(touch.uy-touch.startUy),45,maxH);
-      const prev=P.H;P.H+=(want-P.H)*(1-Math.exp(-18*dryMul*dt));
-      stretched+=Math.abs(P.H-prev);
-      for(let k=Math.floor(N*0.55);k<N;k++)P.fresh[k]=Math.max(P.fresh[k],0.6);
-      P.wet=Math.max(0,P.wet-0.015*dt);
+  ribActive=false;
+  if(!firing&&!collapse&&intro===0){
+    for(const p of pointers.values())if(performance.now()-p.lastT>60)p.speed*=Math.pow(0.01,dt);
+    const singles=resolveHands();
+    if(pinch)pinchStep(dt);
+    for(const p of singles)if(ribStep(p,dt))ribActive=true;
+    // settle: gentle smoothing keeps the curves organic
+    const a=0.02,r=P.r.slice(),w=P.w.slice(),kt=topK();
+    for(let k=1;k<kt;k++){
+      const v=vs(r[k],w[k]);
+      P.r[k]=r[k]*(1-a)+a*0.5*(r[k-1]+r[k+1]);
+      P.w[k]=wFor(P.r[k],v);
     }
+    for(let k=0;k<N;k++){P.r[k]=clamp(P.r[k],Math.max(P.w[k]+3,6),RMAX);}
+    fillAbove();
+    if(!pinch&&!ribActive)P.wet=Math.max(0,P.wet-0.004*dt);
+    inst=instability();
+    if(inst.v>=1){instT+=dt;if(instT>0.25)startCollapse(inst.reason);}else instT=0;
   }
-  const a=0.035,tmp=P.r.slice();
-  for(let k=1;k<N-1;k++)P.r[k]=tmp[k]*(1-a)+a*0.5*(tmp[k-1]+tmp[k+1]);
-  for(let k=0;k<N;k++){P.r[k]=clamp(P.r[k],RMIN,RMAX);P.fresh[k]=Math.max(0,P.fresh[k]-dt*0.12);}
-  if(!touch)P.wet=Math.max(0,P.wet-0.004*dt);
-
+  for(let k=0;k<N;k++)P.fresh[k]=Math.max(0,P.fresh[k]-dt*0.12);
+  // display radii: the ring of clay carried under your fingers bulges out
+  P.rd.set(P.r);
+  if(pinch&&P.carry>0){
+    const y=clamp(pinch.y,0,P.H),R=at(P.r,y);
+    const e=Math.min(16,P.carry/(2*Math.PI*R*SIG*1.77));
+    for(let k=0;k<N;k++){const g=Math.exp(-Math.pow((k*DY-y)/SIG,2));P.rd[k]+=e*g;}
+  }
+  if(collapse){
+    collapse.t+=dt;
+    if(collapse.t>1.3&&!collapse.shown){collapse.shown=true;showCollapse();}
+  }
   if(firing){
     firing.t+=dt;const u=clamp((firing.t-0.3)/1.6,0,1);
     P.fired=u*u*(3-2*u);P.wet=Math.min(P.wet,1-P.fired);
@@ -538,36 +665,51 @@ function step(dt){
   }
   for(let i=parts.length-1;i>=0;i--){
     const q=parts[i];q.life-=dt;q.vy+=(q.water?700:1100)*S*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;
-    if(q.water&&q.y>baseY-P.H*S+rAt(P.r,1)*K*S*0.5)q.life=0;
+    if(q.water&&q.y>baseY-P.H*S+at(P.r,P.H)*K*S*0.5)q.life=0;
     if(q.life<=0||q.y>H)parts.splice(i,1);
   }
 }
+function collapseView(){
+  const u=1-Math.pow(1-Math.min(1,collapse.t/1.0),3);
+  let avg=0;const kt=Math.floor(collapse.H/DY);for(let k=0;k<=kt;k++)avg+=collapse.r[k];avg/=kt+1;
+  const Hn=collapse.H*(1-0.55*u);
+  const r=new Float32Array(N);
+  for(let k=0;k<N;k++){const t=clamp(k*DY/Hn,0,1);r[k]=Math.min(RMAX+10,lerp(collapse.r[Math.min(N-1,Math.round(k*collapse.H/Hn))],avg*1.15*(1-0.45*t*t)+Math.sin(k*0.9)*4,u));}
+  return{r,fresh:new Float32Array(N),H:Hn,wTop:lerp(collapse.wTop,0,u),wet:P.wet,fired:0,smoke:0};
+}
 
-// ---------- overlay: guide, touch feedback, particles, kiln glow ----------
+// ---------- overlay ----------
 function drawFx(){
   fg.clearRect(0,0,W,H);
   if(!P)return;
-  if(guide&&!firing&&intro===0){
+  if(guide&&!firing&&!collapse&&intro===0){
     const o=order();
-    fg.save();fg.setLineDash([5*S,5*S]);fg.lineWidth=1.6;fg.strokeStyle='rgba(255,246,225,.55)';
-    for(const sd of[-1,1]){fg.beginPath();for(let k=0;k<N;k++){const t=k/(N-1);fg.lineTo(cx+sd*profAt(o.pts,t)*S,baseY-t*o.H*S);}fg.stroke();}
+    fg.save();fg.setLineDash([5*S,5*S]);fg.lineWidth=1.6;fg.strokeStyle='rgba(255,246,225,.5)';
+    for(const sd of[-1,1]){fg.beginPath();for(let y=0;y<=o.H;y+=DY)fg.lineTo(cx+sd*profAt(o.pts,y/o.H)*S,baseY-y*S);fg.stroke();}
     const rt=profAt(o.pts,1)*S;fg.beginPath();fg.ellipse(cx,baseY-o.H*S,rt,rt*K,0,Math.PI,0);fg.stroke();
     fg.restore();
   }
-  if(touch&&touch.mode!==2&&!firing){
-    const a=touch.str;
-    if(touch.mode===0){
-      const t=clamp(touch.uy/P.H,0,1),R=rAt(P.r,t)*S,x=cx+touch.side*R,y=baseY-t*P.H*S;
-      const gr=fg.createRadialGradient(x,y,0,x,y,26*S);gr.addColorStop(0,`rgba(255,236,210,${0.30*a})`);gr.addColorStop(1,'rgba(255,236,210,0)');
-      fg.fillStyle=gr;fg.beginPath();fg.arc(x,y,26*S,0,7);fg.fill();
-      fg.strokeStyle=`rgba(255,240,220,${0.5*a})`;fg.lineWidth=2;fg.beginPath();fg.arc(cx+touch.ux*S,baseY-touch.uy*S,14*S,0,7);fg.stroke();
-    }else{
-      const Rt=rAt(P.r,1)*S,yt=baseY-P.H*S;
-      fg.strokeStyle=`rgba(255,236,210,${0.55*a})`;fg.lineWidth=3*S;fg.beginPath();fg.ellipse(cx,yt,Rt+2,Rt*K+2,0,0,7);fg.stroke();
+  if(!firing&&!collapse){
+    const clay=[...pointers.values()].filter(p=>p.mode==='clay');
+    if(pinch){
+      // x-ray of the wall on the pinched side: inner surface dotted
+      const sd=pinch.side;
+      fg.save();fg.setLineDash([2,4]);fg.lineWidth=1.5;fg.strokeStyle=`rgba(255,226,180,${0.55*pinch.str})`;
+      fg.beginPath();for(let k=0;k*DY<=P.H;k++)fg.lineTo(cx+sd*(P.rd[k]-P.w[k])*S,baseY-k*DY*S);fg.stroke();fg.restore();
+      const y=baseY-clamp(pinch.y,0,P.H+45)*S;
+      const x1=cx+sd*pinch.inner*S,x2=cx+sd*pinch.outer*S;
+      const gr=fg.createLinearGradient(x1,0,x2,0);gr.addColorStop(0,'rgba(255,214,150,0)');gr.addColorStop(0.5,`rgba(255,214,150,${0.35*pinch.str})`);gr.addColorStop(1,'rgba(255,214,150,0)');
+      fg.fillStyle=gr;fg.fillRect(Math.min(x1,x2),y-10*S,Math.abs(x2-x1),20*S);
+    }else if(clay.length===1&&!clay[0].press){
+      // show where the second finger goes: just inside the wall
+      const p=clay[0],sd=Math.sign(p.ux)||1,y=clamp(p.uy,BASE,P.H-6);
+      const xi=cx+sd*(at(P.r,y)-at(P.w,y)-12)*S,yy=baseY-y*S,pl=0.5+0.5*Math.sin(performance.now()/220);
+      fg.save();fg.setLineDash([3,3]);fg.strokeStyle=`rgba(255,226,180,${0.4+0.4*pl})`;fg.lineWidth=2;
+      fg.beginPath();fg.arc(xi,yy,14*S,0,7);fg.stroke();fg.restore();
     }
-  }else if(!firing&&intro===0&&shapedAmt>40&&stretched<20){
-    const Rt=rAt(P.r,1)*S,yt=baseY-P.H*S,p=0.5+0.5*Math.sin(performance.now()/350);
-    fg.strokeStyle=`rgba(255,226,180,${0.15+0.3*p})`;fg.lineWidth=2.5*S;fg.beginPath();fg.ellipse(cx,yt,Rt+3,Rt*K+3,0,0,7);fg.stroke();
+    for(const p of clay){
+      fg.strokeStyle='rgba(255,240,220,.6)';fg.lineWidth=2;fg.beginPath();fg.arc(cx+p.ux*S,baseY-p.uy*S,15*S,0,7);fg.stroke();
+    }
   }
   for(const q of parts){
     fg.fillStyle=q.water?`rgba(205,235,250,${Math.min(1,q.life)*0.85})`:`rgba(95,52,34,${Math.min(1,q.life*1.5)})`;
@@ -584,14 +726,23 @@ function drawFx(){
 // ---------- hints ----------
 let lastHint='';
 function hint(){
-  if(!P||firing||intro>0)return['',false];
+  if(!P||firing||intro>0||collapse)return['',false];
+  if(inst.v>0.72)return[inst.warn,true];
   if(P.wet<0.2)return['The clay is drying out. Tap Water',true];
-  if(shapedAmt<40)return['Drag the side of the clay in or out',false];
-  if(stretched<20)return['Now drag the rim up to make it taller',false];
+  const clay=[...pointers.values()].filter(p=>p.mode==='clay');
+  if(!pinch&&P.pulls===0){
+    if(clay.length===1&&!clay[0].press)return['Add a second finger just inside the wall',false];
+    return['Put two fingers on the wall: one inside, one outside',false];
+  }
+  if(pinch&&P.pulls===0){
+    if(pinch.y<P.H-8)return['Squeeze and slide both fingers up to the rim',false];
+    return['Keep going up past the rim',false];
+  }
   const o=order();
-  if(Math.abs(P.H-o.H)>25)return[P.H<o.H?'Pull the rim up to reach the outline':'Push the rim down to the outline',false];
-  if(scorePot()>=80)return['Looks great. Fire it when you\'re happy',false];
-  return['Shape the walls to match the outline',false];
+  if(!pinch&&P.H<o.H-20)return[`Pull ${P.pulls} done. Start low and pull again`,false];
+  if(P.H>o.H+25)return['Taller than the order. Press the rim down with one finger',false];
+  if(!pinch&&scorePot()>=80)return['Looks great. Fire it when you\'re happy',false];
+  return['Lean the pinch in or out while pulling to match the outline',false];
 }
 function hud(){
   $('wetBar').style.width=(P?P.wet*100:0)+'%';$('wetBar').classList.toggle('low',!!(P&&P.wet<0.2));
@@ -602,33 +753,46 @@ function hud(){
 
 // ---------- scoring / results ----------
 function scorePot(){
-  const o=order();let Rt=0;for(let k=0;k<N;k++)Rt=Math.max(Rt,profAt(o.pts,k/(N-1)));
+  const o=order();let Rt=0;for(let y=0;y<=o.H;y+=DY)Rt=Math.max(Rt,profAt(o.pts,y/o.H));
   const top=Math.max(P.H,o.H);let err=0;const M=60;
   for(let i=0;i<M;i++){
     const y=(i+0.5)/M*top;
-    const a=y<=P.H?rAt(P.r,y/P.H):0,b=y<=o.H?profAt(o.pts,y/o.H):0;
+    const a=y<=P.H?at(P.r,y):0,b=y<=o.H?profAt(o.pts,y/o.H):0;
     err+=Math.abs(a-b);
   }
   err/=M*Rt;
   return Math.round(clamp(100*Math.exp(-2.8*err),0,100));
 }
+const coinSvg='<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e9a23b"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a5512" stroke-width="1.6"/><rect x="10" y="7.5" width="4" height="9" rx="1" fill="#8a5512"/></svg>';
 function showResult(){
   const o=order(),sc=scorePot(),tier=sc>=78?0:sc>=50?1:2;
   const label=sc>=92?'Masterpiece':sc>=78?'Lovely':sc>=60?'Good enough':sc>=40?'Wonky but charming':'It holds water?';
-  const coins=Math.round(o.price*(0.3+0.7*sc/100));
+  let wsum=0,n=0;for(let k=0;k*DY<=P.H;k++){if(k*DY<BASE)continue;wsum+=P.w[k];n++;}
+  const wall=wsum/Math.max(1,n);
+  const wallTxt=wall<7?'Light, thin walls.':wall<12?'Nicely even walls.':'Heavy, thick walls.';
+  const coins=Math.round(o.price*(0.3+0.7*sc/100)*(wall<12?1:0.85));
   save.coins+=coins;save.made++;const prevBest=save.best[o.id]||0;save.best[o.id]=Math.max(prevBest,sc);persist();
   sfx.bowl(sc>=78?330:sc>=50?294:247);
   $('modalSheet').innerHTML=`
     <div class="label">Out of the kiln</div>
     <h2>${o.what}</h2>
     <div class="big">${sc}%</div>
-    <div class="small">${label}${prevBest>sc?` &middot; best ${prevBest}%`:''}</div>
+    <div class="small">${label} &middot; ${P.pulls} pull${P.pulls===1?'':'s'} &middot; ${wallTxt}${prevBest>sc?` &middot; best ${prevBest}%`:''}</div>
     <p>${o.react[tier]}${P.smoke?'<br><span class="small">Smoke from the straw kiln left a dark blush on one side.</span>':''}</p>
-    <div class="coinline"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e9a23b"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a5512" stroke-width="1.6"/><rect x="10" y="7.5" width="4" height="9" rx="1" fill="#8a5512"/></svg>+${coins}</div>
+    <div class="coinline">${coinSvg}+${coins}</div>
     <div class="row"><button id="mAgain">Same vase</button><button id="mNext" class="primary">Next order</button></div>`;
   $('modal').classList.remove('hidden');
   $('mAgain').onclick=()=>{$('modal').classList.add('hidden');sfx.plop();newPot();};
   $('mNext').onclick=()=>{$('modal').classList.add('hidden');save.order=(save.order+1)%ORDERS.length;persist();sfx.plop();newPot();};
+}
+function showCollapse(){
+  $('modalSheet').innerHTML=`
+    <div class="label">Collapsed</div>
+    <h2>Back to a lump</h2>
+    <p>${collapse.reason}</p>
+    <div class="row"><button id="mNew" class="primary">New clay</button></div>`;
+  $('modal').classList.remove('hidden');
+  $('mNew').onclick=()=>{$('modal').classList.add('hidden');sfx.plop();newPot();};
 }
 
 // ---------- loop ----------
@@ -637,7 +801,9 @@ function frame(now){
   const dt=Math.min(0.05,(now-lastT)/1000);lastT=now;
   step(dt);
   drawUnder();
-  drawClay(P,touch&&touch.mode!==2?{t:touch.t||1,side:touch.side||1,str:touch.str,mode:touch.mode}:null);
+  if(collapse)drawClay(collapseView(),null);
+  else drawClay({r:P.rd,fresh:P.fresh,H:P.H,wTop:at(P.w,P.H),wet:P.wet,fired:P.fired,smoke:P.smoke},
+    pinch?{y:clamp(pinch.y,0,P.H),side:pinch.side,str:pinch.str}:null);
   drawFx();hud();updateAudio();
   requestAnimationFrame(frame);
 }
