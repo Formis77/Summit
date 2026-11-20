@@ -1,13 +1,13 @@
 {
-  "name": "Shadow Walker",
-  "short_name": "Shadow Walker",
-  "description": "A quiet isometric puzzle: move the sun, walk in shadow, wake the stones with singing bowls.",
+  "name": "Resonance",
+  "short_name": "Resonance",
+  "description": "A quiet isometric journey about the voice of a singing bowl. Rub the rim, tune with water, wake the listening stones.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#cfd8d2",
-  "theme_color": "#cfd8d2",
+  "background_color": "#dfe6e0",
+  "theme_color": "#dfe6e0",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }

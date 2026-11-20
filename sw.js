@@ -1,6 +1,6 @@
-// Shadow Walker service worker: serve from cache instantly (works offline),
+// Resonance service worker: serve from cache instantly (works offline),
 // refresh the cache in the background whenever there is signal.
-const CACHE = 'shadow-walker-v1';
+const CACHE = 'resonance-v1';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
