@@ -12,786 +12,639 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>Clay of Bhaktapur</title>
 <style>
-:root{--ink:#2b1a12;--card:rgba(38,22,14,.80);--line:rgba(255,230,200,.14);--cream:#f7ead6;--mut:#c9ab8e;--acc:#e9a23b;--bad:#e2685a;--good:#8fcf7a}
+:root{--card:rgba(36,20,13,.72);--line:rgba(255,230,200,.13);--cream:#f7ead6;--mut:#cfb193;--acc:#e9a23b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:#2b1a12;color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
 body{position:fixed;inset:0;overflow:hidden}
-canvas#c{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+canvas.layer{position:absolute;inset:0;width:100%;height:100%;display:block}
+#fx{touch-action:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
 svg{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-#hud{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 10px) 12px 0;display:flex;gap:8px;align-items:flex-start;pointer-events:none}
-#order{flex:1;display:flex;gap:10px;align-items:center;padding:8px 12px 8px 8px;min-width:0}
-#orderPic{width:52px;height:52px;flex:none;background:rgba(255,240,220,.06);border-radius:10px}
-#order .who{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#hud{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 8px) 12px 0;display:flex;gap:8px;align-items:center;pointer-events:none}
+#order{flex:1;padding:8px 12px;min-width:0}
+#order .who{font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #order .what{font-size:16px;font-weight:650;margin-top:1px}
-#order .note{font-size:12px;color:var(--mut);margin-top:2px;line-height:1.25}
-#coins{display:flex;align-items:center;gap:6px;padding:10px 12px;font-weight:700;font-variant-numeric:tabular-nums}
-#hint{position:absolute;left:16px;right:16px;text-align:center;font-size:15px;line-height:1.3;font-weight:560;color:var(--cream);text-shadow:0 1px 3px rgba(0,0,0,.65);pointer-events:none;transition:opacity .25s}
+#coins{display:flex;align-items:center;gap:6px;padding:11px 12px;font-weight:700;font-variant-numeric:tabular-nums}
+#hint{position:absolute;left:20px;right:20px;text-align:center;font-size:15px;line-height:1.3;font-weight:600;color:var(--cream);text-shadow:0 1px 4px rgba(0,0,0,.7);pointer-events:none}
 #hint.warn{color:#ffd27a}
-#bottom{position:absolute;left:0;right:0;bottom:0;padding:0 12px calc(env(safe-area-inset-bottom) + 10px);pointer-events:none}
-#meters{display:flex;gap:10px;margin-bottom:8px}
-.meter{flex:1;display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:12px;color:var(--mut)}
-.meter span{width:38px}
-.bar{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,.10);position:relative;overflow:hidden}
-.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--acc);width:0}
-.bar .zone{position:absolute;top:0;bottom:0;left:28%;width:47%;background:rgba(143,207,122,.22);border-left:1px solid rgba(143,207,122,.6);border-right:1px solid rgba(143,207,122,.6)}
-#wetBar{background:#7cc3e6}
-#wetBar.low{background:var(--bad)}
-#btns{display:flex;gap:8px;pointer-events:auto}
-#btns button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 9px;font-size:12px;font-weight:600}
+#btns{position:absolute;left:0;right:0;bottom:0;display:flex;gap:8px;padding:0 12px calc(env(safe-area-inset-bottom) + 10px)}
+#btns button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 11px;font-size:12px;font-weight:600;position:relative;overflow:hidden}
 #btns button.on{border-color:rgba(233,162,59,.7);color:#ffd9a0}
 #btns button.primary{background:linear-gradient(#e9a23b,#c97e22);color:#2b1a12;border-color:transparent}
-#btns button:disabled{opacity:.35}
-.overlay{position:absolute;inset:0;background:rgba(20,10,6,.62);display:flex;align-items:flex-end;justify-content:center;padding:16px 14px calc(env(safe-area-inset-bottom) + 16px);z-index:5}
+#btns button:disabled{opacity:.4}
+#wetFill{position:absolute;left:12px;right:12px;bottom:5px;height:3px;border-radius:2px;background:rgba(255,255,255,.12)}
+#wetFill i{display:block;height:100%;border-radius:2px;background:#7cc3e6;width:100%}
+#wetFill i.low{background:#e2685a}
+.overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:16px 14px calc(env(safe-area-inset-bottom) + 14px);z-index:5}
+.overlay.dim{background:rgba(20,10,6,.6)}
 .overlay.hidden{display:none}
-.sheet{width:100%;max-width:440px;padding:18px 18px 16px;text-align:center}
-.sheet h1{font-size:28px;margin:4px 0 2px;letter-spacing:.2px}
-.sheet h2{font-size:21px;margin:6px 0 2px}
+.sheet{width:100%;max-width:440px;padding:18px 18px 16px;text-align:center;background:rgba(36,20,13,.9)}
+.sheet h1{font-size:28px;margin:4px 0 2px}
+.sheet h2{font-size:20px;margin:2px 0}
 .sheet p{color:var(--mut);font-size:14px;line-height:1.4;margin:8px 0}
-.sheet .big{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0}
-.sheet .label{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);font-weight:700}
-.sheet ol{text-align:left;color:var(--cream);font-size:14px;line-height:1.45;padding-left:22px;margin:12px 0}
-.sheet ol li{margin:3px 0}
-.sheet ol b{color:#ffd9a0}
+.sheet .big{font-size:38px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.sheet .label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);font-weight:700}
+.steps{display:flex;flex-direction:column;gap:10px;text-align:left;margin:14px 0 6px}
+.step{display:flex;gap:12px;align-items:center;font-size:14px;line-height:1.35}
+.step svg{flex:none}
+.step b{color:#ffd9a0}
 .row{display:flex;gap:10px;margin-top:14px}
 .row button{flex:1;padding:14px;border-radius:14px;font-weight:700;font-size:16px;background:rgba(255,255,255,.08);border:1px solid var(--line)}
 .row button.primary{background:linear-gradient(#e9a23b,#c97e22);color:#2b1a12;border:0}
-#resPic{width:240px;height:190px;margin:0 auto;display:block}
 .coinline{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:17px;color:#ffd9a0}
 .small{font-size:12px;color:var(--mut)}
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
+<canvas id="under" class="layer"></canvas>
+<canvas id="gl" class="layer"></canvas>
+<canvas id="fx" class="layer"></canvas>
 
 <div id="hud">
-  <div id="order" class="card">
-    <canvas id="orderPic" width="104" height="104"></canvas>
-    <div style="min-width:0">
-      <div class="who" id="who"></div>
-      <div class="what" id="what"></div>
-      <div class="note" id="note"></div>
-    </div>
-  </div>
+  <div id="order" class="card"><div class="who" id="who"></div><div class="what" id="what"></div></div>
   <div id="coins" class="card">
     <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e9a23b"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a5512" stroke-width="1.6"/><rect x="10" y="7.5" width="4" height="9" rx="1" fill="#8a5512"/></svg>
     <span id="coinN">0</span>
   </div>
 </div>
-
 <div id="hint"></div>
 
-<div id="bottom">
-  <div id="meters">
-    <div class="meter card"><span>Wheel</span><div class="bar"><div class="zone"></div><i id="spdBar"></i></div></div>
-    <div class="meter card"><span>Water</span><div class="bar"><i id="wetBar"></i></div></div>
-  </div>
-  <div id="btns">
-    <button id="bWater" class="card">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3c3.5 4.3 6 7.6 6 10.6A6 6 0 0 1 6 13.6C6 10.6 8.5 7.3 12 3z"/><path d="M9.2 14.2a2.9 2.9 0 0 0 2.6 2.7" stroke-linecap="round"/></svg>
-      Water
-    </button>
-    <button id="bGuide" class="card on">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 20h8M9 20c-1.8-2-3-4.6-3-7.5S7.2 7.2 9 5.5V4h6v1.5c1.8 1.7 3 4.1 3 7s-1.2 5.5-3 7.5" stroke-dasharray="2.4 2.2"/></svg>
-      Guide
-    </button>
-    <button id="bReset" class="card">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v4.5h4.5"/></svg>
-      New clay
-    </button>
-    <button id="bFinish" class="card primary" disabled>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 15c3 1.6 15 1.6 18 0"/><circle cx="3" cy="15" r="1.6" fill="currentColor"/><circle cx="21" cy="15" r="1.6" fill="currentColor"/><path d="M7 13V8.5C7 6.5 9 5 12 5s5 1.5 5 3.5V13"/></svg>
-      Cut off
-    </button>
-  </div>
+<div id="btns">
+  <button id="bWater" class="card">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3c3.5 4.3 6 7.6 6 10.6A6 6 0 0 1 6 13.6C6 10.6 8.5 7.3 12 3z"/><path d="M9.2 14.2a2.9 2.9 0 0 0 2.6 2.7" stroke-linecap="round"/></svg>
+    Water<span id="wetFill"><i id="wetBar"></i></span>
+  </button>
+  <button id="bGuide" class="card on">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 20h8M9 20c-1.8-2-3-4.6-3-7.5S7.2 7.2 9 5.5V4h6v1.5c1.8 1.7 3 4.1 3 7s-1.2 5.5-3 7.5" stroke-dasharray="2.4 2.2"/></svg>
+    Guide
+  </button>
+  <button id="bReset" class="card">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v4.5h4.5"/></svg>
+    New clay
+  </button>
+  <button id="bFire" class="card primary">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3.2 5 5.4 5 10a5 5 0 0 1-10 0c0-2.4 1.2-3.9 2.4-5 .2 1.8 1 2.9 2.1 3.4C11 9 11.3 5.6 12 3z"/></svg>
+    Fire
+  </button>
 </div>
 
-<div id="start" class="overlay">
+<div id="start" class="overlay dim">
   <div class="sheet card">
     <div class="label">Pottery Square</div>
     <h1>Clay of Bhaktapur</h1>
-    <p>A feel prototype. Throw pots on a stick-spun wheel and fill the town's orders.</p>
-    <ol>
-      <li><b>Swipe across the wheel</b> to spin it. It slows down, so keep it going.</li>
-      <li><b>Hold a finger still</b> on the clay to center it.</li>
-      <li><b>Press into the top</b> and drag down to open it.</li>
-      <li><b>Drag the wall</b> in or out to shape. <b>Drag up at the rim</b> to pull it taller.</li>
-      <li>Keep it wet. Too thin, too tall or too wide and it collapses.</li>
-    </ol>
+    <div class="steps">
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 34c-2-5-3-9-3-14s1.5-9 3-12M26 34c2-5 3-9 3-14s-1.5-9-3-12"/><path d="M33 20h-6M30 17l-3 3 3 3"/><circle cx="35" cy="20" r="2" fill="#e9a23b"/></svg>
+        <div><b>Drag the side</b> of the clay in or out. The wall follows your finger.</div>
+      </div>
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 34V16M29 34V16"/><ellipse cx="20" cy="16" rx="9" ry="3"/><path d="M20 11V4M17 7l3-3 3 3"/></svg>
+        <div><b>Drag the rim</b> up or down to make it taller or shorter.</div>
+      </div>
+      <div class="step">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#e9a23b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6c3 5 7 8 7 13a7 7 0 0 1-14 0c0-5 4-8 7-13z"/></svg>
+        <div><b>Water</b> keeps it smooth. When it matches the outline, <b>Fire</b> it.</div>
+      </div>
+    </div>
     <p class="small">Sound on: turn off the silent switch.</p>
-    <div class="row"><button id="bStart" class="primary">Start throwing</button></div>
+    <div class="row"><button id="bStart" class="primary">Start</button></div>
   </div>
 </div>
 
-<div id="modal" class="overlay hidden">
-  <div class="sheet card" id="modalSheet"></div>
-</div>
+<div id="modal" class="overlay hidden"><div class="sheet card" id="modalSheet"></div></div>
 
 <script>
 'use strict';
-// ---------- helpers ----------
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const lerp=(a,b,t)=>a+(b-a)*t;
-const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
 const $=id=>document.getElementById(id);
 
 // ---------- constants ----------
-const N=56;            // profile samples, bottom -> top
-const K=0.26;          // ellipse squash (camera looks slightly down)
-const BASE=10;         // floor thickness (units)
-const WT=12;           // "ideal" wall thickness used for orders
-const WRU=150;         // wheel head radius (units)
-const CENTER_OK=0.12;
+const N=96;          // profile samples bottom -> top
+const K=0.22;        // camera tilt: ellipse squash
+const WRU=100;       // wheel head radius in units
+const WALL=10;       // wall thickness (units)
+const RMIN=WALL+5, RMAX=90;
+const START_R=46, START_H=125;
 
 const ORDERS=[
-  {id:'curd',  who:'Curd shop, Taumadhi Square', what:'Juju dhau cup', note:'Wide and shallow. For the king of curds.', H:78,  price:20,
-   pts:[[0,48],[0.5,74],[1,92]],
-   react:['"Perfect. The curd will set beautifully in this."','"Good cup. My customers won\'t complain."','"A bit odd... I\'ll sell the curd in it anyway."']},
-  {id:'diyo',  who:'Temple caretaker', what:'Oil lamp (diyo)', note:'Small and open. Tihar is coming.', H:38, price:12,
-   pts:[[0,40],[0.6,58],[1,66]],
-   react:['"It will burn all night. The goddess will be pleased."','"A fine little lamp."','"It wobbles, but light is light."']},
-  {id:'cyl',   who:'Chiya stall by the gate', what:'Tall tea tumbler', note:'Straight walls, nice and even.', H:120, price:25,
-   pts:[[0,42],[1,46]],
-   react:['"Straight as a temple pillar. Two more please."','"Holds a full glass of chiya. Good."','"The tea tastes the same in a crooked cup, I suppose."']},
-  {id:'vase',  who:'Tourist from Lyon', what:'Flower vase', note:'Round belly, slim neck, little lip.', H:210, price:45,
-   pts:[[0,46],[0.3,78],[0.55,70],[0.8,36],[0.92,34],[1,44]],
-   react:['"Magnifique! This is going on my shelf in France."','"Very nice, I will take it."','"It has... character. I\'ll take it as a souvenir."']},
-  {id:'ghaito',who:'Grandmother next door', what:'Water pot (ghaito)', note:'Big round body, narrow mouth.', H:165, price:60,
-   pts:[[0,52],[0.38,96],[0.7,74],[0.86,40],[0.93,38],[1,48]],
-   react:['"Just like the ones my mother used. Thank you, child."','"It will carry water. Well done."','"Hmm. It holds water. Mostly."']},
+  {id:'round', who:'Tourist from Lyon', what:'Round belly vase', H:200, price:40,
+   pts:[[0,40],[0.35,72],[0.7,42],[0.86,28],[1,36]],
+   react:['"Magnifique! This goes on my shelf in France."','"Very nice, I will take it."','"It has character. A souvenir is a souvenir."']},
+  {id:'tulip', who:'Flower seller, Taumadhi', what:'Tulip vase', H:210, price:35,
+   pts:[[0,34],[0.45,50],[0.75,40],[1,64]],
+   react:['"My marigolds will look like a festival in this."','"Good. It stands straight and holds water."','"Hm. The flowers won\'t mind."']},
+  {id:'ghaito', who:'Grandmother next door', what:'Ghaito water pot', H:170, price:55,
+   pts:[[0,44],[0.42,82],[0.75,56],[0.9,30],[1,40]],
+   react:['"Just like the ones my mother carried. Thank you, child."','"It will carry water. Well done."','"It holds water. Mostly."']},
+  {id:'bottle', who:'Monk from the monastery', what:'Tall bottle vase', H:250, price:50,
+   pts:[[0,38],[0.32,56],[0.6,38],[0.82,18],[1,24]],
+   react:['"Patience made this. It shows."','"A good vessel for the altar."','"Every pot teaches something."']},
+  {id:'bowl', who:'Curd shop owner', what:'Wide flower bowl', H:110, price:30,
+   pts:[[0,40],[0.6,70],[1,82]],
+   react:['"Wide and generous. Perfect."','"Good bowl, good price."','"A bit wobbly, but I\'ll use it."']},
 ];
 function profAt(pts,t){
   if(t<=pts[0][0])return pts[0][1];
-  for(let i=1;i<pts.length;i++){
-    if(t<=pts[i][0]){const a=pts[i-1],b=pts[i];const u=(t-a[0])/(b[0]-a[0]);const s=(1-Math.cos(u*Math.PI))/2;return a[1]+(b[1]-a[1])*s;}
-  }
+  for(let i=1;i<pts.length;i++){if(t<=pts[i][0]){const a=pts[i-1],b=pts[i];const u=(t-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*(1-Math.cos(u*Math.PI))/2;}}
   return pts[pts.length-1][1];
 }
-function rAtArr(r,t){
-  const f=clamp(t,0,1)*(N-1);const i=Math.floor(f);if(i>=N-1)return r[N-1];
-  const u=f-i;return r[i]*(1-u)+r[i+1]*u;
-}
+function rAt(r,t){const f=clamp(t,0,1)*(N-1);const i=Math.floor(f);if(i>=N-1)return r[N-1];const u=f-i;return r[i]*(1-u)+r[i+1]*u;}
 
 // ---------- save ----------
 let save={coins:0,made:0,order:0,best:{}};
-try{const s=JSON.parse(localStorage.getItem('clay-save')||'null');if(s)save=Object.assign(save,s);}catch(e){}
-function persist(){try{localStorage.setItem('clay-save',JSON.stringify(save));}catch(e){}}
+try{const s=JSON.parse(localStorage.getItem('clay-save2')||'null');if(s)save=Object.assign(save,s);}catch(e){}
+function persist(){try{localStorage.setItem('clay-save2',JSON.stringify(save));}catch(e){}}
+const order=()=>ORDERS[save.order%ORDERS.length];
 
-// ---------- canvas / layout ----------
-const cv=$('c'),ctx=cv.getContext('2d');
-let W=0,H=0,DPR=1,S=1,cx=0,baseY=0,bg=null;
+// ---------- layers / layout ----------
+const under=$('under'),ug=under.getContext('2d');
+const fx=$('fx'),fg=fx.getContext('2d');
+const glc=$('gl');
+let W,H,DPR,GDPR,S,cx,baseY,topLimit,bg,maxH;
 function layout(){
-  DPR=Math.min(window.devicePixelRatio||1,3);
+  DPR=Math.min(window.devicePixelRatio||1,3);GDPR=Math.min(DPR,2);
   W=window.innerWidth;H=window.innerHeight;
-  cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  S=clamp(Math.min(W/400,H/820),0.62,1.5);
+  for(const c of[under,fx]){c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);}
+  ug.setTransform(DPR,0,0,DPR,0,0);fg.setTransform(DPR,0,0,DPR,0,0);
+  glc.width=Math.round(W*GDPR);glc.height=Math.round(H*GDPR);
+  S=Math.min(W*0.47,H*0.27)/WRU;
   cx=W/2;
-  const bottomUI=$('bottom').getBoundingClientRect().height||150;
-  baseY=Math.min(H*0.70,H-bottomUI-58*S);
-  $('hint').style.top=(baseY+52*S)+'px';
-  $('hint').style.top=Math.min(baseY+50*S,H-bottomUI-26)+'px';
+  const btnH=$('btns').getBoundingClientRect().height||80;
+  baseY=H-btnH-WRU*S*K-34*S-6;
+  topLimit=($('hud').getBoundingClientRect().bottom||90)+40;
+  maxH=Math.min(300,(baseY-topLimit)/S-18);
+  $('hint').style.top=(topLimit-26)+'px';
   bg=makeBackground();
 }
 window.addEventListener('resize',layout);
 
-// ---------- shading strips (cylinder lighting baked into 1px tall images) ----------
-function makeStrips(base,spec,n){
-  const out=[];
-  for(let li=0;li<n;li++){
-    const L=0.70+li*0.08;
-    const c=document.createElement('canvas');c.width=128;c.height=1;
-    const g=c.getContext('2d');const id=g.createImageData(128,1);
-    for(let i=0;i<128;i++){
-      const u=(i+0.5)/64-1;const nz=Math.sqrt(Math.max(0,1-u*u));
-      const d=Math.max(0,-0.55*u+0.83*nz);
-      let sh=(0.32+0.78*d)*L;
-      sh*=1-Math.pow(1-nz,3)*0.35;
-      const s=Math.pow(Math.max(0,-0.30*u+0.95*nz),36)*spec;
-      id.data[i*4]=clamp(base[0]*sh+255*s,0,255);
-      id.data[i*4+1]=clamp(base[1]*sh+240*s,0,255);
-      id.data[i*4+2]=clamp(base[2]*sh+225*s,0,255);
-      id.data[i*4+3]=255;
-    }
-    g.putImageData(id,0,0);out.push(c);
-  }
-  return out;
-}
-const WET_BASE=[146,88,60];
-let wetStrips=makeStrips(WET_BASE,0.55,8),stripsWet=1;
-
-// ---------- background: Bhaktapur's Pottery Square ----------
+// ---------- soft, out-of-focus background ----------
 function makeBackground(){
-  const c=document.createElement('canvas');c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
-  const g=c.getContext('2d');g.setTransform(DPR,0,0,DPR,0,0);
-  const groundY=baseY-78*S;
-  // sky
-  let gr=g.createLinearGradient(0,0,0,groundY);
-  gr.addColorStop(0,'#f2c48a');gr.addColorStop(0.55,'#eeb27a');gr.addColorStop(1,'#e39a66');
-  g.fillStyle=gr;g.fillRect(0,0,W,groundY+2);
-  // distant hills
-  g.fillStyle='rgba(150,90,80,.35)';g.beginPath();g.moveTo(0,groundY-150*S);
-  for(let x=0;x<=W;x+=W/8)g.lineTo(x,groundY-150*S-Math.sin(x*0.013+1)*22*S-Math.sin(x*0.031)*10*S);
-  g.lineTo(W,groundY);g.lineTo(0,groundY);g.fill();
-  // tiered pagoda (in the spirit of Nyatapola), far left
-  pagoda(g,W*0.18,groundY-120*S,S*0.95,'rgba(84,46,34,.60)');
-  // brick houses
-  const bh=[150,185,140,200,165,175];let x=-20*S,i=0;
-  while(x<W+20){
-    const w=(90+((i*37)%40))*S,h=bh[i%bh.length]*S;
-    const top=groundY-h;
-    if(!(x+w>W*0.06&&x<W*0.30)){
-      g.fillStyle=i%2?'#9a4b35':'#8d4430';g.fillRect(x,top,w,h);
-      // roof eave
-      g.fillStyle='#4a2a20';g.beginPath();g.moveTo(x-8*S,top+4*S);g.lineTo(x+w+8*S,top+4*S);g.lineTo(x+w-4*S,top-10*S);g.lineTo(x+4*S,top-10*S);g.fill();
-      // brick lines
-      g.strokeStyle='rgba(60,25,15,.18)';g.lineWidth=1;
-      for(let yy=top+12*S;yy<groundY;yy+=7*S){g.beginPath();g.moveTo(x,yy);g.lineTo(x+w,yy);g.stroke();}
-      // carved windows
-      const nw=Math.max(1,Math.floor(w/(42*S)));
-      for(let k=0;k<nw;k++){
-        const wx=x+(k+0.5)*w/nw-11*S;
-        for(let fl=0;fl<2;fl++){
-          const wy=top+24*S+fl*58*S;if(wy+30*S>groundY-8*S)continue;
-          g.fillStyle='#4a2a1e';g.fillRect(wx-4*S,wy-4*S,30*S,36*S);
-          g.fillStyle='#2a160f';g.fillRect(wx,wy,22*S,28*S);
-          g.strokeStyle='rgba(150,95,60,.55)';g.lineWidth=1;
-          for(let q=1;q<4;q++){g.beginPath();g.moveTo(wx+q*5.5*S,wy);g.lineTo(wx+q*5.5*S,wy+28*S);g.stroke();g.beginPath();g.moveTo(wx,wy+q*7*S);g.lineTo(wx+22*S,wy+q*7*S);g.stroke();}
-        }
-      }
-    }
-    x+=w+6*S;i++;
-  }
-  // ground: brick paving
-  gr=g.createLinearGradient(0,groundY,0,H);
-  gr.addColorStop(0,'#a9654a');gr.addColorStop(1,'#7c4532');
-  g.fillStyle=gr;g.fillRect(0,groundY,W,H-groundY);
-  g.strokeStyle='rgba(50,22,12,.16)';g.lineWidth=1;
-  for(let yy=groundY+6*S,step=5*S;yy<H;yy+=step,step*=1.18){g.beginPath();g.moveTo(0,yy);g.lineTo(W,yy);g.stroke();}
-  // drying pots in rows
-  const rows=[[groundY+10*S,0.42],[groundY+30*S,0.58],[groundY+56*S,0.78]];
-  rows.forEach(([yy,sc],ri)=>{
-    const gap=46*S*sc*1.6;let px=(ri*17)%30*S;
-    let n=0;
-    while(px<W){
-      const dist=Math.abs(px-cx);
-      if(dist>WRU*S*1.05+30*S*sc||ri===0){ dryPot(g,px,yy,S*sc,(n*7+ri*3)%5); }
-      px+=gap*(0.85+((n*13)%7)/20);n++;
-    }
+  const sw=Math.max(40,Math.round(W/7)),sh=Math.max(60,Math.round(H/7));
+  const lo=document.createElement('canvas');lo.width=sw;lo.height=sh;
+  const g=lo.getContext('2d');const s=sw/W;g.scale(s,s);
+  const floorY=baseY-WRU*S*K*0.6;
+  // brick wall in warm late light
+  let gr=g.createLinearGradient(0,0,0,floorY);
+  gr.addColorStop(0,'#5e3021');gr.addColorStop(0.5,'#7d412d');gr.addColorStop(1,'#8a4b33');
+  g.fillStyle=gr;g.fillRect(0,0,W,floorY);
+  g.fillStyle='rgba(40,16,8,.22)';
+  for(let y=0,row=0;y<floorY;y+=11,row++)for(let x=(row%2)*14-14;x<W;x+=28)g.fillRect(x,y,26,1.6);
+  // carved wooden window, left
+  const wx=W*0.06,wy=H*0.16,ww=W*0.34,wh=H*0.26;
+  g.fillStyle='#2e170d';g.fillRect(wx-10,wy-10,ww+20,wh+20);
+  g.fillStyle='#160a05';g.fillRect(wx,wy,ww,wh);
+  g.strokeStyle='#5a3220';g.lineWidth=3;
+  for(let i=1;i<6;i++){g.beginPath();g.moveTo(wx+i*ww/6,wy);g.lineTo(wx+i*ww/6,wy+wh);g.stroke();}
+  for(let i=1;i<5;i++){g.beginPath();g.moveTo(wx,wy+i*wh/5);g.lineTo(wx+ww,wy+i*wh/5);g.stroke();}
+  // shelf of finished pots, right
+  const shy=H*0.34;g.fillStyle='#3a2014';g.fillRect(W*0.58,shy,W*0.5,8);
+  [[0.64,26,40],[0.74,20,52],[0.84,30,36],[0.94,22,46]].forEach(([px,r,h],i)=>{
+    const x=W*px;g.fillStyle=['#b06a44','#9a5a3a','#c47c52','#a8603e'][i];
+    g.beginPath();g.ellipse(x,shy-h*0.45,r,h*0.45,0,0,7);g.fill();g.fillRect(x-r*0.4,shy-h,r*0.8,h*0.3);
   });
-  // vignette
-  gr=g.createRadialGradient(cx,H*0.55,Math.min(W,H)*0.25,cx,H*0.55,Math.max(W,H)*0.8);
-  gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(20,8,4,.55)');
-  g.fillStyle=gr;g.fillRect(0,0,W,H);
+  // warm light shaft
+  g.fillStyle='rgba(255,196,120,.16)';
+  g.beginPath();g.moveTo(W*0.45,0);g.lineTo(W*0.95,0);g.lineTo(W*0.75,floorY);g.lineTo(W*0.05,floorY);g.fill();
+  // floor
+  gr=g.createLinearGradient(0,floorY,0,H);
+  gr.addColorStop(0,'#6b3f2b');gr.addColorStop(1,'#3a2117');
+  g.fillStyle=gr;g.fillRect(0,floorY,W,H-floorY);
+  // drying pots on the ground
+  [[0.08,0.9],[0.2,0.75],[0.86,0.85],[0.97,0.7]].forEach(([px,sc])=>{
+    const x=W*px,y=floorY+16*sc;g.fillStyle='#a8673f';
+    g.beginPath();g.ellipse(x,y-22*sc,24*sc,22*sc,0,0,7);g.fill();
+  });
+  // upscale = natural blur (depth of field)
+  const c=document.createElement('canvas');c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
+  const cg=c.getContext('2d');cg.imageSmoothingEnabled=true;cg.imageSmoothingQuality='high';
+  cg.drawImage(lo,0,0,c.width,c.height);
+  cg.setTransform(DPR,0,0,DPR,0,0);
+  gr=cg.createRadialGradient(cx,baseY-120*S,Math.min(W,H)*0.2,cx,baseY-120*S,Math.max(W,H)*0.85);
+  gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(12,5,2,.6)');
+  cg.fillStyle=gr;cg.fillRect(0,0,W,H);
   return c;
 }
-function pagoda(g,x,y,s,col){
-  g.fillStyle=col;
-  // plinth steps
-  for(let i=0;i<5;i++){const w=(120-i*16)*s;g.fillRect(x-w/2,y+120*s-(i+1)*14*s,w,14*s);}
-  let yy=y+50*s,w=64*s;
-  for(let i=0;i<5;i++){
-    g.fillRect(x-w*0.32,yy-22*s,w*0.64,22*s);
-    g.beginPath();g.moveTo(x-w*0.75,yy-18*s);g.quadraticCurveTo(x-w*0.4,yy-24*s,x-w*0.25,yy-40*s);
-    g.lineTo(x+w*0.25,yy-40*s);g.quadraticCurveTo(x+w*0.4,yy-24*s,x+w*0.75,yy-18*s);g.closePath();g.fill();
-    yy-=40*s;w*=0.83;
+
+// ---------- WebGL clay ----------
+const gl=glc.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false});
+const VS=`attribute vec2 aPos;uniform vec2 uRes;varying vec2 vPix;
+void main(){vPix=aPos;gl_Position=vec4(aPos.x/uRes.x*2.0-1.0,1.0-aPos.y/uRes.y*2.0,0.0,1.0);}`;
+const FS=`precision highp float;
+varying vec2 vPix;
+uniform sampler2D uProf;uniform float uN;
+uniform vec2 uC;uniform float uS,uH,uWall,uTheta,uWet,uFired,uK,uSmoke;
+uniform vec4 uTouch; // t, side, strength, mode(0 shape,1 rim)
+float dec(vec4 a){return (a.r*255.0*256.0+a.g*255.0)/65535.0*200.0;}
+float prof(float t){t=clamp(t,0.0,1.0);float f=t*(uN-1.0);float i=floor(f);float u=f-i;
+  float ra=dec(texture2D(uProf,vec2((i+0.5)/uN,0.5)));float rb=dec(texture2D(uProf,vec2((min(i+1.0,uN-1.0)+0.5)/uN,0.5)));return mix(ra,rb,u);}
+float fresh(float t){t=clamp(t,0.0,1.0);return texture2D(uProf,vec2((floor(t*(uN-1.0)+0.5)+0.5)/uN,0.5)).b;}
+float hash(vec3 p){p=fract(p*0.3183099+0.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+float noise(vec3 x){vec3 i=floor(x);vec3 f=fract(x);f=f*f*(3.0-2.0*f);
+  return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+             mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+vec3 baseCol(float grain){
+  vec3 wet=vec3(0.42,0.235,0.155),dry=vec3(0.63,0.45,0.34),fired=vec3(0.76,0.41,0.25);
+  vec3 c=mix(dry,wet,uWet);c=mix(c,fired,uFired);
+  return c*(0.86+0.28*grain);
+}
+vec3 shade(vec3 n,vec3 c,float wetness,float extra){
+  vec3 L=normalize(vec3(-0.55,0.55,0.65));vec3 V=normalize(vec3(0.0,0.22,1.0));
+  float d=dot(n,L);float diff=clamp((d+0.35)/1.35,0.0,1.0);
+  vec3 bounce=vec3(1.0,0.72,0.5)*max(dot(n,normalize(vec3(0.8,-0.2,0.5))),0.0)*0.22;
+  vec3 col=c*(vec3(0.30,0.24,0.21)+vec3(1.05,0.95,0.85)*diff*0.95+bounce);
+  vec3 Hh=normalize(L+V);float nh=max(dot(n,Hh),0.0);
+  float spec=pow(nh,mix(10.0,46.0,wetness))*(0.03+0.42*wetness)+pow(nh,3.0)*0.05*wetness;
+  spec*=(1.0-uFired*0.9)*(1.0+extra);
+  return col+vec3(1.0,0.93,0.85)*spec;
+}
+void main(){
+  float x=(vPix.x-uC.x)/uS;float y=(uC.y-vPix.y)/uS;
+  float Rt=prof(1.0);float Ri=max(Rt-uWall,0.0);
+  float rimD=length(vec2(x,(y-uH)/uK));
+  float px=1.0/uS; // one screen pixel in units
+  vec3 col;float alpha=1.0;
+  if(rimD<Rt+px){
+    alpha=clamp((Rt-rimD)/px+0.5,0.0,1.0);
+    float a=atan(x,-(y-uH)/uK)-uTheta;
+    float grain=noise(vec3(cos(a)*rimD,sin(a)*rimD,uH)*0.14);
+    vec3 c=baseCol(grain);
+    if(rimD<Ri){
+      // looking down into the pot
+      float v=(y-uH)/uK/max(Ri,0.001); // -1 front .. 1 back
+      float depth=smoothstep(-1.0,1.0,v);
+      vec3 inner=c*(0.14+0.55*depth*depth)+vec3(0.06,0.03,0.02)*uWet*depth;
+      float edge=smoothstep(Ri-1.5,Ri,rimD);
+      vec3 n=normalize(vec3(x/Rt*0.6,1.0,0.25));
+      col=mix(inner,shade(n,c,uWet,0.0),edge);
+    }else{
+      float s=clamp((rimD-Ri)/max(Rt-Ri,0.001),0.0,1.0);
+      float rx=x/max(rimD,0.001);float rz=-(y-uH)/uK/max(rimD,0.001);
+      vec3 n=normalize(vec3(rx*s*0.9,1.0-s*0.6,max(0.15,rz)*s*0.9));
+      col=shade(n,c*1.05,uWet,0.0);
+    }
+  }else{
+    float t=y/uH;
+    float r0=prof(0.0);
+    if(t<0.0){
+      float d=length(vec2(x,y/uK));if(d>r0+px)discard;
+      alpha=clamp((r0-d)/px+0.5,0.0,1.0);t=0.0;
+    }else if(t>1.0){discard;}
+    float R=prof(t);
+    if(abs(x)>R+px)discard;
+    if(y>=0.0)alpha=clamp((R-abs(x))/px+0.5,0.0,1.0);
+    float u=clamp(x/R,-0.999,0.999);float nz=sqrt(1.0-u*u);
+    float e=1.5/uH;float slope=(prof(t+e)-prof(t-e))/(2.0*e*uH);
+    float a=asin(u)-uTheta;
+    float fr=fresh(t);
+    // throwing rings: a gentle spiral groove, sharper where freshly shaped
+    float ph=y*0.62+a*0.16;
+    float ridge=cos(ph)*(0.07+0.22*fr)+cos(ph*2.3+1.0)*0.04;
+    vec3 n=normalize(vec3(u,-slope+ridge,nz));
+    vec3 q=vec3(cos(a)*R,sin(a)*R,y);
+    float grain=noise(q*0.16)*0.6+noise(q*0.5)*0.4;
+    vec3 c=baseCol(grain);
+    // slip smears (wet clay streaks)
+    float smear=smoothstep(0.58,0.82,noise(vec3(cos(a)*3.0,sin(a)*3.0,y*0.08)));
+    c=mix(c,c*1.25+vec3(0.04,0.03,0.02),smear*0.35*uWet*(1.0-uFired));
+    float extra=0.0;
+    if(uTouch.z>0.0&&uTouch.w<0.5){float dt=(t-uTouch.x)*uH;extra=exp(-dt*dt/240.0)*1.4*uTouch.z*smoothstep(0.0,0.7,u*uTouch.y);}
+    col=shade(n,c,clamp(uWet+fr*0.25,0.0,1.0),extra);
+    // edge darkening for roundness, contact shadow at the base
+    col*=mix(0.62,1.0,pow(nz,0.6));
+    col*=mix(0.55,1.0,smoothstep(0.0,10.0,y));
+    if(uSmoke>0.0)col*=1.0-uSmoke*smoothstep(0.2,-0.9,u)*0.65*(0.6+0.4*noise(q*0.05));
   }
-  g.beginPath();g.moveTo(x-4*s,yy);g.lineTo(x,yy-24*s);g.lineTo(x+4*s,yy);g.fill();
+  gl_FragColor=vec4(col*alpha,alpha);
+}`;
+let glOK=!!gl,prog,uni={},buf,tex,profBytes=new Uint8Array(N*4);
+if(glOK){
+  try{
+    const mk=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;};
+    prog=gl.createProgram();gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    ['uRes','uProf','uN','uC','uS','uH','uWall','uTheta','uWet','uFired','uK','uTouch','uSmoke'].forEach(n=>uni[n]=gl.getUniformLocation(prog,n));
+    buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    const loc=gl.getAttribLocation(prog,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.uniform1i(uni.uProf,0);gl.uniform1f(uni.uN,N);
+  }catch(e){console.error(e);glOK=false;}
 }
-function dryPot(g,x,y,s,kind){
-  const cols=['#c98a62','#bd7c55','#d39a70','#b8714a','#c48058'];
-  g.fillStyle='rgba(40,18,10,.25)';g.beginPath();g.ellipse(x,y+2*s,26*s,6*s,0,0,7);g.fill();
-  g.fillStyle=cols[kind];
-  g.beginPath();
-  if(kind%2===0){ g.ellipse(x,y-20*s,24*s,20*s,0,0,7);g.fill();g.fillRect(x-10*s,y-46*s,20*s,10*s);g.beginPath();g.ellipse(x,y-46*s,13*s,4*s,0,0,7);}
-  else { g.moveTo(x-16*s,y);g.lineTo(x-22*s,y-26*s);g.lineTo(x+22*s,y-26*s);g.lineTo(x+16*s,y);g.closePath();g.fill();g.beginPath();g.ellipse(x,y-26*s,22*s,5*s,0,0,7);}
-  g.fill();
-  g.fillStyle='rgba(255,230,200,.18)';g.beginPath();g.ellipse(x-8*s,y-22*s,4*s,10*s,0,0,7);g.fill();
-}
-
-// ---------- state ----------
-let P=null;          // the pot on the wheel
-let omega=0,theta=0,eff=0;
-let wet=1,guide=true,finishing=null,collapse=null,instT=0,lastInst={v:0,reason:''};
-const pointers=new Map();
-const parts=[];
-let specks=[];
-function order(){return ORDERS[save.order%ORDERS.length];}
-
-function targetVolume(o){
-  const r=new Float32Array(N);for(let k=0;k<N;k++)r[k]=profAt(o.pts,k/(N-1));
-  return crossSum(r,o.H,WT)*o.H;
-}
-function crossSum(r,h,w){
-  let s=0;
-  for(let k=0;k<N;k++){const y=k/(N-1)*h;let ri=0;if(y>BASE)ri=Math.max(0,r[k]-w);s+=r[k]*r[k]-ri*ri;}
-  return Math.PI*s/(N-1);
-}
-function solveH(p){
-  let h=p.H;
-  for(let i=0;i<3;i++){h=p.V/Math.max(crossSum(p.r,h,p.w),1);}
-  p.H=clamp(h,12,520);
-}
-function newPot(){
-  const o=order();
-  const V=targetVolume(o);
-  const shape=t=>(1-0.22*t)*Math.sqrt(Math.max(0,1-Math.pow(t,6)));
-  const r1=new Float32Array(N);for(let k=0;k<N;k++)r1[k]=shape(k/(N-1));
-  const v1=crossSum(r1,1.1,999)*1.1;          // volume for R0=1
-  const R0=Math.cbrt(V/v1);
-  const r=new Float32Array(N);for(let k=0;k<N;k++)r[k]=Math.max(3,R0*r1[k]);
-  P={r,H:R0*1.1,V,w:999,opened:false,openProg:0,wob:0.75,fire:null};
-  solveH(P);
-  specks=[];for(let i=0;i<14;i++)specks.push({a:Math.random()*6.283,t:0.08+Math.random()*0.85,s:0.6+Math.random()*1.2,l:Math.random()<0.3});
-  wet=1;finishing=null;collapse=null;instT=0;
-  parts.length=0;
-  renderOrderCard();
-  $('bFinish').disabled=true;
+function drawClay(pot,touch){
+  if(!glOK)return;
+  gl.viewport(0,0,glc.width,glc.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+  for(let k=0;k<N;k++){
+    const v=Math.round(clamp(pot.r[k],0,199.9)/200*65535);
+    profBytes[k*4]=v>>8;profBytes[k*4+1]=v&255;profBytes[k*4+2]=Math.round(clamp(pot.fresh[k],0,1)*255);profBytes[k*4+3]=255;
+  }
+  gl.bindTexture(gl.TEXTURE_2D,tex);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,N,1,0,gl.RGBA,gl.UNSIGNED_BYTE,profBytes);
+  const sc=S*GDPR,X=cx*GDPR,Y=baseY*GDPR;
+  let Rm=0;for(let k=0;k<N;k++)Rm=Math.max(Rm,pot.r[k]);
+  const x0=X-(Rm+4)*sc,x1=X+(Rm+4)*sc,y0=Y-(pot.H+Rm*K+6)*sc,y1=Y+(pot.r[0]*K+4)*sc;
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([x0,y0,x1,y0,x0,y1,x0,y1,x1,y0,x1,y1]),gl.DYNAMIC_DRAW);
+  gl.uniform2f(uni.uRes,glc.width,glc.height);gl.uniform2f(uni.uC,X,Y);gl.uniform1f(uni.uS,sc);
+  gl.uniform1f(uni.uH,pot.H);gl.uniform1f(uni.uWall,WALL);gl.uniform1f(uni.uTheta,theta%(Math.PI*2));
+  gl.uniform1f(uni.uWet,pot.wet);gl.uniform1f(uni.uFired,pot.fired);gl.uniform1f(uni.uK,K);gl.uniform1f(uni.uSmoke,pot.smoke||0);
+  gl.uniform4f(uni.uTouch,touch?touch.t:0,touch?touch.side:1,touch?touch.str:0,touch?touch.mode:0);
+  gl.drawArrays(gl.TRIANGLES,0,6);
 }
 
-// ---------- order card ----------
-function renderOrderCard(){
-  const o=order();
-  $('who').textContent=o.who;$('what').textContent=o.what;$('note').textContent=o.note;
-  const c=$('orderPic'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);
-  let Rt=0;for(let k=0;k<N;k++)Rt=Math.max(Rt,profAt(o.pts,k/(N-1)));
-  const sc=Math.min(84/o.H,42/Rt);
-  const x0=52,y0=52+o.H*sc/2;
-  g.beginPath();
-  for(let k=0;k<N;k++){const t=k/(N-1);g.lineTo(x0-profAt(o.pts,t)*sc,y0-t*o.H*sc);}
-  for(let k=N-1;k>=0;k--){const t=k/(N-1);g.lineTo(x0+profAt(o.pts,t)*sc,y0-t*o.H*sc);}
-  g.closePath();
-  const gr=g.createLinearGradient(x0-Rt*sc,0,x0+Rt*sc,0);gr.addColorStop(0,'#8a4c30');gr.addColorStop(0.35,'#d58d5f');gr.addColorStop(1,'#7a3f27');
-  g.fillStyle=gr;g.fill();
-  const rt=profAt(o.pts,1)*sc;
-  g.fillStyle='#e0a479';g.beginPath();g.ellipse(x0,y0-o.H*sc,rt,rt*K,0,0,7);g.fill();
-  const ri=Math.max(0,rt-WT*sc);g.fillStyle='#3a1d12';g.beginPath();g.ellipse(x0,y0-o.H*sc,ri,ri*K,0,0,7);g.fill();
+// ---------- wheel (2D, under the clay) ----------
+function band(g,R,y,h,c1,c2){
+  const gr=g.createLinearGradient(cx-R,0,cx+R,0);gr.addColorStop(0,c2);gr.addColorStop(0.3,c1);gr.addColorStop(0.7,c1);gr.addColorStop(1,c2);
+  g.fillStyle=gr;g.beginPath();g.ellipse(cx,y+h,R,R*K,0,0,Math.PI);g.lineTo(cx-R,y);g.ellipse(cx,y,R,R*K,0,Math.PI,0,true);g.closePath();g.fill();
+}
+function drawUnder(){
+  ug.drawImage(bg,0,0,W,H);
+  const R=WRU*S,y=baseY,side=18*S;
+  band(ug,R*1.1,y+side+4*S,40*S,'#3b2a22','#1d130e');
+  band(ug,R,y,side,'#5c3b2a','#2e1c13');
+  let gr=ug.createRadialGradient(cx-R*0.25,y-R*K*0.5,R*0.05,cx,y,R);
+  gr.addColorStop(0,'#86634f');gr.addColorStop(0.7,'#5f4434');gr.addColorStop(1,'#4a3226');
+  ug.fillStyle=gr;ug.beginPath();ug.ellipse(cx,y,R,R*K,0,0,7);ug.fill();
+  ug.lineWidth=1;
+  for(let i=1;i<8;i++){ug.strokeStyle=`rgba(${i%2?30:170},${i%2?18:120},${i%2?12:95},.10)`;ug.beginPath();ug.ellipse(cx,y,R*i/8.3,R*i/8.3*K,0,0,7);ug.stroke();}
+  ug.lineCap='round';
+  for(let i=0;i<9;i++){
+    const rr=R*(0.55+0.4*((i*37)%9)/9),a0=i*0.698+theta,len=0.35+(i%3)*0.12;
+    ug.strokeStyle=i%2?'rgba(165,112,86,.38)':'rgba(25,14,9,.28)';ug.lineWidth=(i%2?3:2)*S;
+    ug.beginPath();
+    for(let j=0;j<=6;j++){const a=a0+len*j/6;const px=cx+rr*Math.sin(a),py=y+rr*K*Math.cos(a);j?ug.lineTo(px,py):ug.moveTo(px,py);}
+    ug.stroke();
+  }
+  ug.strokeStyle='rgba(255,220,190,.16)';ug.lineWidth=1.5;ug.beginPath();ug.ellipse(cx,y,R-1,R*K-1,0,Math.PI,0);ug.stroke();
+  for(let i=0;i<4;i++){const a=i*1.5708+theta,c=Math.cos(a);if(c<0.05)continue;ug.fillStyle=`rgba(12,6,3,${0.55*c})`;ug.fillRect(cx+R*Math.sin(a)-3*S,y+R*K*c+2*S,6*S,side-5*S);}
+  if(P){const r0=P.r[0]*S;gr=ug.createRadialGradient(cx,y,r0*0.6,cx,y,r0*1.5);gr.addColorStop(0,'rgba(20,10,5,.55)');gr.addColorStop(1,'rgba(20,10,5,0)');
+    ug.fillStyle=gr;ug.beginPath();ug.ellipse(cx,y+2*S,r0*1.5,r0*1.5*K,0,0,7);ug.fill();}
 }
 
 // ---------- audio ----------
-let AC=null,master,wheelGain,wheelFilt,clayGain,clayFilt;
+let AC=null,master,hum,humF,squish,squishF;
 function initAudio(){
   if(AC){if(AC.state!=='running')AC.resume();return;}
-  try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;return;}
+  try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
   master=AC.createGain();master.gain.value=0.9;master.connect(AC.destination);
   const len=AC.sampleRate*2;
-  const brown=AC.createBuffer(1,len,AC.sampleRate),bd=brown.getChannelData(0);let last=0;
-  for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+0.02*w)/1.02;bd[i]=last*3.5;}
-  const white=AC.createBuffer(1,len,AC.sampleRate),wd=white.getChannelData(0);
-  for(let i=0;i<len;i++)wd[i]=Math.random()*2-1;
+  const brown=AC.createBuffer(1,len,AC.sampleRate),bd=brown.getChannelData(0);let l=0;
+  for(let i=0;i<len;i++){l=(l+0.02*(Math.random()*2-1))/1.02;bd[i]=l*3.5;}
+  const white=AC.createBuffer(1,len,AC.sampleRate),wd=white.getChannelData(0);for(let i=0;i<len;i++)wd[i]=Math.random()*2-1;
   AC._white=white;
-  let s=AC.createBufferSource();s.buffer=brown;s.loop=true;
-  wheelFilt=AC.createBiquadFilter();wheelFilt.type='lowpass';wheelFilt.frequency.value=200;
-  wheelGain=AC.createGain();wheelGain.gain.value=0;
-  s.connect(wheelFilt);wheelFilt.connect(wheelGain);wheelGain.connect(master);s.start();
-  s=AC.createBufferSource();s.buffer=white;s.loop=true;
-  clayFilt=AC.createBiquadFilter();clayFilt.type='bandpass';clayFilt.frequency.value=700;clayFilt.Q.value=0.9;
-  clayGain=AC.createGain();clayGain.gain.value=0;
-  s.connect(clayFilt);clayFilt.connect(clayGain);clayGain.connect(master);s.start();
+  let s=AC.createBufferSource();s.buffer=brown;s.loop=true;humF=AC.createBiquadFilter();humF.type='lowpass';humF.frequency.value=160;
+  hum=AC.createGain();hum.gain.value=0;s.connect(humF);humF.connect(hum);hum.connect(master);s.start();
+  s=AC.createBufferSource();s.buffer=white;s.loop=true;squishF=AC.createBiquadFilter();squishF.type='bandpass';squishF.frequency.value=600;squishF.Q.value=0.8;
+  squish=AC.createGain();squish.gain.value=0;s.connect(squishF);squishF.connect(squish);squish.connect(master);s.start();
 }
-function noiseBurst(dur,type,f0,f1,gain,q){
-  if(!AC)return;const t=AC.currentTime;
-  const s=AC.createBufferSource();s.buffer=AC._white;
+function burst(dur,type,f0,f1,gain,q){
+  if(!AC)return;const t=AC.currentTime,s=AC.createBufferSource();s.buffer=AC._white;
   const f=AC.createBiquadFilter();f.type=type;f.Q.value=q||1;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+dur);
   const g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   s.connect(f);f.connect(g);g.connect(master);s.start(t,Math.random());s.stop(t+dur+0.05);
 }
-function tone(freq,dur,gain,type,f1){
-  if(!AC)return;const t=AC.currentTime;
-  const o=AC.createOscillator();o.type=type||'sine';o.frequency.setValueAtTime(freq,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+function tone(f,dur,gain,f1){
+  if(!AC)return;const t=AC.currentTime,o=AC.createOscillator();o.frequency.setValueAtTime(f,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
   const g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+0.05);
 }
 const sfx={
-  thud(){tone(95,0.45,0.5,'sine',38);noiseBurst(0.35,'lowpass',900,120,0.35);},
-  splash(){noiseBurst(0.55,'bandpass',2400,500,0.22,0.8);setTimeout(()=>noiseBurst(0.3,'bandpass',1400,700,0.1,1.2),90);},
-  zip(){noiseBurst(0.45,'bandpass',5000,1400,0.18,2.5);},
-  plop(){tone(180,0.18,0.25,'sine',90);},
-  bowl(f){[1,2.76,5.4].forEach((m,i)=>tone(f*m*(1+(Math.random()-.5)*0.004),[3.2,1.9,1.1][i],[0.16,0.07,0.035][i]));},
-  crackle(){for(let i=0;i<14;i++)setTimeout(()=>noiseBurst(0.05,'highpass',3000+Math.random()*3000,2000,0.08+Math.random()*0.08),i*45+Math.random()*40);},
+  splash(){burst(0.6,'bandpass',2600,500,0.22,0.8);setTimeout(()=>burst(0.35,'bandpass',1400,600,0.1,1.2),110);},
+  plop(){tone(170,0.22,0.3,80);burst(0.18,'lowpass',900,200,0.15);},
+  bowl(f){[1,2.76,5.4].forEach((m,i)=>tone(f*m,[3.2,1.9,1.1][i],[0.15,0.06,0.03][i]));},
+  crackle(){for(let i=0;i<22;i++)setTimeout(()=>burst(0.05,'highpass',2500+Math.random()*3500,1800,0.06+Math.random()*0.08),i*60+Math.random()*50);},
+  whoosh(){burst(1.2,'lowpass',300,1400,0.18,0.7);},
 };
-function updateAudio(clayP){
-  if(!AC)return;const t=AC.currentTime,sp=Math.abs(omega);
-  wheelGain.gain.setTargetAtTime(Math.min(1,sp/13)*0.24*(1+0.18*Math.sin(theta)),t,0.06);
-  wheelFilt.frequency.setTargetAtTime(110+sp*28,t,0.08);
-  let g=0,f=700;
-  if(clayP&&eff>0.15&&!collapse&&!finishing){
-    g=Math.min(1,0.3+clayP.m/350)*0.13*eff;
-    f=wet<0.25?1900+Math.sin(theta*5)*300:520+clayP.m*0.6+Math.sin(theta*3)*80;
+function updateAudio(){
+  if(!AC)return;const t=AC.currentTime;
+  hum.gain.setTargetAtTime(firing?0.03:clamp(Math.abs(omega)/8,0,1.4)*0.16*(1+0.12*Math.sin(theta)),t,0.08);
+  humF.frequency.setTargetAtTime(100+Math.abs(omega)*22,t,0.1);
+  let g=0,f=600;
+  if(touch&&touch.mode!==2&&!firing){
+    const m=touch.speed;
+    g=(touch.mode===1?0.10:0.06)+Math.min(0.16,m*0.0006);
+    f=P.wet<0.2?1700+Math.sin(theta*4)*250:(touch.mode===1?320:480)+Math.min(900,m*1.4)+Math.sin(theta*3)*70;
   }
-  clayGain.gain.setTargetAtTime(g,t,0.05);clayFilt.frequency.setTargetAtTime(f,t,0.05);
+  squish.gain.setTargetAtTime(g,t,0.04);squishF.frequency.setTargetAtTime(f,t,0.04);
+}
+
+// ---------- state ----------
+let P=null,omega=7,theta=0,touch=null,guide=true,firing=null,intro=0;
+const parts=[];
+let shapedAmt=0,stretched=0;
+function newPot(){
+  P={r:new Float32Array(N).fill(START_R),fresh:new Float32Array(N),H:START_H,wet:1,fired:0,smoke:0};
+  intro=0.0001;firing=null;touch=null;parts.length=0;
+  $('who').textContent=order().who;$('what').textContent=order().what;
+  $('bFire').disabled=false;
 }
 
 // ---------- input ----------
-function toUnits(x,y){return{ux:(x-cx)/S,uy:(baseY-y)/S};}
-cv.addEventListener('pointerdown',e=>{
+function units(e){return{ux:(e.clientX-cx)/S,uy:(baseY-e.clientY)/S};}
+fx.addEventListener('pointerdown',e=>{
   e.preventDefault();initAudio();
-  try{cv.setPointerCapture(e.pointerId);}catch(_){}
-  const {ux,uy}=toUnits(e.clientX,e.clientY);
-  const p={id:e.pointerId,x:e.clientX,y:e.clientY,ux,uy,mode:'none',m:0,lastT:performance.now(),dUy:0,dUx:0};
-  const clayBusy=[...pointers.values()].some(q=>q.mode!=='wheel'&&q.mode!=='none');
-  if(uy<-4){p.mode='wheel';}
-  else if(!collapse&&!finishing&&!clayBusy){
-    const t=uy/P.H;const R=t>=0&&t<=1?rAtArr(P.r,t):rAtArr(P.r,1);
-    const near=uy<=P.H+34&&Math.abs(ux)<=R+48;
-    if(near){
-      if(!P.opened&&P.wob>CENTER_OK)p.mode='center';
-      else if(!P.opened&&uy>P.H*0.55&&Math.abs(ux)<Math.max(R*0.7,20))p.mode='open';
-      else if(P.opened&&uy>P.H-26)p.mode='rim';
-      else p.mode='shape';
-    }
-  }
-  pointers.set(e.pointerId,p);
+  if(firing||!P||touch)return;
+  try{fx.setPointerCapture(e.pointerId);}catch(_){}
+  const {ux,uy}=units(e);const Rt=rAt(P.r,1);
+  const t0={id:e.pointerId,ux,uy,lastUx:ux,lastUy:uy,lastT:performance.now(),speed:0,str:0};
+  if(uy>P.H-22&&uy<P.H+40&&Math.abs(ux)<Rt+34){
+    Object.assign(t0,{mode:1,startH:P.H,startUy:uy,side:Math.sign(ux)||1,t:1});
+  }else if(uy>=-4&&uy<=P.H){
+    const R=rAt(P.r,uy/P.H);
+    if(Math.abs(Math.abs(ux)-R)<30)Object.assign(t0,{mode:0,side:Math.sign(ux)||1,t:uy/P.H});
+    else return;
+  }else if(uy<-4){Object.assign(t0,{mode:2});}
+  else return;
+  touch=t0;
 });
-cv.addEventListener('pointermove',e=>{
-  const p=pointers.get(e.pointerId);if(!p)return;e.preventDefault();
-  const now=performance.now(),dt=Math.max(1,now-p.lastT)/1000;
-  const {ux,uy}=toUnits(e.clientX,e.clientY);
-  const dx=ux-p.ux,dy=uy-p.uy;
-  const v=Math.hypot(dx,dy)/dt;p.m=p.m*0.6+v*0.4;
-  if(p.mode==='wheel'){omega=clamp(omega+dx*0.045,-18,18);}
-  p.dUx+=dx;p.dUy+=dy;
-  p.ux=ux;p.uy=uy;p.x=e.clientX;p.y=e.clientY;p.lastT=now;
+fx.addEventListener('pointermove',e=>{
+  if(!touch||touch.id!==e.pointerId)return;e.preventDefault();
+  const now=performance.now(),dt=Math.max(4,now-touch.lastT)/1000;
+  const {ux,uy}=units(e);
+  const v=Math.hypot(ux-touch.lastUx,uy-touch.lastUy)/dt;touch.speed=touch.speed*0.5+v*0.5;
+  if(touch.mode===2)omega=clamp(omega+(ux-touch.lastUx)*0.06,-16,16);
+  touch.ux=ux;touch.uy=uy;touch.lastUx=ux;touch.lastUy=uy;touch.lastT=now;
 });
-function endPointer(e){
-  const p=pointers.get(e.pointerId);
-  if(p&&p.mode==='center'&&P&&P.wob<=CENTER_OK&&!P.opened){/* centered while holding */}
-  pointers.delete(e.pointerId);
-}
-cv.addEventListener('pointerup',endPointer);
-cv.addEventListener('pointercancel',endPointer);
+const endTouch=e=>{if(touch&&touch.id===e.pointerId)touch=null;};
+fx.addEventListener('pointerup',endTouch);fx.addEventListener('pointercancel',endTouch);
 
 $('bWater').onclick=()=>{
-  initAudio();if(!P||collapse||finishing)return;
-  wet=1;sfx.splash();
+  initAudio();if(!P||firing)return;P.wet=1;sfx.splash();
   const top=baseY-P.H*S;
-  for(let i=0;i<26;i++)parts.push({x:cx+(Math.random()-.5)*60*S,y:top-120*S-Math.random()*40*S,vx:(Math.random()-.5)*40,vy:200+Math.random()*120,life:1.1,r:2+Math.random()*2.2,water:true});
+  for(let i=0;i<34;i++)parts.push({x:cx+(Math.random()-.5)*rAt(P.r,1)*S*1.2,y:top-140*S-Math.random()*60*S,vx:(Math.random()-.5)*30,vy:220+Math.random()*120,life:1.2,r:(1.6+Math.random()*2.4)*S,water:true});
 };
 $('bGuide').onclick=()=>{guide=!guide;$('bGuide').classList.toggle('on',guide);};
 $('bReset').onclick=()=>{initAudio();sfx.plop();newPot();};
-$('bFinish').onclick=()=>{initAudio();if(!P.opened||collapse||finishing)return;finishing={t:0};sfx.zip();};
+$('bFire').onclick=()=>{initAudio();if(!P||firing||intro>0)return;firing={t:0};touch=null;$('bFire').disabled=true;sfx.whoosh();setTimeout(sfx.crackle,300);P.smoke=Math.random()<0.25?1:0;};
 $('bStart').onclick=()=>{initAudio();$('start').classList.add('hidden');sfx.bowl(196);};
 
 // ---------- simulation ----------
-function clayPointer(){for(const p of pointers.values())if(p.mode!=='wheel'&&p.mode!=='none')return p;return null;}
-
-function instability(){
-  const w=P.w;let best={v:0,reason:''};
-  const thin=(9-w)/4;if(thin>best.v)best={v:thin,reason:'The walls got too thin and tore.',warn:'Walls are getting thin'};
-  const tall=(P.H/w-20)/9;if(tall>best.v)best={v:tall,reason:'Too tall for walls that thin. It folded over.',warn:'Too tall for these walls'};
-  const dy=P.H/(N-1);let ms=0;
-  for(let k=0;k<N-2;k++){if(k*dy<BASE)continue;const s=(P.r[k+2]-P.r[k])/(2*dy);if(s>ms)ms=s;}
-  const allowed=0.9+w/16;const fl=(ms/allowed-0.75)/0.25;
-  if(fl>best.v)best={v:fl,reason:'Flared out too far. The rim flopped down.',warn:'Flaring out too far'};
-  const wb=(P.wob-0.55)/0.45;if(wb>best.v)best={v:wb,reason:'It spun off-center and flew apart.',warn:'Off-center! Hold still to recenter'};
-  return best;
-}
-
 function step(dt){
-  // wheel
+  // wheel: a helper keeps it turning at a steady pace; flick the wheel to speed it up for a while
+  const target=firing?0:7;
+  omega+=(target-omega)*(1-Math.exp(-(firing?1.6:0.6)*dt));
   theta+=omega*dt;
-  const cp=clayPointer();
-  if(cp&&performance.now()-cp.lastT>60)cp.m*=Math.pow(0.02,dt);
-  let fr=0.08;if(cp)fr+=0.12+(wet<0.25?0.35:0);
-  omega*=Math.exp(-fr*dt);if(Math.abs(omega)<0.04)omega=0;
-  const sp=Math.abs(omega);eff=smooth(1.2,4.5,sp);
+  if(!P)return;
 
-  if(P&&!collapse&&!finishing&&cp){
-    const m=cp.m;
-    // water use
-    if(eff>0.2)wet=Math.max(0,wet-(0.03+m*0.00007)*dt);
-    // centering and wobble
-    if(eff>0.3){
-      if(m<45)P.wob-=0.42*eff*dt*(wet>0.2?1:0.5);
-      else if(m>380)P.wob+=(m-380)*0.0012*dt;
+  if(intro>0){
+    intro+=dt/0.7;const u=Math.min(1,intro);const e=1-Math.pow(1-u,3);
+    P.H=lerp(40,START_H,e);P.r.fill(lerp(72,START_R,e));
+    if(u>=1)intro=0;
+  }
+
+  if(touch&&touch.mode!==2&&!firing&&intro===0){
+    if(performance.now()-touch.lastT>60)touch.speed*=Math.pow(0.01,dt);
+    const spin=clamp(Math.abs(omega)/5,0,1);
+    const dryMul=P.wet<0.2?0.55:1;
+    touch.str=Math.min(1,touch.str+dt*6);
+    if(touch.mode===0){
+      const t=clamp(touch.uy/P.H,0,1);touch.t=t;
+      const side=Math.sign(touch.ux)||touch.side;touch.side=side;
+      const targetR=clamp(Math.abs(touch.ux),RMIN,RMAX);
+      const sig=15/P.H;const rate=1-Math.exp(-16*spin*dryMul*dt);
+      let moved=0;
+      for(let k=0;k<N;k++){
+        const g=Math.exp(-Math.pow((k/(N-1)-t)/sig,2));if(g<0.01)continue;
+        const d=(targetR-P.r[k])*g*rate;P.r[k]+=d;moved+=Math.abs(d);
+        P.fresh[k]=Math.max(P.fresh[k],g*0.9);
+      }
+      shapedAmt+=moved;
+      P.wet=Math.max(0,P.wet-(0.012+touch.speed*0.00004)*dt);
+      if(spin>0.5&&Math.random()<(0.15+Math.min(0.6,touch.speed*0.004))*dt*20){
+        const R=rAt(P.r,t)*S;
+        parts.push({x:cx+side*R,y:baseY-t*P.H*S,vx:(side*(60+Math.random()*130)+70)*S,vy:-(30+Math.random()*130)*S,life:0.8,r:(1+Math.random()*1.8)*S});
+      }
+    }else if(touch.mode===1){
+      const want=clamp(touch.startH+(touch.uy-touch.startUy),45,maxH);
+      const prev=P.H;P.H+=(want-P.H)*(1-Math.exp(-18*dryMul*dt));
+      stretched+=Math.abs(P.H-prev);
+      for(let k=Math.floor(N*0.55);k<N;k++)P.fresh[k]=Math.max(P.fresh[k],0.6);
+      P.wet=Math.max(0,P.wet-0.015*dt);
     }
-    if(sp>13)P.wob+=0.35*dt;
-    if(wet<0.2&&eff>0.2)P.wob+=0.10*dt;
-    P.wob=clamp(P.wob,0,1.3);
+  }
+  const a=0.035,tmp=P.r.slice();
+  for(let k=1;k<N-1;k++)P.r[k]=tmp[k]*(1-a)+a*0.5*(tmp[k-1]+tmp[k+1]);
+  for(let k=0;k<N;k++){P.r[k]=clamp(P.r[k],RMIN,RMAX);P.fresh[k]=Math.max(0,P.fresh[k]-dt*0.12);}
+  if(!touch)P.wet=Math.max(0,P.wet-0.004*dt);
 
-    const dryMul=wet<0.2?0.5:1;
-    if(cp.mode==='center'){
-      if(P.wob<=CENTER_OK){cp.mode='none';sfx.plop();}
-    } else if(cp.mode==='open'&&!P.opened){
-      const down=Math.max(0,-cp.dUy);
-      const dProg=down*eff/(Math.max(P.H,40)*0.5);
-      if(dProg>0){
-        P.openProg=Math.min(1,P.openProg+dProg);
-        let Rmax=0;for(let k=0;k<N;k++)Rmax=Math.max(Rmax,P.r[k]);
-        P.w=lerp(Rmax,22,P.openProg);
-        const ref=rAtArr(P.r,0.68);
-        for(let k=0;k<N;k++){const t=k/(N-1);if(t>0.68)P.r[k]+= (ref-P.r[k])*Math.min(1,dProg*4);P.r[k]*=1+dProg*0.06;}
-        if(P.openProg>=1){
-          P.opened=true;P.w=22;
-          for(let k=0;k<N;k++){const t=k/(N-1);if(t>0.8)P.r[k]=Math.max(P.r[k],P.w+12);}
-          sfx.bowl(262);$('bFinish').disabled=false;cp.mode='none';
-        }
-      }
-    } else if(cp.mode==='shape'||cp.mode==='rim'){
-      const t=clamp(cp.uy/P.H,0.02,1);
-      const wobOff=P.wob*Math.sin(theta)*14*(0.35+0.65*t);
-      const target=Math.abs(cp.ux-wobOff);
-      const contact=Math.abs(target-rAtArr(P.r,t))<34;
-      const sig=Math.max(0.05,16/P.H);
-      const rate=Math.min(1,5.5*eff*dt)*dryMul;
-      for(let k=0;k<N&&contact;k++){
-        const tk=k/(N-1);const g=Math.exp(-Math.pow((tk-t)/sig,2));if(g<0.01)continue;
-        let d=target-P.r[k];
-        if(d>0){if(!P.opened)continue;d*=0.5;}   // pushing out needs the inside hand
-        P.r[k]+=d*g*rate;
-      }
-      if(cp.mode==='rim'&&eff>0.2){
-        const up=cp.dUy;
-        if(up>0){P.w=Math.max(3,P.w-up*0.07*eff*dryMul);for(let k=Math.floor(N*0.5);k<N;k++)P.r[k]*=1-up*0.0009*eff;}
-        else if(up<0){P.w=Math.min(40,P.w-up*0.05*eff);}
-      }
-      // slip droplets
-      if(eff>0.45&&Math.random()<sp*0.03*dt*60*0.15){
-        const side=Math.sign(cp.ux)||1;
-        parts.push({x:cx+side*(rAtArr(P.r,t)*S),y:baseY-t*P.H*S,vx:Math.sign(omega)*(-side)*0+side*(60+Math.random()*120),vy:-(40+Math.random()*120),life:0.9,r:1.4+Math.random()*1.8});
-      }
-    }
-    cp.dUx=0;cp.dUy=0;
-
-    // limits, smoothing, volume
-    const lo=P.opened?Math.max(6,P.w*0.9):5;
-    for(let k=0;k<N;k++)P.r[k]=clamp(P.r[k],lo,WRU-6);
-    const a=0.05;const tmp=P.r.slice();
-    for(let k=1;k<N-1;k++)P.r[k]=tmp[k]*(1-a)+a*0.5*(tmp[k-1]+tmp[k+1]);
-    solveH(P);
-  } else if(cp){cp.dUx=0;cp.dUy=0;}
-
-  // collapse check
-  if(P&&P.opened&&!collapse&&!finishing){
-    lastInst=instability();
-    if(lastInst.v>=1){instT+=dt;if(instT>0.22)startCollapse(lastInst.reason);}else instT=0;
-  } else lastInst={v:0,reason:''};
-
-  if(collapse){collapse.t+=dt;if(collapse.t>1.25&&!collapse.shown){collapse.shown=true;showCollapse();}}
-  if(finishing){finishing.t+=dt;if(finishing.t>0.9&&!finishing.shown){finishing.shown=true;showResult();}}
-
-  // particles
+  if(firing){
+    firing.t+=dt;const u=clamp((firing.t-0.3)/1.6,0,1);
+    P.fired=u*u*(3-2*u);P.wet=Math.min(P.wet,1-P.fired);
+    if(firing.t>2.3&&!firing.shown){firing.shown=true;showResult();}
+  }
   for(let i=parts.length-1;i>=0;i--){
-    const q=parts[i];q.life-=dt;q.vy+=900*dt*(q.water?0.6:1);q.x+=q.vx*dt;q.y+=q.vy*dt;
-    if(q.water&&P&&q.y>baseY-P.H*S){q.life=0;}
-    if(q.life<=0||q.y>H+20)parts.splice(i,1);
+    const q=parts[i];q.life-=dt;q.vy+=(q.water?700:1100)*S*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;
+    if(q.water&&q.y>baseY-P.H*S+rAt(P.r,1)*K*S*0.5)q.life=0;
+    if(q.life<=0||q.y>H)parts.splice(i,1);
   }
-  updateAudio(cp);
 }
 
-function startCollapse(reason){
-  collapse={t:0,reason,r:P.r.slice(),H:P.H,lean:(Math.random()<.5?-1:1)};
-  sfx.thud();setTimeout(()=>noiseBurst(0.5,'bandpass',600,200,0.25,0.7),120);
-  try{navigator.vibrate&&navigator.vibrate([40,30,80]);}catch(e){}
-  pointers.forEach(p=>{if(p.mode!=='wheel')p.mode='none';});
-}
-
-// ---------- drawing ----------
-function drawPot(g,pot,x0,y0,sc,o){
-  const strips=o.strips;const Hp=pot.H*sc;
-  // visible bottom of the base
-  const r0=pot.r[0]*sc;
-  g.fillStyle=o.baseCol;g.beginPath();g.ellipse(x0+(o.offAt?o.offAt(0):0),y0,r0,r0*K,0,0,Math.PI);g.fill();
-  const rows=Math.ceil(Hp);
-  for(let i=0;i<=rows;i++){
-    const t=Math.min(1,i/Hp);const R=rAtArr(pot.r,t)*sc;if(R<0.4)continue;
-    const off=o.offAt?o.offAt(t):0;
-    const t1=Math.max(0,t-0.03),t2=Math.min(1,t+0.03);
-    const sl=(rAtArr(pot.r,t2)-rAtArr(pot.r,t1))/((t2-t1)*pot.H);
-    let li=4+Math.round(clamp(sl*1.6,-2,3));
-    if(o.rings)li+=Math.round(Math.sin(t*pot.H*0.8)*0.75);
-    li=clamp(li,0,strips.length-1);
-    g.drawImage(strips[li],0,0,128,1,x0+off-R,y0-i-1,2*R,1.9);
+// ---------- overlay: guide, touch feedback, particles, kiln glow ----------
+function drawFx(){
+  fg.clearRect(0,0,W,H);
+  if(!P)return;
+  if(guide&&!firing&&intro===0){
+    const o=order();
+    fg.save();fg.setLineDash([5*S,5*S]);fg.lineWidth=1.6;fg.strokeStyle='rgba(255,246,225,.55)';
+    for(const sd of[-1,1]){fg.beginPath();for(let k=0;k<N;k++){const t=k/(N-1);fg.lineTo(cx+sd*profAt(o.pts,t)*S,baseY-t*o.H*S);}fg.stroke();}
+    const rt=profAt(o.pts,1)*S;fg.beginPath();fg.ellipse(cx,baseY-o.H*S,rt,rt*K,0,Math.PI,0);fg.stroke();
+    fg.restore();
   }
-  // throwing specks (make the spin readable)
-  if(o.specks){
-    for(const s of o.specks){
-      const a=s.a+(o.theta||0);const c=Math.cos(a);if(c<0.05)continue;
-      const R=rAtArr(pot.r,s.t)*sc;const off=o.offAt?o.offAt(s.t):0;
-      const x=x0+off+R*Math.sin(a)*0.97,y=y0-s.t*Hp+R*K*c*0.15;
-      g.fillStyle=s.l?`rgba(255,225,190,${0.22*c})`:`rgba(55,28,16,${0.38*c})`;
-      g.beginPath();g.ellipse(x,y,s.s*sc*1.6*c+0.4,s.s*sc,0,0,7);g.fill();
+  if(touch&&touch.mode!==2&&!firing){
+    const a=touch.str;
+    if(touch.mode===0){
+      const t=clamp(touch.uy/P.H,0,1),R=rAt(P.r,t)*S,x=cx+touch.side*R,y=baseY-t*P.H*S;
+      const gr=fg.createRadialGradient(x,y,0,x,y,26*S);gr.addColorStop(0,`rgba(255,236,210,${0.30*a})`);gr.addColorStop(1,'rgba(255,236,210,0)');
+      fg.fillStyle=gr;fg.beginPath();fg.arc(x,y,26*S,0,7);fg.fill();
+      fg.strokeStyle=`rgba(255,240,220,${0.5*a})`;fg.lineWidth=2;fg.beginPath();fg.arc(cx+touch.ux*S,baseY-touch.uy*S,14*S,0,7);fg.stroke();
+    }else{
+      const Rt=rAt(P.r,1)*S,yt=baseY-P.H*S;
+      fg.strokeStyle=`rgba(255,236,210,${0.55*a})`;fg.lineWidth=3*S;fg.beginPath();fg.ellipse(cx,yt,Rt+2,Rt*K+2,0,0,7);fg.stroke();
     }
+  }else if(!firing&&intro===0&&shapedAmt>40&&stretched<20){
+    const Rt=rAt(P.r,1)*S,yt=baseY-P.H*S,p=0.5+0.5*Math.sin(performance.now()/350);
+    fg.strokeStyle=`rgba(255,226,180,${0.15+0.3*p})`;fg.lineWidth=2.5*S;fg.beginPath();fg.ellipse(cx,yt,Rt+3,Rt*K+3,0,0,7);fg.stroke();
   }
-  // rim and opening
-  const Rt=rAtArr(pot.r,1)*sc,yt=y0-Hp,ot=o.offAt?o.offAt(1):0;
-  if(Rt>0.6){
-    g.fillStyle=o.rimCol;g.beginPath();g.ellipse(x0+ot,yt,Rt,Rt*K,0,0,7);g.fill();
-    const inner=Math.max(0,Rt-Math.min(pot.w,999)*sc);
-    if(inner>0.6){
-      const gr=g.createRadialGradient(x0+ot,yt+inner*K*0.4,inner*0.05,x0+ot,yt,inner);
-      gr.addColorStop(0,o.inDeep);gr.addColorStop(1,o.inEdge);
-      g.fillStyle=gr;g.beginPath();g.ellipse(x0+ot,yt,inner,inner*K,0,0,7);g.fill();
-    }
-  }
-}
-
-function drawWheel(){
-  const R=WRU*S,y=baseY;
-  // heavy stone base
-  const Rb=R*1.14,yb=y+20*S,hb=34*S;
-  g2side(Rb,yb,hb,'#3d2a22','#2a1c16');
-  ctx.fillStyle='#5a463c';ctx.beginPath();ctx.ellipse(cx,yb,Rb,Rb*K,0,0,7);ctx.fill();
-  // wheel head
-  g2side(R,y,13*S,'#5b3a28','#3a2418');
-  const gr=ctx.createRadialGradient(cx-R*0.3,y-R*K*0.4,R*0.1,cx,y,R);
-  gr.addColorStop(0,'#8a6a58');gr.addColorStop(1,'#5e4436');
-  ctx.fillStyle=gr;ctx.beginPath();ctx.ellipse(cx,y,R,R*K,0,0,7);ctx.fill();
-  // rotating marks + slip smears
-  for(let i=0;i<10;i++){
-    const a=i/10*6.283+theta;const rr=R*(i%2?0.86:0.62);
-    const x=cx+rr*Math.sin(a),yy=y+rr*K*Math.cos(a);
-    ctx.fillStyle=i%3===0?'rgba(150,95,65,.55)':'rgba(30,18,12,.35)';
-    ctx.beginPath();ctx.ellipse(x,yy,(i%3===0?7:3.2)*S,(i%3===0?2.6:1.6)*S,0,0,7);ctx.fill();
-  }
-  // stick notch on the rim
-  for(let i=0;i<4;i++){
-    const a=i/4*6.283+theta;const c=Math.cos(a);if(c<0)continue;
-    const x=cx+R*Math.sin(a);ctx.fillStyle=`rgba(15,8,5,${0.6*c})`;
-    ctx.fillRect(x-3*S,y+R*K*c-1,6*S,11*S);
-  }
-}
-function g2side(R,y,h,c1,c2){
-  const gr=ctx.createLinearGradient(cx-R,0,cx+R,0);gr.addColorStop(0,c2);gr.addColorStop(0.35,c1);gr.addColorStop(1,c2);
-  ctx.fillStyle=gr;ctx.beginPath();ctx.ellipse(cx,y+h,R,R*K,0,0,Math.PI);ctx.lineTo(cx-R,y);ctx.ellipse(cx,y,R,R*K,0,Math.PI,0,true);ctx.closePath();ctx.fill();
-}
-
-function drawGuide(){
-  const o=order();const sc=S;
-  ctx.save();ctx.setLineDash([5,6]);ctx.lineWidth=1.6;ctx.strokeStyle='rgba(255,246,225,.55)';
-  for(const side of[-1,1]){
-    ctx.beginPath();
-    for(let k=0;k<N;k++){const t=k/(N-1);ctx.lineTo(cx+side*profAt(o.pts,t)*sc,baseY-t*o.H*sc);}
-    ctx.stroke();
-  }
-  const rt=profAt(o.pts,1)*sc;ctx.beginPath();ctx.ellipse(cx,baseY-o.H*sc,rt,rt*K,0,0,7);ctx.stroke();
-  ctx.restore();
-}
-
-function draw(){
-  ctx.drawImage(bg,0,0,W,H);
-  drawWheel();
-  if(Math.abs(wet-stripsWet)>0.06){wetStrips=makeStrips(WET_BASE.map(c=>c*(1.12-0.12*wet)),0.12+0.5*wet,8);stripsWet=wet;}
-  if(P){
-    if(collapse){
-      const u=1-Math.pow(1-Math.min(1,collapse.t/1.0),3);
-      const avg=collapse.r.reduce((a,b)=>a+b,0)/N;
-      const pot={r:collapse.r.map((v,k)=>{const t=k/(N-1);return Math.min(WRU-6,lerp(v,avg*1.12*(1-0.5*t*t)+Math.sin(k*1.7)*5,u));}),H:collapse.H*(1-0.55*u),w:999};
-      drawPot(ctx,pot,cx,baseY,S,{strips:wetStrips,baseCol:'#4d2c1c',rimCol:'#a86f4e',inDeep:'#2a140b',inEdge:'#4a2616',offAt:t=>collapse.lean*t*t*u*40*S});
-    } else {
-      let lift=0,slide=0,alpha=1;
-      if(finishing){const u=clamp((finishing.t-0.45)/0.45,0,1);lift=u*18*S;alpha=1-u*0.0;}
-      const wob=P.wob;const flutter=lastInst.v>0.6?Math.sin(performance.now()/40)*(lastInst.v-0.6)*6*S:0;
-      drawPot(ctx,P,cx+slide,baseY-lift,S,{strips:wetStrips,baseCol:'#4d2c1c',rimCol:`rgb(${170+wet*10|0},${112+wet*6|0},${80})`,inDeep:'#24110a',inEdge:'#5a301d',rings:P.opened,specks,theta,
-        offAt:t=>wob*Math.sin(theta)*14*S*(0.35+0.65*t)+flutter*t*t});
-      if(guide&&!finishing)drawGuide();
-      if(finishing){
-        const u=clamp(finishing.t/0.45,0,1);const R=WRU*S*1.05;const x=cx-R+2*R*u;
-        ctx.strokeStyle='rgba(240,230,215,.9)';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(cx-R,baseY-1);ctx.quadraticCurveTo(x,baseY+3*S,x,baseY-1);ctx.stroke();
-        ctx.fillStyle='#d9c3a5';ctx.beginPath();ctx.arc(x,baseY-1,3*S,0,7);ctx.fill();
-      }
-    }
-  }
-  // particles
   for(const q of parts){
-    ctx.fillStyle=q.water?`rgba(200,232,248,${Math.min(1,q.life)*0.85})`:`rgba(110,62,40,${Math.min(1,q.life*1.4)})`;
-    ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,7);ctx.fill();
+    fg.fillStyle=q.water?`rgba(205,235,250,${Math.min(1,q.life)*0.85})`:`rgba(95,52,34,${Math.min(1,q.life*1.5)})`;
+    fg.beginPath();fg.arc(q.x,q.y,q.r,0,7);fg.fill();
+  }
+  if(firing){
+    const u=firing.t,glow=Math.sin(Math.min(1,u/2.2)*Math.PI)*(0.85+0.15*Math.sin(u*23)*Math.sin(u*7));
+    const y=baseY-P.H*S*0.5;const gr=fg.createRadialGradient(cx,y,20*S,cx,y,Math.max(W,H)*0.6);
+    gr.addColorStop(0,`rgba(255,150,60,${0.32*glow})`);gr.addColorStop(1,'rgba(255,90,20,0)');
+    fg.fillStyle=gr;fg.fillRect(0,0,W,H);
   }
 }
 
-// ---------- HUD ----------
+// ---------- hints ----------
 let lastHint='';
-function hintText(){
-  if(!P||collapse||finishing)return['',false];
-  const sp=Math.abs(omega);
-  if(sp<1.2)return['Swipe across the wheel to spin it',false];
-  if(!P.opened&&P.wob>CENTER_OK)return['Hold a finger still on the clay to center it',false];
-  if(lastInst.v>0.55)return[lastInst.warn,true];
-  if(wet<0.22)return['The clay is drying out. Tap Water',true];
-  if(sp>13)return['Too fast. Let the wheel slow down',true];
-  if(sp<3)return['The wheel is slowing. Give it another swipe',false];
-  if(!P.opened)return['Press into the top center and drag down to open it',false];
+function hint(){
+  if(!P||firing||intro>0)return['',false];
+  if(P.wet<0.2)return['The clay is drying out. Tap Water',true];
+  if(shapedAmt<40)return['Drag the side of the clay in or out',false];
+  if(stretched<20)return['Now drag the rim up to make it taller',false];
   const o=order();
-  if(Math.abs(P.H/o.H-1)<0.12)return['Looking close. Refine the shape, then Cut off',false];
-  if(P.H<o.H)return['Drag up from the rim to pull the walls taller',false];
-  return['Drag the wall in or out to shape it',false];
+  if(Math.abs(P.H-o.H)>25)return[P.H<o.H?'Pull the rim up to reach the outline':'Push the rim down to the outline',false];
+  if(scorePot()>=80)return['Looks great. Fire it when you\'re happy',false];
+  return['Shape the walls to match the outline',false];
 }
 function hud(){
-  $('spdBar').style.width=Math.min(100,Math.abs(omega)/16*100)+'%';
-  $('wetBar').style.width=(wet*100)+'%';$('wetBar').classList.toggle('low',wet<0.22);
+  $('wetBar').style.width=(P?P.wet*100:0)+'%';$('wetBar').classList.toggle('low',!!(P&&P.wet<0.2));
   $('coinN').textContent=save.coins;
-  const [h,warn]=hintText();
-  if(h!==lastHint){$('hint').textContent=h;lastHint=h;}
-  $('hint').classList.toggle('warn',warn);
+  const [h,w]=hint();if(h!==lastHint){$('hint').textContent=h;lastHint=h;}
+  $('hint').classList.toggle('warn',w);
 }
 
-// ---------- results ----------
+// ---------- scoring / results ----------
 function scorePot(){
-  const o=order();let Rm=0,Rt=0;
-  for(let k=0;k<N;k++){Rm=Math.max(Rm,P.r[k]);Rt=Math.max(Rt,profAt(o.pts,k/(N-1)));}
-  let err=0;for(let k=0;k<N;k++){const t=k/(N-1);err+=Math.abs(P.r[k]/Rm-profAt(o.pts,t)/Rt);}err/=N;
-  const sizeErr=0.5*Math.abs(P.H/o.H-1)+0.5*Math.abs(Rm/Rt-1);
-  let sc=100*Math.exp(-4.2*err-1.7*sizeErr);
-  if(P.w>20)sc*=0.92;
-  return Math.round(clamp(sc,0,100));
+  const o=order();let Rt=0;for(let k=0;k<N;k++)Rt=Math.max(Rt,profAt(o.pts,k/(N-1)));
+  const top=Math.max(P.H,o.H);let err=0;const M=60;
+  for(let i=0;i<M;i++){
+    const y=(i+0.5)/M*top;
+    const a=y<=P.H?rAt(P.r,y/P.H):0,b=y<=o.H?profAt(o.pts,y/o.H):0;
+    err+=Math.abs(a-b);
+  }
+  err/=M*Rt;
+  return Math.round(clamp(100*Math.exp(-2.8*err),0,100));
 }
-const FIRED=[[196,104,64],[184,94,58],[206,124,80]];
 function showResult(){
-  const o=order();const sc=scorePot();
-  const fireCol=FIRED[Math.floor(Math.random()*FIRED.length)];
-  const smoky=Math.random()<0.18;
-  const tier=sc>=75?0:sc>=45?1:2;
-  const label=sc>=90?'Masterpiece':sc>=75?'Lovely':sc>=55?'Good enough':sc>=35?'Wonky but charming':'It holds water?';
+  const o=order(),sc=scorePot(),tier=sc>=78?0:sc>=50?1:2;
+  const label=sc>=92?'Masterpiece':sc>=78?'Lovely':sc>=60?'Good enough':sc>=40?'Wonky but charming':'It holds water?';
   const coins=Math.round(o.price*(0.3+0.7*sc/100));
-  save.coins+=coins;save.made++;save.best[o.id]=Math.max(save.best[o.id]||0,sc);persist();
-  sfx.crackle();setTimeout(()=>sfx.bowl(sc>=75?330:sc>=45?294:247),500);
-  const best=save.best[o.id];
+  save.coins+=coins;save.made++;const prevBest=save.best[o.id]||0;save.best[o.id]=Math.max(prevBest,sc);persist();
+  sfx.bowl(sc>=78?330:sc>=50?294:247);
   $('modalSheet').innerHTML=`
-    <div class="label">Fired in the straw kiln</div>
-    <canvas id="resPic" width="480" height="380"></canvas>
+    <div class="label">Out of the kiln</div>
     <h2>${o.what}</h2>
     <div class="big">${sc}%</div>
-    <div class="small">${label}${best>sc?` &middot; best ${best}%`:''}</div>
-    <p>${o.react[tier]}${smoky?'<br><span class="small">Smoke from the kiln left a dark blush on one side.</span>':''}</p>
+    <div class="small">${label}${prevBest>sc?` &middot; best ${prevBest}%`:''}</div>
+    <p>${o.react[tier]}${P.smoke?'<br><span class="small">Smoke from the straw kiln left a dark blush on one side.</span>':''}</p>
     <div class="coinline"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e9a23b"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#8a5512" stroke-width="1.6"/><rect x="10" y="7.5" width="4" height="9" rx="1" fill="#8a5512"/></svg>+${coins}</div>
-    <div class="row"><button id="mAgain">Same order</button><button id="mNext" class="primary">Next order</button></div>`;
-  const c=$('resPic'),g=c.getContext('2d');g.setTransform(2,0,0,2,0,0);
-  let Rm=0;for(let k=0;k<N;k++)Rm=Math.max(Rm,P.r[k]);
-  let Rt=0;for(let k=0;k<N;k++)Rt=Math.max(Rt,profAt(o.pts,k/(N-1)));
-  const s=Math.min(150/Math.max(P.H,o.H),100/Math.max(Rm,Rt),1.6);
-  const y0=172;
-  g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(120,y0+2,Rm*s*1.05,Rm*s*K*1.05,0,0,7);g.fill();
-  const strips=makeStrips(fireCol,0.06,8);
-  drawPot(g,P,120,y0,s,{strips,baseCol:'#6a3420',rimCol:`rgb(${fireCol[0]+22},${fireCol[1]+20},${fireCol[2]+18})`,inDeep:'#2e160c',inEdge:'#6a3622',rings:true});
-  if(smoky){const gr=g.createLinearGradient(120-Rm*s,0,120+Rm*s*0.2,0);gr.addColorStop(0,'rgba(30,20,15,.55)');gr.addColorStop(1,'rgba(30,20,15,0)');g.globalCompositeOperation='source-atop';g.fillStyle=gr;g.fillRect(0,0,240,190);g.globalCompositeOperation='source-over';}
-  // target outline for comparison
-  g.setLineDash([4,4]);g.strokeStyle='rgba(255,240,215,.6)';g.lineWidth=1.2;
-  for(const side of[-1,1]){g.beginPath();for(let k=0;k<N;k++){const t=k/(N-1);g.lineTo(120+side*profAt(o.pts,t)*s,y0-t*o.H*s);}g.stroke();}
+    <div class="row"><button id="mAgain">Same vase</button><button id="mNext" class="primary">Next order</button></div>`;
   $('modal').classList.remove('hidden');
-  $('mAgain').onclick=()=>{$('modal').classList.add('hidden');newPot();};
-  $('mNext').onclick=()=>{$('modal').classList.add('hidden');save.order=(save.order+1)%ORDERS.length;persist();newPot();};
-}
-function showCollapse(){
-  $('modalSheet').innerHTML=`
-    <div class="label">Collapsed</div>
-    <h2>Back to a lump</h2>
-    <p>${collapse.reason}</p>
-    <div class="row"><button id="mNew" class="primary">New clay</button></div>`;
-  $('modal').classList.remove('hidden');
-  $('mNew').onclick=()=>{$('modal').classList.add('hidden');sfx.plop();newPot();};
+  $('mAgain').onclick=()=>{$('modal').classList.add('hidden');sfx.plop();newPot();};
+  $('mNext').onclick=()=>{$('modal').classList.add('hidden');save.order=(save.order+1)%ORDERS.length;persist();sfx.plop();newPot();};
 }
 
 // ---------- loop ----------
 let lastT=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-lastT)/1000);lastT=now;
-  step(dt);draw();hud();
+  step(dt);
+  drawUnder();
+  drawClay(P,touch&&touch.mode!==2?{t:touch.t||1,side:touch.side||1,str:touch.str,mode:touch.mode}:null);
+  drawFx();hud();updateAudio();
   requestAnimationFrame(frame);
 }
-layout();newPot();requestAnimationFrame(frame);
-
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+layout();newPot();
+if(!glOK){$('hint').textContent='This device could not start WebGL, so the clay cannot be drawn.';}
+requestAnimationFrame(frame);
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
 </body>
 </html>

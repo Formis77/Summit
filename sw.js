@@ -1,6 +1,6 @@
 // Clay service worker: serve from cache instantly (works offline),
 // refresh the cache in the background whenever there is signal.
-const CACHE = 'clay-v1';
+const CACHE = 'clay-v2';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
