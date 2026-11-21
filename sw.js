@@ -1,6 +1,6 @@
-// Resonance service worker: serve from cache instantly (works offline),
+// High Roller service worker: serve from cache instantly (works offline),
 // refresh the cache in the background whenever there is signal.
-const CACHE = 'resonance-w1-v2';
+const CACHE = 'highroller-v1';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -1,16 +1,13 @@
-# Resonance
+# High Roller
 
-A quiet isometric journey for the phone about the voice of a singing bowl.
+A casino incremental game for the phone. Play money only.
 
-## World I: The Whispering Falls
-One long climb up a waterfall cliff, six rooms, each a puzzle.
+- **Seven machines**, unlocked through the upgrade tree: Coin Flip, Slots (paylines, Wild, progressive jackpot), Capsule Gacha, Plinko (taller boards, ball cascades), Fortune Wheel, Roulette (Lucky Zero) and Rocket Crash (cash out before it explodes).
+- **Upgrade tree:** income branch (Side Hustle to Global Empire), luck and payout branch, and a branch per machine with max bet, autoplay and machine-specific upgrades.
+- **Charms:** 15 charms in 5 rarities from the Capsule Machine. Duplicates level them up and their boosts are permanent.
+- **VIP prestige:** reset cash and upgrades for VIP stars (+10% to everything), keeping your charms.
+- **Autoplay** for every machine, offline earnings, big-win celebrations and synthesized casino sounds.
 
-- **Two voices.** Circle the rim slowly (about one turn a second) for the bowl's low voice. Circle fast (above about 1.2 turns a second) to wake its high overtone, which rings about 2.7 times higher. A marker beside the bowl shows your speed between the two zones.
-- **Water is precious.** Water lowers the pitch. You can only fill the bowl at a spring, but you can pour it out anywhere. Every note you sing costs you the water above it, so the order you visit stones in matters.
-- **Listening stones** each hum a note. As you tune in, the wobble (beating) slows and disappears. Hold the note and the stone answers: bridges rise or sink (sometimes in opposite pairs), lifts carry you while you sing, and a stone platform swings round. The last puzzle is a three-stone phrase that has to be sung in order.
-- **Look around** with the eye button, or drag the world. If you lock yourself out, the game notices and offers to take you back to the start of the room. A solver checked that every room can be solved.
-- All sound is synthesized live and works offline.
+Play: https://formis77.github.io/Summit/ → Share → Add to Home Screen.
 
-Play: https://formis77.github.io/Summit/ → Share → Add to Home Screen. Headphones recommended.
-
-Earlier prototypes (Summit, Clay of Bhaktapur, Shadow Walker, Resonance v1) are in the git history.
+Earlier prototypes in this repo are in the git history.

@@ -1,13 +1,13 @@
 {
-  "name": "Resonance",
-  "short_name": "Resonance",
-  "description": "A quiet isometric journey about the voice of a singing bowl. Rub the rim, tune with water, wake the listening stones.",
+  "name": "High Roller",
+  "short_name": "High Roller",
+  "description": "A casino incremental: unlock machines, climb the upgrade tree, pull charms, go VIP. Play money only.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#dfe6e0",
-  "theme_color": "#dfe6e0",
+  "background_color": "#0c0918",
+  "theme_color": "#0c0918",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
