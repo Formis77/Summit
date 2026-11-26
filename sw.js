@@ -1,6 +1,6 @@
 // CAE Lab service worker: nejdřív síť (ať se hned projeví nové výrazy v databázi),
 // bez signálu se načte uložená verze z cache.
-const CACHE = 'caelab-v3';
+const CACHE = 'caelab-v4';
 const ASSETS = ['./', './index.html', './data.js', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

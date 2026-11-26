@@ -182,7 +182,7 @@ const I = {
 const D = window.CAE_DATA;
 const TYPES = {col:"Kolokace",pv:"Frázová slovesa",prep:"Předložky",idiom:"Idiomy",link:"Gramatika",wf:"Tvoření slov",word:"Slovíčka"};
 const PARTS = {p1:"Part 1 · Multiple choice",p2:"Part 2 · Open cloze",p3:"Part 3 · Word formation",p4:"Part 4 · Transformations"};
-const PSHORT = {p1:"Multiple choice",p2:"Open cloze",p3:"Word formation",p4:"Transformations",dr:"Dril výrazů"};
+const PSHORT = {p1:"Multiple choice",p2:"Open cloze",p3:"Word formation",p4:"Transformations",dr:"Doplňovačka"};
 const KEY = "caelab.v1";
 const SRC = {T1:"Test 1",T2:"Test 2",T3:"Test 3",T6:"Test 6",KWT:"KWT list"};
 const MINE = p => p.src && p.src!=="core" && p.src!=="u";
@@ -288,7 +288,7 @@ function drawList(){
       const a=b.dataset.a;
       if(a==="star"){ S.starred[id]?delete S.starred[id]:S.starred[id]=1; save(); drawList(); }
       if(a==="del"){ S.custom=S.custom.filter(c=>c.id!==id); save(); drawList(); }
-      if(a==="drill"){ const p=phrases().find(x=>x.id===id); startRun(drillQs([p]), "Dril výrazu"); }
+      if(a==="drill"){ const p=phrases().find(x=>x.id===id); startRun(drillQs([p]), "Doplňovačka"); }
     });
   });
 }
@@ -335,16 +335,13 @@ function viewTestSetup(){
       </div>
       <div class="switch"><div class="t"><b>Generovat nové úlohy přes AI</b><span>${hasKey?"Pokaždé čerstvé věty v CAE stylu, zaměřené na tvoje slabá místa.":"Potřebuje API klíč – nastavíš v ozubeném kolečku."}</span></div><button class="tg ${st.ai&&hasKey?"on":""}" id="aiT"></button></div>
     </div>
-    <button class="btn" id="go">${st.ai&&hasKey?I.spark:I.test}Spustit test</button>
-    <div style="height:10px"></div>
-    <button class="btn sec" id="goDr">${I.cards}Rychlý test z výrazů ve slovníku</button>`;
+    <button class="btn" id="go">${st.ai&&hasKey?I.spark:I.test}Spustit test</button>`;
   $("view").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ st.parts[b.dataset.p]=st.parts[b.dataset.p]?0:1; save(); viewTestSetup(); });
   $("view").querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{ st.focus=b.dataset.fc; save(); viewTestSetup(); });
   $("nM").onclick=()=>{ st.n=Math.max(1,st.n-1); save(); $("nV").textContent=st.n; };
   $("nP").onclick=()=>{ st.n=Math.min(15,st.n+1); save(); $("nV").textContent=st.n; };
   $("aiT").onclick=()=>{ if(!hasKey){ openSettings(); return; } st.ai=st.ai?0:1; save(); viewTestSetup(); };
   $("go").onclick=startTest;
-  $("goDr").onclick=()=>startRun(drillQs(pick(phrases().filter(p=>p.ex&&p.key),10,st.focus==="weak"?"weak":"mix")),"Dril výrazů");
 }
 function startTest(){
   const st=S.setup, parts=Object.keys(PARTS).filter(k=>st.parts[k]);
@@ -435,7 +432,7 @@ function drawQ(){
       <div class="hintbox" id="hintbox">${esc(q.hint)} · začíná na „${esc(q.a[0][0])}“, ${q.a[0].length} písmen<div class="mini" style="margin-top:4px;color:var(--acc)">Bude započítáno jako „s pomocí“.</div></div>`
       :`<input id="ans" placeholder="${q.part==="p3"?"Tvar slova":"Jedno slovo"}" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">`}`;
   }
-  $("view").innerHTML = `<div class="qhead"><span class="qpart">${q.part==="dr"?"Dril výrazů":PARTS[q.part]}</span><span>${q.ai?"AI":""}</span></div>
+  $("view").innerHTML = `<div class="qhead"><span class="qpart">${q.part==="dr"?"Doplňovačka":PARTS[q.part]}</span><span>${q.ai?"AI":""}</span></div>
     <div class="prog"><i style="width:${(R.i/R.qs.length)*100}%"></i></div>
     <div class="card">${body}<div id="fbk"></div></div>
     <div id="nav"></div>`;
