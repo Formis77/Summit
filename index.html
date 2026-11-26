@@ -177,6 +177,8 @@ const TYPES = {col:"Kolokace",pv:"Frázová slovesa",prep:"Předložky",idiom:"I
 const PARTS = {p1:"Part 1 · Multiple choice",p2:"Part 2 · Open cloze",p3:"Part 3 · Word formation",p4:"Part 4 · Transformations"};
 const PSHORT = {p1:"Multiple choice",p2:"Open cloze",p3:"Word formation",p4:"Transformations",dr:"Dril výrazů"};
 const KEY = "caelab.v1";
+const SRC = {T1:"Test 1",T2:"Test 2",T3:"Test 3",T6:"Test 6",KWT:"KWT list"};
+const MINE = p => p.src && p.src!=="core" && p.src!=="u";
 let S = load();
 function load(){
   let s; try{ s = JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ s = {}; }
@@ -234,7 +236,7 @@ let dq = "", df = "all", openId = null;
 function viewDict(){
   const all = phrases();
   setTitle("Slovník", all.length+" výrazů a vazeb");
-  const filters = [["all","Vše"],["T3","Moje chyby"],["weak","Slabá místa"],["star","Oblíbené"]].concat(Object.entries(TYPES).filter(([k])=>all.some(p=>p.type===k))).concat(S.custom.length?[["u","Vlastní"]]:[]);
+  const filters = [["all","Vše"],["mine","Z mých testů"],["weak","Slabá místa"],["star","Oblíbené"]].concat(Object.entries(TYPES).filter(([k])=>all.some(p=>p.type===k))).concat(S.custom.length?[["u","Vlastní"]]:[]);
   $("view").innerHTML = `
     <div class="search">${I.search}<input id="q" placeholder="Hledat anglicky i česky" value="${esc(dq)}" autocomplete="off"></div>
     <div class="chips">${filters.map(([k,l])=>`<button class="chip ${df===k?"on":""}" data-f="${k}">${l}</button>`).join("")}</div>
@@ -248,7 +250,7 @@ function viewDict(){
 function drawList(){
   const q = norm(dq);
   let L = phrases().filter(p=>{
-    if(df==="T3" && p.src!=="T3") return false;
+    if(df==="mine" && !MINE(p)) return false;
     if(df==="u" && p.src!=="u") return false;
     if(df==="star" && !S.starred[p.id]) return false;
     if(df==="weak" && level(p.id)!=="w") return false;
@@ -261,7 +263,7 @@ function drawList(){
     const lv = level(p.id);
     return `<div class="ph ${openId===p.id?"open":""}" data-id="${esc(p.id)}">
       <button class="ph-h"><i class="dot ${lv}"></i><div class="t"><b>${esc(p.en)}</b><span>${esc(p.cz)}</span></div>
-      <em class="tag ${p.src==="T3"?"t3":p.src==="u"?"u":""}">${p.src==="T3"?"Test 3":p.src==="u"?"vlastní":esc(TYPES[p.type]||"")}</em></button>
+      <em class="tag ${MINE(p)?"t3":p.src==="u"?"u":""}">${MINE(p)?esc(SRC[p.src]||p.src):p.src==="u"?"vlastní":esc(TYPES[p.type]||"")}</em></button>
       <div class="ph-b">
         ${p.ex?`<div class="ex">${hl(p.ex,p.key)}</div>`:""}
         ${p.note?`<div class="note">${I.bulb}<div>${esc(p.note)}</div></div>`:""}
@@ -358,7 +360,7 @@ function drillQs(list){
 async function aiTest(parts, n){
   setTitle("Generuji…","AI píše nové úlohy");
   $("view").innerHTML = `<div class="card" style="text-align:center;padding:40px 20px"><div class="spin"></div><b>Píšu ti nové úlohy</b><p class="mini">Obvykle to trvá 15–40 vteřin.</p></div>`;
-  const weak = phrases().filter(p=>level(p.id)==="w"||p.src==="T3").map(p=>p.en);
+  const weak = phrases().filter(p=>level(p.id)==="w"||MINE(p)).map(p=>p.en);
   const focus = shuffle(weak).slice(0,18);
   const spec = {p1:'"p1":[{"s":"sentence with ___","o":["CORRECT","wrong","wrong","wrong"],"e":"vysvětlení česky"}]',
     p2:'"p2":[{"s":"sentence with ___","a":["answer","alternative"],"e":"vysvětlení česky"}]',
@@ -485,11 +487,11 @@ function results(){
 }
 
 // ---------- DRIL (kartičky) ----------
-let dr = {dir:"en", f:"T3", deck:[], i:0, flip:false};
+let dr = {dir:"en", f:"mine", deck:[], i:0, flip:false};
 function viewDrill(){
   setTitle("Dril", "kartičky a doplňování");
   const all = phrases();
-  const fs = [["T3","Moje chyby"],["weak","Slabá místa"],["star","Oblíbené"],["all","Vše"]].concat(Object.entries(TYPES).filter(([k])=>all.some(p=>p.type===k)));
+  const fs = [["mine","Z mých testů"],["weak","Slabá místa"],["star","Oblíbené"],["all","Vše"]].concat(Object.entries(TYPES).filter(([k])=>all.some(p=>p.type===k)));
   $("view").innerHTML = `<div class="chips">${fs.map(([k,l])=>`<button class="chip ${dr.f===k?"on":""}" data-f="${k}">${l}</button>`).join("")}</div>
     <div class="chips" style="padding-top:0"><button class="chip ${dr.dir==="en"?"on":""}" data-d="en">Anglicky → česky</button><button class="chip ${dr.dir==="cz"?"on":""}" data-d="cz">Česky → anglicky</button></div>
     <div id="fc"></div>
@@ -503,7 +505,7 @@ function viewDrill(){
 }
 function deckSource(){
   const all = phrases();
-  return all.filter(p=> dr.f==="all" ? true : dr.f==="T3" ? p.src==="T3" : dr.f==="weak" ? level(p.id)==="w" : dr.f==="star" ? !!S.starred[p.id] : p.type===dr.f);
+  return all.filter(p=> dr.f==="all" ? true : dr.f==="mine" ? MINE(p) : dr.f==="weak" ? level(p.id)==="w" : dr.f==="star" ? !!S.starred[p.id] : p.type===dr.f);
 }
 function drawCard(){
   const box=$("fc");

@@ -338,9 +338,9 @@ p3: [
 
 // ---------- Part 4: key word transformations (3–6 slov) ----------
 p4: [
-{s1:"I've been too busy to answer my emails, but I'll do it soon.",k:"ROUND",s2:"I ___ my emails yet, but I'll do it soon.",a:["haven't got round to answering","have not got round to answering","haven't gotten round to answering","haven't got around to answering"],e:"get round to + -ING."},
+{s1:"I've been too busy to answer my emails, but I'll do it soon.",k:"ROUND",s2:"I ___ my emails yet, but I'll do it soon.",a:["haven't got round to answering","have not got round to answering","haven't gotten round to answering"],e:"get round to + -ING."},
 {s1:"The ambulance came within minutes.",k:"MATTER",s2:"It ___ before the ambulance came.",a:["was a matter of minutes","was only a matter of minutes","was just a matter of minutes"],e:"a matter of minutes – se členem a."},
-{s1:"Experts say that things are bound to improve.",k:"DOUBT",s2:"Experts say that there is ___ better.",a:["no doubt that things will get","little doubt that things will get","no doubt things will get","little doubt things will get","no doubt that things are going to get","little doubt that things are going to get"],e:"there is no / little doubt that + věta."},
+{s1:"Experts say that things are bound to improve.",k:"DOUBT",s2:"Experts say that there is ___ better.",a:["no doubt that things will get","little doubt that things will get","no doubt things will get","little doubt things will get"],e:"there is no / little doubt that + věta."},
 {s1:"Jake was the person who started my interest in collecting pottery.",k:"GOT",s2:"It ___ in collecting pottery.",a:["was jake who got me interested","was jake that got me interested"],e:"It was X who got me interested in."},
 {s1:"He really wanted to impress the interviewers.",k:"DESPERATE",s2:"He ___ the interviewers a good impression.",a:["was desperate to give"],e:"be desperate to do; give sb a good impression."},
 {s1:"Because he was injured, he couldn't play in the next game.",k:"PREVENTED",s2:"His ___ in the next game.",a:["injury prevented him from playing","injury prevented him playing"],e:"prevent sb (from) doing."},
@@ -352,9 +352,9 @@ p4: [
 {s1:"People say that the castle was built in the 12th century.",k:"SAID",s2:"The castle ___ in the 12th century.",a:["is said to have been built"],e:"is said to have been built."},
 {s1:"I regret not taking that job.",k:"WISH",s2:"I ___ that job.",a:["wish i had taken","wish i'd taken","wish i had accepted","wish i'd accepted"],e:"wish + past perfect = lítost nad minulostí."},
 {s1:"She can't accept the fact that she lost.",k:"TERMS",s2:"She can't ___ losing.",a:["come to terms with"],e:"come to terms with = smířit se."},
-{s1:"We didn't consider the cost of transport.",k:"ACCOUNT",s2:"The cost of transport ___ account.",a:["was not taken into","wasn't taken into"],e:"take sth into account (trpný rod)."},
+{s1:"We didn't consider the cost of transport.",k:"ACCOUNT",s2:"The cost of transport ___.",a:["was not taken into account","wasn't taken into account"],e:"take sth into account (trpný rod)."},
 {s1:"It's not worth complaining now.",k:"POINT",s2:"There ___ now.",a:["is no point complaining","is no point in complaining","isn't any point in complaining","isn't any point complaining"],e:"There's no point (in) doing."},
-{s1:"I'm sure she didn't see us.",k:"CAN'T",s2:"She ___ us.",a:["can't have seen","cannot have seen"],e:"can't have + příčestí = jistota, že se to nestalo."},
+{s1:"I'm sure she didn't see us.",k:"CAN'T",s2:"She ___ us.",a:["can't have seen"],e:"can't have + příčestí = jistota, že se to nestalo."},
 {s1:"They postponed the match because of the rain.",k:"PUT",s2:"The match ___ because of the rain.",a:["was put off"],e:"put off = odložit."},
 {s1:"If you hadn't helped me, I would have failed.",k:"BEEN",s2:"If it ___ your help, I would have failed.",a:["hadn't been for","had not been for"],e:"If it hadn't been for = nebýt."},
 {s1:"He started climbing as a hobby last year.",k:"TOOK",s2:"He ___ last year.",a:["took up climbing","took climbing up"],e:"take up = začít s koníčkem."},
@@ -372,3 +372,219 @@ p4: [
 {s1:"His knowledge of the area was very useful later.",k:"STEAD",s2:"His knowledge of the area ___ later.",a:["stood him in good stead"],e:"stand sb in good stead."}
 ]
 };
+
+// ===================================================================
+// Dávka 2 (26. 11. 2026): Test 1, Test 2, Test 6 a list „70 KWT exercises“
+// ===================================================================
+window.CAE_DATA.version = 2;
+window.CAE_DATA.phrases.push(
+// ---------- Test 2 ----------
+["the golden age of (aviation)","zlatý věk","col","She flew solo during the golden age of aviation.","golden","Ne sweet / bright / shiny.","T2"],
+["make a parachute jump","seskočit padákem","col","She was the first woman to make a parachute jump.","make","make a jump / make a flight / make a landing.","T2"],
+["at the height of one's fame","na vrcholu slávy","idiom","At the height of her fame, she married a politician.","height","Ne crest / top – „at the height of“ je pevné spojení.","T2"],
+["cover (a distance)","urazit (vzdálenost)","col","She flew solo from South Africa to Egypt, covering 9,000 miles.","covering","","T2"],
+["be hailed as","být oslavován jako","col","She was hailed as the nation's sweetheart.","hailed","hail sb as sth; declare / exclaim takovou vazbu nemají.","T2"],
+["be cut (tragically) short","předčasně skončit","idiom","Her life was cut tragically short.","cut","","T2"],
+["suffer an accident / injury / defeat","utrpět nehodu, zranění, porážku","col","Only a year later, she suffered a horrific accident.","suffered","undergo se pojí s operací, změnou; undertake s úkolem.","T2"],
+["never be the same again","už nikdy nebýt jako dřív","idiom","Her health was never the same again.","same","","T2"],
+["for the umpteenth time","už po několikáté","word","He was swimming up and down for the umpteenth time.","umpteenth","","T2"],
+["of its kind","svého druhu","link","It is the biggest event of its kind in the world.","its","Pozor: its (přivlastňovací), ne it's.","T2"],
+["anything but","všechno, jen ne","link","Triathlons are anything but boring.","anything","anything but = vůbec ne; nothing but = jen.","T2"],
+["a good / great deal more","mnohem víc","link","Triathlons are a good deal more interesting to train for.","deal","","T2"],
+["and so on","a tak dále","link","Swimming in your lunch break, cycling to work and so on.","so","","T2"],
+["move away from","odklonit se od","pv","People are moving away from just running.","away","","T2"],
+["hotly contested","velmi vyrovnaný, ostře sledovaný","col","Our hotly contested competition ends next week.","contested","","T2"],
+["nomination form","nominační formulář","wf","The official nomination form will appear in the paper.","nomination","NOMINATE → nomination.","T2"],
+["receipt (of forms)","přijetí, doručení","wf","Thursday is the final date for receipt of completed forms.","receipt","RECEIVE → receipt (pozor na tiché p).","T2"],
+["diners","hosté (v restauraci)","wf","Diners across the city have sent in their votes.","Diners","DINE → diner(s).","T2"],
+["deadline","uzávěrka, termín","wf","Once the deadline has passed, the judges will count the votes.","deadline","DEAD → deadline.","T2"],
+["unannounced visit","neohlášená návštěva","wf","The judges' visits will of course be unannounced.","unannounced","","T2"],
+["prestigious title","prestižní titul","wf","Who will win the prestigious title of Restaurant of the Year?","prestigious","PRESTIGE → prestigious.","T2"],
+["It was a while before …","chvíli trvalo, než…","link","It was a while before I fully understood what had happened.","while","","T2"],
+["be (not) worth doing","(ne)stát za to","link","This small detail isn't worth arguing about.","worth","worth + -ING; předložka (about) zůstává na konci.","T2"],
+["Should there be …","pokud by došlo k… (inverze)","link","Should there be any delay to your order, we will contact you.","there","Should + podmět + sloveso místo if.","T2"],
+["have nothing in common with","nemít nic společného s","col","The two situations don't have anything in common with each other.","common","","T2"],
+["to my amazement","k mému úžasu","link","To my amazement, nothing went wrong throughout the holiday.","amazement","Také: to my surprise / astonishment / horror.","T2"],
+["wouldn't dream of doing","ani ve snu by mě nenapadlo","idiom","I wouldn't dream of doing any other kind of job.","dream","dream OF + -ING.","T2"],
+// ---------- Test 1 ----------
+["capture a moment","zachytit okamžik","col","People whip out their cameras to capture the moment.","capture","Ne seize / grasp / snatch.","T1"],
+["right in front of","přímo před","link","They miss what is happening right in front of them.","right","right = přímo, hned (right now, right behind).","T1"],
+["count on","spoléhat na","pv","They rely on technology, counting on the camera to remember for them.","counting","","T1"],
+["attend to","věnovat se, soustředit se na","pv","You don't attend to the moment fully if you're taking photos.","attend","","T1"],
+["have an impact on","mít dopad na","col","Taking photos can have a negative impact on memory.","impact","","T1"],
+["compared with / to","ve srovnání s","prep","The results were compared with those of the other group.","compared","","T1"],
+["complement vs compliment","doplňovat vs. složit poklonu","word","The new award was introduced to complement the existing one.","complement","complement = doplnit; compliment = pochválit.","T1"],
+["cannot be overestimated","nelze přecenit","col","The importance of these awards cannot be overestimated.","overestimated","","T1"],
+["role model","vzor","word","Women need role models who prove to them that they can do it.","role","","T1"],
+["between the ages of … and …","ve věku od … do …","link","It is open to women between the ages of 25 and 35.","between","","T1"],
+["on a mission","s posláním","idiom","We want to meet young women with a mission.","mission","","T1"],
+["rant and rave","hřímat, láteřit","idiom","An exit interview may feel like an ideal opportunity to rant and rave.","rave","","T1"],
+["cause offence","urazit, pohoršit","col","Employees may not wish to cause offence to the boss.","offence","OFFEND → offence (britsky), offense (americky).","T1"],
+["a (good) reference","doporučení (od zaměstnavatele)","wf","You will probably still need a reference from these people.","reference","","T1"],
+["disclose","prozradit, odhalit","wf","They are unlikely to disclose their real feelings about the company.","disclose","CLOSE → disclose.","T1"],
+["truthful","pravdivý, upřímný","wf","Someone who has already resigned is more likely to be truthful.","truthful","TRUE → truthful.","T1"],
+["annoyance","rozmrzelost, otrava","wf","They want to rant about every little annoyance.","annoyance","","T1"],
+["there is hardly any …","skoro žádný… není","link","I've just noticed that there is hardly any petrol left in the car.","hardly","hardly any = skoro žádný.","T1"],
+["have no idea (that)","nemít tušení","col","I had no idea that cars cost so much in this country.","idea","","T1"],
+["let sth get you down","nechat se tím zdeptat","idiom","It's such a small problem that you shouldn't let it get you down.","down","","T1"],
+["make a (good) recovery","zotavit se","col","He is reported to be making a good recovery in hospital.","recovery","be reported to be doing.","T1"],
+["take sth seriously","brát vážně","col","Laura doesn't take her work seriously enough.","seriously","","T1"],
+// ---------- Test 6 ----------
+["link X to Y","spojovat s","col","Many expressions link emotions to parts of the body.","link","","T6"],
+["country of origin","země původu","col","The associations are the same regardless of a person's country of origin.","origin","","T6"],
+["conduct an experiment","provést experiment","col","Scientists conducted an experiment with 700 volunteers.","conducted","Také: carry out an experiment.","T6"],
+["trigger feelings / a reaction","vyvolat pocity, reakci","col","The videos were intended to trigger certain feelings.","trigger","","T6"],
+["consistent patterns","konzistentní vzorce","col","The results showed consistent patterns of bodily sensations.","consistent","","T6"],
+["emotional disorders","emoční poruchy","col","It could help in the treatment of emotional disorders.","disorders","","T6"],
+["in recognition of","jako uznání za","link","He was nominated in recognition of his research.","recognition","","T6"],
+["the impact of X on Y","dopad X na Y","prep","He studies the impact of deforestation on land in the Amazon.","on","","T6"],
+["a process by which","proces, při kterém","link","Desertification is a process by which fertile land becomes desert.","which","Předložka + which (by which, in which).","T6"],
+["as part of","v rámci","link","The study was undertaken as part of an international project.","part","","T6"],
+["may / might well","může klidně, je dost možné, že","link","He may well be the first person to be nominated six times without winning.","well","","T6"],
+["if nothing else","přinejmenším, když už nic jiného","idiom","The event will raise awareness of the problem, if nothing else.","nothing","","T6"],
+["arise unexpectedly","nečekaně vzniknout","wf","A vacancy has unexpectedly arisen in our IT department.","unexpectedly","EXPECT → unexpectedly.","T6"],
+["technician","technik","wf","We require a computer service technician.","technician","TECHNICAL → technician.","T6"],
+["installation","instalace","wf","The team is responsible for the installation of a new system.","installation","","T6"],
+["desirable but not essential","žádoucí, ale ne nutné","wf","Formal qualifications are desirable but not essential.","desirable","DESIRE → desirable.","T6"],
+["willingness to","ochota","wf","We need someone with a willingness to keep up to date.","willingness","WILL → willingness.","T6"],
+["strive for excellence","usilovat o dokonalost","wf","The company aims to achieve excellence in every aspect.","excellence","EXCEL → excellence.","T6"],
+["be taken aback","být zaskočen","idiom","Kathy was taken aback by being nominated for an award.","aback","taken aback BY / AT.","T6"],
+["at the time of","v době (čeho)","link","The building was empty at the time of the fire.","time","","T6"],
+["give sb a lift","svézt někoho","col","If her husband had been able to give her a lift, she would have caught the train.","lift","","T6"],
+["take (much) notice of","všímat si","col","The children didn't take much notice of the dogs.","notice","","T6"],
+["date back to","datovat se do","pv","Local residents' opposition to the proposal dates back to 1996.","dates","","T6"],
+// ---------- List 70 KWT ----------
+["on the grounds that","s odůvodněním, že","link","My application was turned down on the grounds that I didn't have the right qualifications.","grounds","","KWT"],
+["succeed in doing","uspět v, podařit se","prep","I succeeded in finishing all the homework before the deadline.","succeeded","succeed IN + -ING (ne succeed to do).","KWT"],
+["What I did was (to) …","Udělal jsem to, že… (vytýkací věta)","link","What I did was change my job.","What","What + podmět + did + was + (to) infinitiv.","KWT"],
+["must have been","to muselo být (jistota o minulosti)","link","It must have been the sound of the rain that disturbed me.","must","must have = určitě; can't have = určitě ne.","KWT"],
+["be confident of","být si jistý (čím)","prep","I am confident of his chances of success in his career.","confident","","KWT"],
+["be in danger of doing","hrozí, že","prep","The company is in danger of going into liquidation.","danger","","KWT"]
+);
+
+window.CAE_DATA.p1.push(
+// Test 2 – Mary Heath
+{s:"She flew solo across Africa during the ___ age of aviation.",o:["golden","sweet","bright","shiny"],e:"the golden age of = zlatý věk."},
+{s:"She was the first woman to ___ a parachute jump.",o:["make","put","hold","take"],e:"make a jump."},
+{s:"At the ___ of her fame, she married a politician 45 years her senior.",o:["height","crest","fullness","top"],e:"at the height of one's fame."},
+{s:"She flew from South Africa to Egypt, ___ 9,000 miles in three months.",o:["covering","stretching","crossing","ranging"],e:"cover a distance = urazit."},
+{s:"She was ___ as the nation's sweetheart by the press.",o:["hailed","exclaimed","declared","quoted"],e:"be hailed as."},
+{s:"However, her life was ___ tragically short.",o:["cut","left","stopped","brought"],e:"be cut short."},
+{s:"Only a year later, she ___ a horrific accident at an air show.",o:["suffered","undertook","received","underwent"],e:"suffer an accident."},
+{s:"After the crash, her health was never the ___ again.",o:["same","like","equal","better"],e:"never the same again."},
+// Test 1 – Taking photographs
+{s:"People whip out their cameras almost mindlessly to ___ a moment.",o:["capture","seize","grasp","snatch"],e:"capture a moment."},
+{s:"They end up missing what is happening ___ in front of them.",o:["right","quite","merely","barely"],e:"right in front of = přímo před."},
+{s:"People rely on technology, ___ on the camera to remember for them.",o:["counting","settling","assuming","swearing"],e:"count on = spoléhat na."},
+{s:"Because they are taking photos, they don't ___ to the event fully.",o:["attend","engage","apply","dedicate"],e:"attend to = věnovat se. (engage s předložkou with)"},
+{s:"Taking photos can have a negative ___ on how well we remember.",o:["impact","result","aspect","extent"],e:"have an impact on."},
+{s:"The students were ___ on a tour of the university museum.",o:["led","steered","run","conveyed"],e:"be led on a tour."},
+{s:"People were less ___ in recognising the objects they had photographed.",o:["accurate","faithful","exact","factual"],e:"accurate = přesný (ve výkonu)."},
+{s:"Their memory of the photographed objects was poor ___ with those they had only looked at.",o:["compared","measured","matched","confronted"],e:"compared with."},
+// Test 6 – Emotions and the body
+{s:"Expressions like 'to get cold feet' ___ emotions to parts of the body.",o:["link","bridge","fasten","unify"],e:"link X to Y."},
+{s:"It now seems these associations are ___, found in every culture.",o:["universal","thorough","sweeping","expansive"],e:"universal = všeobecný."},
+{s:"The pattern was the same, regardless of a person's country of ___.",o:["origin","beginning","source","initiation"],e:"country of origin."},
+{s:"Scientists ___ an experiment using more than 700 volunteers.",o:["conducted","administered","directed","operated"],e:"conduct an experiment."},
+{s:"The videos were intended to ___ certain feelings in the viewers.",o:["trigger","set","pioneer","touch"],e:"trigger feelings."},
+{s:"They used computer-generated silhouettes to ___ where on their bodies they had felt anything.",o:["map","design","plan","programme"],e:"map = zmapovat, zakreslit."},
+{s:"The results showed ___ patterns of bodily sensations for each emotion.",o:["consistent","steady","proportional","solid"],e:"consistent patterns."},
+{s:"Happiness was associated with ___ sensations all over the body.",o:["enhanced","uplifted","glorified","maximised"],e:"enhanced = zesílený."},
+{s:"The study could help in the treatment of emotional ___ such as depression.",o:["disorders","disruptions","distractions","displacements"],e:"emotional disorders."}
+);
+
+window.CAE_DATA.p2.push(
+// Test 2 – Triathlons
+{s:"Stuart had launched himself on a promising career ___ a swimmer.",a:["as"],e:"career as a swimmer."},
+{s:"Then something odd happened ___ him at the local pool.",a:["to"],e:"happen to sb."},
+{s:"He suddenly realised ___ bored he had become with the monotony.",a:["how"],e:"how + přídavné jméno."},
+{s:"Wasn't there a more interesting way ___ being sporty?",a:["of"],e:"a way of doing."},
+{s:"The London Triathlon is the biggest event of ___ kind in the world.",a:["its"],e:"of its kind."},
+{s:"Triathlons are ___ but boring.",a:["anything"],e:"anything but = všechno, jen ne."},
+{s:"People are moving away ___ just running and looking for new challenges.",a:["from"],e:"move away from."},
+{s:"Triathlons are a ___ deal more interesting to train for.",a:["good","great"],e:"a good / great deal more."},
+{s:"You can swim in your lunch break, cycle to work and ___ on.",a:["so"],e:"and so on."},
+// Test 1 – Veuve Clicquot
+{s:"Called the New Generation Award, ___ recognises the best young female talent.",a:["it"],e:"Participium na začátku, pak hlavní věta s podmětem it."},
+{s:"Kathryn Parsons, ___ innovative start-up teaches people to code, has joined the panel.",a:["whose"],e:"whose + podstatné jméno."},
+{s:"The importance of these awards cannot ___ overestimated.",a:["be"],e:"cannot be + příčestí."},
+{s:"Women need role models who prove to ___ that they can do it, too.",a:["them"],e:"prove to sb that."},
+{s:"The award is open to women ___ the ages of 25 and 35.",a:["between"],e:"between the ages of … and …"},
+{s:"They can run ___ own businesses or come from corporate life.",a:["their"],e:"their own."},
+{s:"We want to recognise young women ___ a mission.",a:["with"],e:"women with a mission."},
+{s:"They are working to ___ the world a better place.",a:["make"],e:"make the world a better place."},
+// Test 6 – College news
+{s:"He has been nominated ___ a national award.",a:["for"],e:"nominated for."},
+{s:"He studies the impact of deforestation ___ land in the Amazon basin.",a:["on"],e:"impact on."},
+{s:"Desertification is a process by ___ formerly fertile land becomes desert.",a:["which"],e:"by which."},
+{s:"His study was undertaken ___ part of an international project.",a:["as"],e:"as part of."},
+{s:"A lucrative prize ___ the Taymon would help fund his research.",a:["like"],e:"like = jako (například)."},
+{s:"The awards ceremony will ___ place in London on 19 March.",a:["take"],e:"take place."},
+{s:"He jokes that he may ___ be the first person to be nominated six times without winning.",a:["well"],e:"may well = je dost možné."},
+{s:"___ this prove to be the case, he won't be too upset.",a:["should"],e:"Should + podmět = If."},
+{s:"The event will raise awareness of the problem, if ___ else.",a:["nothing"],e:"if nothing else = přinejmenším."}
+);
+
+window.CAE_DATA.p3.push(
+// Test 2 – Restaurant of the Year
+{s:"The official ___ form will appear in the paper next week.",w:"NOMINATE",a:["nomination"],e:"nominate → nomination."},
+{s:"Thursday is the final date for ___ of completed forms.",w:"RECEIVE",a:["receipt"],e:"receive → receipt (ne receivement)."},
+{s:"___ across the city have sent in their votes.",w:"DINE",a:["diners"],e:"Lidé, množné číslo."},
+{s:"They believe their ___ restaurant should definitely win.",w:"CHOOSE",a:["chosen"],e:"Příčestí jako přídavné jméno."},
+{s:"It has been a hotly ___ competition this year.",w:"CONTEST",a:["contested"],e:"hotly contested."},
+{s:"Once the ___ has passed, the judges will count the forms.",w:"DEAD",a:["deadline"],e:"dead → deadline."},
+{s:"The judges' visits will of course be ___.",w:"ANNOUNCE",a:["unannounced"],e:"un-announce-d."},
+{s:"Who will win the ___ title of Restaurant of the Year?",w:"PRESTIGE",a:["prestigious"],e:"prestige → prestigious."},
+// Test 1 – Exit interviews
+{s:"It may feel like a chance to rant about every little ___.",w:"ANNOY",a:["annoyance"],e:"annoy → annoyance."},
+{s:"But, ___ in mind that you will need a reference, stay calm.",w:"BEAR",a:["bearing"],e:"bearing in mind = s ohledem na to, že."},
+{s:"You will probably still need a ___ from these people.",w:"REFER",a:["reference"],e:"refer → reference."},
+{s:"It's best to avoid getting angry or ___.",w:"EMOTION",a:["emotional"],e:"emotion → emotional."},
+{s:"Answer the questions with as much ___ as possible.",w:"HONEST",a:["honesty"],e:"honest → honesty."},
+{s:"Employees may not wish to cause ___ to the boss.",w:"OFFEND",a:["offence","offense"],e:"cause offence."},
+{s:"They are unlikely to ___ their real feelings about the company.",w:"CLOSE",a:["disclose"],e:"close → disclose = prozradit."},
+{s:"Someone who has already resigned is more likely to be ___.",w:"TRUE",a:["truthful"],e:"true → truth → truthful."},
+// Test 6 – Job opportunity in IT
+{s:"The company is a major ___ with stores throughout the country.",w:"RETAIL",a:["retailer"],e:"retail → retailer."},
+{s:"A vacancy has ___ arisen in our IT department.",w:"EXPECT",a:["unexpectedly"],e:"un-expect-ed-ly."},
+{s:"We require a computer service ___ to start work as soon as possible.",w:"TECHNICAL",a:["technician"],e:"technical → technician."},
+{s:"The team is responsible for the ___ of a new computer system.",w:"INSTALL",a:["installation"],e:"install → installation."},
+{s:"Formal IT qualifications are ___ but not essential.",w:"DESIRE",a:["desirable"],e:"desire → desirable."},
+{s:"You need excellent skills and a ___ to keep up to date.",w:"WILL",a:["willingness"],e:"will → willing → willingness."},
+{s:"The company aims to achieve ___ in every aspect of its activities.",w:"EXCEL",a:["excellence"],e:"excel → excellence."},
+{s:"The company expects all its ___ to be committed to the same goal.",w:"EMPLOY",a:["employees"],e:"employee(s) = zaměstnanci; employers = zaměstnavatelé."}
+);
+
+window.CAE_DATA.p4.push(
+// Test 2
+{s1:"It took me some time to understand fully what happened.",k:"WHILE",s2:"It was ___ understood what had happened.",a:["a while before i fully","quite a while before i fully","a while before i"],e:"It was a while before + věta."},
+{s1:"There's no point arguing about this small detail, in my opinion.",k:"WORTH",s2:"This small detail ___, in my opinion.",a:["is not worth arguing about","isn't worth arguing about","is not worth arguing over","isn't worth arguing over"],e:"not worth + -ING, předložka zůstává."},
+{s1:"If your order is delayed, we will contact you.",k:"DELAY",s2:"Should ___ to your order, we will contact you.",a:["there be a delay","there be any delay"],e:"Should there be = If there is."},
+{s1:"The two situations are completely different.",k:"COMMON",s2:"The two situations don't ___ each other.",a:["have anything in common with"],e:"have (anything / nothing) in common with."},
+{s1:"I was amazed because there were no problems throughout the holiday.",k:"WENT",s2:"To ___ wrong throughout the holiday.",a:["my amazement nothing went"],e:"To my amazement + nothing went wrong."},
+{s1:"I have no intention of doing another kind of job.",k:"DREAM",s2:"I ___ other kind of job.",a:["wouldn't dream of doing any","would not dream of doing any","would never dream of doing any"],e:"wouldn't dream of + -ING."},
+// Test 1
+{s1:"I've just noticed that the car has almost run out of petrol.",k:"HARDLY",s2:"I've just noticed that ___ left in the car.",a:["there is hardly any petrol","there's hardly any petrol","there is hardly any fuel","there's hardly any fuel"],e:"there is hardly any = skoro nic není."},
+{s1:"I didn't know that cars were so expensive in this country.",k:"IDEA",s2:"I ___ so much in this country.",a:["had no idea cars cost","had no idea that cars cost","didn't have any idea cars cost"],e:"have no idea (that)."},
+{s1:"Don't get depressed because of such a small problem.",k:"LET",s2:"It's such a small problem that you shouldn't ___ down.",a:["let it get you"],e:"let sth get you down."},
+{s1:"It is reported that he is now recovering in hospital.",k:"RECOVERY",s2:"He is reported ___ in hospital now.",a:["to be making a recovery","to be making a good recovery","to be making a full recovery"],e:"be reported to be doing + make a recovery."},
+{s1:"Laura's teacher says she doesn't have a serious enough attitude to her work.",k:"SERIOUSLY",s2:"Laura doesn't ___ to her teacher.",a:["take her work seriously enough according"],e:"take sth seriously enough + according to."},
+{s1:"What's confusing you so much?",k:"LOT",s2:"What is it that's ___ confusion?",a:["causing you a lot of","giving you a lot of"],e:"cause sb a lot of sth."},
+// Test 6
+{s1:"Kathy's nomination for an award for bravery came as a surprise to her.",k:"ABACK",s2:"Kathy ___ being nominated for an award for bravery.",a:["was taken aback by","was taken aback at"],e:"be taken aback by = být zaskočen."},
+{s1:"Nobody was in the building when the fire occurred.",k:"TIME",s2:"The building was ___ the fire.",a:["empty at the time of"],e:"at the time of."},
+{s1:"Even though the company offered him a higher salary, David was still dubious about accepting the job.",k:"DESPITE",s2:"David was still dubious about accepting the job, ___ him a higher salary.",a:["despite the company offering","despite the company's offering","despite the company having offered"],e:"despite + podmět + -ING."},
+{s1:"Sheila missed her train because her husband couldn't drive her to the station.",k:"LIFT",s2:"If Sheila's husband had been able to ___ have caught her train.",a:["give her a lift she would","give her a lift, she would","give her a lift she could","give her a lift, she could"],e:"give sb a lift + třetí kondicionál."},
+{s1:"The children paid little attention to the dogs.",k:"NOTICE",s2:"The children didn't ___ the dogs.",a:["take much notice of","take a lot of notice of","take any notice of"],e:"take notice of."},
+{s1:"Local residents have been opposed to the proposal since 1996.",k:"DATES",s2:"Local residents' ___ to 1996.",a:["opposition to the proposal dates back"],e:"opposition to + date back to."},
+// List 70 KWT
+{s1:"The moment I shouted, he ran away.",k:"SOONER",s2:"No ___ he ran away.",a:["sooner had i shouted than","sooner did i shout than"],e:"No sooner had … than."},
+{s1:"I'm sure that it was the sound of the rain that disturbed me.",k:"MUST",s2:"It ___ of the rain that disturbed me.",a:["must have been the sound"],e:"must have been = určitě to bylo."},
+{s1:"I managed to finish all the homework before the deadline.",k:"SUCCEEDED",s2:"I ___ the homework before the deadline.",a:["succeeded in finishing all","succeeded in finishing all of"],e:"succeed in + -ING."},
+{s1:"I took the only course open to me and changed my job.",k:"DID",s2:"What I ___, which was the only course open to me.",a:["did was change my job","did was to change my job","did was changing my job"],e:"What I did was (to) + infinitiv."},
+{s1:"They don't allow people who arrive late at the opera house in until the interval.",k:"ARE",s2:"People who arrive late at the opera house ___ until the interval.",a:["are not allowed in","are not let in"],e:"Trpný rod: are not allowed in."},
+{s1:"My application for the job was turned down because I didn't have the right qualifications.",k:"GROUNDS",s2:"My application for the job was turned down ___ I didn't have the right qualifications.",a:["on the grounds that"],e:"on the grounds that = s odůvodněním, že."},
+{s1:"It's impossible that you saw John last night – he's in the USA!",k:"HAVE",s2:"John's in the USA, so ___ him last night.",a:["you can't have seen","you cannot have seen","you couldn't have seen","you could not have seen"],e:"can't have + příčestí."},
+{s1:"I am confident that he will be successful in his career.",k:"CHANCES",s2:"I am confident ___ in his career.",a:["of his chances of success"],e:"be confident of + chances of success."},
+{s1:"If you feel stressed, breathing slowly should calm you down.",k:"MAKE",s2:"Breathing slowly ___ if you feel stressed.",a:["should make you calmer","should make you feel calmer","should make you calm down"],e:"make sb + přídavné jméno / infinitiv bez to."}
+);
