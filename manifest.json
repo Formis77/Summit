@@ -1,13 +1,13 @@
 {
-  "name": "High Roller",
-  "short_name": "High Roller",
-  "description": "A casino incremental: unlock machines, climb the upgrade tree, pull charms, go VIP. Play money only.",
+  "name": "CAE Lab",
+  "short_name": "CAE Lab",
+  "description": "Databáze záludných výrazů a generátor cvičení na Cambridge C1 Advanced.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0c0918",
-  "theme_color": "#0c0918",
+  "background_color": "#0e131d",
+  "theme_color": "#0e131d",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }

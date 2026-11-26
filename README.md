@@ -1,13 +1,15 @@
-# High Roller
+# CAE Lab
 
-A casino incremental game for the phone. Play money only.
+Osobní trenažér na Cambridge C1 Advanced (CAE): databáze záludných kolokací, frázových sloves, předložkových vazeb, idiomů a tvoření slov a k tomu generátor cvičení ve stylu Use of English.
 
-- **Seven machines**, unlocked through the upgrade tree: Coin Flip, Slots (paylines, Wild, progressive jackpot), Capsule Gacha, Plinko (taller boards, ball cascades), Fortune Wheel, Roulette (Lucky Zero) and Rocket Crash (cash out before it explodes).
-- **Upgrade tree:** income branch (Side Hustle to Global Empire), luck and payout branch, and a branch per machine with max bet, autoplay and machine-specific upgrades.
-- **Charms:** 15 charms in 5 rarities from the Capsule Machine. Duplicates level them up and their boosts are permanent.
-- **VIP prestige:** reset cash and upgrades for VIP stars (+10% to everything), keeping your charms.
-- **Autoplay** for every machine, offline earnings, big-win celebrations and synthesized casino sounds.
+- **Slovník:** výrazy s českým významem, příkladovou větou a poznámkou, proč se v nich chybuje. Filtry „Moje chyby“ (z mých testů), „Slabá místa“, oblíbené a podle typu. Vlastní výrazy se dají přidat přímo v aplikaci.
+- **Test:** náhodný mix úloh z Part 1–4 (multiple choice, open cloze, word formation, key word transformations) s okamžitou kontrolou a vysvětlením. Výběr se přizpůsobuje tomu, co mi nejde.
+- **AI generování:** s vlastním Anthropic API klíčem (nastavení) vygeneruje pokaždé úplně nové úlohy zaměřené na moje slabá místa.
+- **Dril:** kartičky anglicky ↔ česky a doplňovačka z příkladových vět.
+- **Pokrok:** úspěšnost po částech, historie testů a seznam výrazů, které nejdou.
 
-Play: https://formis77.github.io/Summit/ → Share → Add to Home Screen.
+Data jsou v `data.js`, pokrok se ukládá v telefonu. Funguje offline.
 
-Earlier prototypes in this repo are in the git history.
+Otevřít: https://formis77.github.io/Summit/ → Sdílet → Přidat na plochu.
+
+Starší projekty z tohoto repa jsou v historii gitu.
