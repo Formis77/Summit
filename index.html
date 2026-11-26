@@ -142,6 +142,24 @@ nav.tabs button.on{color:var(--acc)}
 .htag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;background:rgba(242,184,75,.14);color:var(--acc);margin-left:6px;vertical-align:1px}
 #toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--s3);color:var(--ink);padding:11px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:30;max-width:88vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
+.opt .ck.tk{border:0;background:rgba(79,209,197,.14);color:var(--teal);width:34px;height:34px;border-radius:10px}
+.ttl2{font-size:22px;font-weight:700;margin:2px 0 4px;letter-spacing:-.01em}
+.ttext{font-size:17px;line-height:2.05;color:#dde4ef}
+.gp{display:inline;padding:3px 9px;border-radius:9px;background:var(--s2);border:1.5px dashed #3a4762;color:var(--acc);font-weight:700;font-size:16px;line-height:1.6;white-space:nowrap}
+.gp.filled{border-style:solid;border-color:rgba(242,184,75,.45)}
+.n{font-size:11px;font-weight:700;color:var(--mut);margin-right:5px;font-variant-numeric:tabular-nums}
+.gp.ok,.gi input.ok{border:1.5px solid var(--ok);color:var(--ok);background:rgba(70,210,138,.12)}
+.gp.bad,.gi input.bad{border:1.5px solid var(--bad);color:var(--bad);background:rgba(255,107,107,.1)}
+.gi{display:inline-flex;align-items:center;white-space:nowrap;vertical-align:baseline}
+.gi input{width:124px;padding:3px 9px;font-size:16px;border-radius:9px;display:inline-block;border:1.5px dashed #3a4762;line-height:1.5}
+.gi input:focus{border-style:solid}
+.gi .stem{font-size:11px;letter-spacing:.07em;color:var(--teal);font-weight:800;margin-left:5px}
+.fix{color:var(--ok);font-weight:700;margin-left:4px}
+.exl{border-top:1px solid var(--line);padding:11px 0;font-size:14px;line-height:1.45}
+.exl:first-child{border-top:0}
+.exl b{font-variant-numeric:tabular-nums}
+.tlist{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:13px 2px;border-top:1px solid var(--line)}
+.tlist .t{flex:1}.tlist span{color:var(--mut);font-size:13px}
 .mini{font-size:13px;color:var(--mut);line-height:1.45}
 </style>
 </head>
@@ -156,6 +174,7 @@ nav.tabs button.on{color:var(--acc)}
 <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
 
 <script src="data.js"></script>
+<script src="texts.js"></script>
 <script>
 "use strict";
 // ---------- ikony (vlastní SVG, žádné emoji) ----------
@@ -181,18 +200,20 @@ const I = {
 
 // ---------- data a stav ----------
 const D = window.CAE_DATA;
+const TX = window.CAE_TEXTS || {version:0,p1:[],p2:[],p3:[]};
+const GAP0 = {p1:1,p2:9,p3:17};
 const TYPES = {col:"Kolokace",pv:"Frázová slovesa",prep:"Předložky",idiom:"Idiomy",link:"Gramatika",wf:"Tvoření slov",word:"Slovíčka"};
 const PARTS = {p1:"Part 1 · Multiple choice",p2:"Part 2 · Open cloze",p3:"Part 3 · Word formation",p4:"Part 4 · Transformations"};
 const PSHORT = {p1:"Multiple choice",p2:"Open cloze",p3:"Word formation",p4:"Transformations",dr:"Doplňovačka"};
-const VERSION='5';
-const CACHE_NAME = "caelab-v5";
+const VERSION='6';
+const CACHE_NAME = "caelab-v6";
 const KEY = "caelab.v1";
 const SRC = {T1:"Test 1",T2:"Test 2",T3:"Test 3",T6:"Test 6",KWT:"KWT list"};
 const MINE = p => p.src && p.src!=="core" && p.src!=="u";
 let S = load();
 function load(){
   let s; try{ s = JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ s = {}; }
-  return Object.assign({stats:{},starred:{},custom:[],history:[],settings:{},setup:{parts:{p1:1,p2:1,p3:1,p4:1},n:5,focus:"mix"}}, s);
+  return Object.assign({textsDone:{},stats:{},starred:{},custom:[],history:[],settings:{},setup:{parts:{p1:1,p2:1,p3:1,p4:1},n:5,focus:"mix"}}, s);
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
@@ -326,7 +347,9 @@ function viewTestSetup(){
   const st = S.setup;
   const counts = {p1:bank("p1").length,p2:bank("p2").length,p3:bank("p3").length,p4:bank("p4").length};
   $("view").innerHTML = `
-    <div class="h2">Části</div>
+    <div class="h2">Celé texty jako u zkoušky</div>
+    ${["p1","p2","p3"].map(k=>{ const n=TX[k].length, d=TX[k].filter(x=>S.textsDone[x.id]).length; return `<button class="opt" data-tp="${k}"><i class="ck tk">${I.book}</i><div><b>${PARTS[k]}</b><span>${n} textů · hotovo ${d}</span></div></button>`; }).join("")}
+    <div class="h2">Mix jednotlivých vět</div>
     ${Object.keys(PARTS).map(k=>`<button class="opt ${st.parts[k]?"on":""}" data-p="${k}"><i class="ck">${st.parts[k]?I.check:""}</i><div><b>${PARTS[k]}</b><span>${counts[k]} úloh v bance</span></div></button>`).join("")}
     <div class="card">
       <div class="step"><div><b>Úloh z každé části</b></div><div class="ctl"><button id="nM">−</button><b id="nV">${st.n}</b><button id="nP">+</button></div></div>
@@ -338,6 +361,7 @@ function viewTestSetup(){
       </div>
     </div>
     <button class="btn" id="go">${I.test}Spustit test</button>`;
+  $("view").querySelectorAll("[data-tp]").forEach(b=>b.onclick=()=>pickText(b.dataset.tp));
   $("view").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ st.parts[b.dataset.p]=st.parts[b.dataset.p]?0:1; save(); viewTestSetup(); });
   $("view").querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{ st.focus=b.dataset.fc; save(); viewTestSetup(); });
   $("nM").onclick=()=>{ st.n=Math.max(1,st.n-1); save(); $("nV").textContent=st.n; };
@@ -358,6 +382,76 @@ function startTest(){
 }
 function drillQs(list){
   return list.map(p=>({id:p.id,part:"dr",phr:p,s:p.ex.replace(new RegExp(p.key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i"),"___"),a:[p.key],e:p.note||"",hint:p.cz}));
+}
+
+// ---------- CELÉ TEXTY ----------
+let TR = null;
+function pickText(part){
+  const L = TX[part];
+  sheet(`<h3>${PARTS[part]}</h3>
+    <button class="btn" id="tRand">Náhodný text</button>
+    <div style="height:8px"></div>
+    ${L.map(t=>{ const d=S.textsDone[t.id]; return `<button class="tlist" data-id="${t.id}"><div class="t"><b>${esc(t.title)}</b></div><span>${d?`nejlépe ${d.best}/8`:"nový"}</span></button>`; }).join("")}`);
+  $("tRand").onclick=()=>{
+    const fresh = L.filter(t=>!S.textsDone[t.id]);
+    const pool = fresh.length ? fresh : L.slice().sort((a,b)=>S.textsDone[a.id].last-S.textsDone[b.id].last).slice(0,Math.max(2,Math.ceil(L.length/2)));
+    closeSheet(); startText(part, pool[Math.random()*pool.length|0]);
+  };
+  $("sheetBody").querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{ closeSheet(); startText(part, L.find(t=>t.id===b.dataset.id)); });
+}
+function startText(part, t){
+  TR = {part, t, ans:Array(t.gaps.length).fill(""), done:false, opts:t.gaps.map(g=>g.o?shuffle(g.o):null)};
+  window.scrollTo(0,0); drawText();
+}
+function gapOk(g, v){ return g.o ? v===g.o[0] : g.a.some(a=>norm(a)===norm(v)); }
+function drawText(){
+  const {part,t,ans,done} = TR, base = GAP0[part];
+  setTitle(PSHORT[part], done ? "Vyhodnoceno" : "Celý text");
+  const bits = t.text.split("{}");
+  let body = esc(bits[0]);
+  t.gaps.forEach((g,i)=>{
+    const num = base+i, ok = done && gapOk(g, ans[i]), cls = done ? (ok?"ok":"bad") : "";
+    const right = g.o ? g.o[0] : g.a[0];
+    if(part==="p1") body += `<button class="gp ${ans[i]?"filled":""} ${cls}" data-g="${i}"><span class="n">${num}</span>${ans[i]?esc(ans[i]):"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"}</button>`;
+    else body += `<span class="gi"><span class="n">${num}</span><input data-g="${i}" class="${cls}" value="${esc(ans[i])}" ${done?"disabled":""} autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">${g.w?`<span class="stem">${esc(g.w)}</span>`:""}</span>`;
+    if(done && !ok) body += `<span class="fix">${esc(right)}</span>`;
+    body += esc(bits[i+1]);
+  });
+  const hint = {p1:"Klepni na mezeru a vyber jednu ze čtyř možností.",p2:"Do každé mezery napiš jedno slovo.",p3:"Ze slova vedle mezery utvoř slovo, které se hodí do textu."}[part];
+  let out = `<div class="ttl2">${esc(t.title)}</div><p class="mini" style="margin:0 0 12px">${hint}</p><div class="card ttext">${body}</div>`;
+  if(!done){
+    out += `<button class="btn" id="tEval">Vyhodnotit</button>`;
+  } else {
+    const sc = t.gaps.filter((g,i)=>gapOk(g,ans[i])).length;
+    out += `<div class="card score" style="padding:18px"><div class="big" style="font-size:44px">${sc}/8</div><div class="sub">${sc>=7?"výborně":sc>=5?"dobrý, ještě pár mezer":"tenhle text si zopakuj"}</div></div>
+      <div class="h2">Vysvětlení</div><div class="card">${t.gaps.map((g,i)=>{ const ok=gapOk(g,ans[i]); return `<div class="exl"><b style="color:${ok?"var(--ok)":"var(--bad)"}">${base+i}.</b> <b>${esc(g.o?g.o[0]:g.a.join(" / "))}</b>${ok?"":` <span class="mini">(ty: ${esc(ans[i]||"nic")})</span>`}${g.w?` <span class="mini">· ${esc(g.w)}</span>`:""}<div class="mini" style="margin-top:3px">${g.o?`Možnosti: ${g.o.map(esc).join(", ")}. `:""}${esc(g.e||"")}</div></div>`; }).join("")}</div>
+      <div class="row"><button class="btn sec" id="tAgain">Znovu</button><button class="btn" id="tNext">Další text</button></div>`;
+  }
+  $("view").innerHTML = out;
+  if(part==="p1" && !done) $("view").querySelectorAll(".gp").forEach(b=>b.onclick=()=>chooseGap(+b.dataset.g));
+  if(part!=="p1" && !done) $("view").querySelectorAll(".gi input").forEach(inp=>{
+    inp.oninput=()=>{ TR.ans[+inp.dataset.g]=inp.value; };
+    inp.onkeydown=e=>{ if(e.key==="Enter"){ const nx=$("view").querySelector(`.gi input[data-g="${+inp.dataset.g+1}"]`); if(nx) nx.focus(); else inp.blur(); } };
+  });
+  if($("tEval")) $("tEval").onclick=evalText;
+  if($("tAgain")) $("tAgain").onclick=()=>startText(part,t);
+  if($("tNext")) $("tNext").onclick=()=>pickText(part);
+}
+function chooseGap(i){
+  const g = TR.t.gaps[i];
+  sheet(`<h3>Mezera ${GAP0.p1+i}</h3><div class="mc">${TR.opts[i].map((o,k)=>`<button data-o="${esc(o)}" class="${TR.ans[i]===o?"ok":""}"><span class="n">${"ABCD"[k]}</span>${esc(o)}</button>`).join("")}</div>`);
+  $("sheetBody").querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{ TR.ans[i]=b.dataset.o; closeSheet(); drawText(); });
+}
+function evalText(){
+  const {part,t,ans} = TR;
+  if(ans.some(a=>!String(a).trim()) && !confirm("Některé mezery jsou prázdné. Vyhodnotit i tak?")) return;
+  TR.done = true;
+  let sc = 0;
+  t.gaps.forEach((g,i)=>{ const ok=gapOk(g,ans[i]); if(ok) sc++; record(`${part}:T${t.id}:${i}`, ok); });
+  const prev = S.textsDone[t.id];
+  S.textsDone[t.id] = {best:Math.max(sc, prev?prev.best:0), last:sc, n:(prev?prev.n:0)+1};
+  S.history.unshift({d:Date.now(),name:`${PSHORT[part]} · ${t.title}`,ok:sc,n:8,by:{[part]:{ok:sc,n:8}}}); S.history=S.history.slice(0,60);
+  save(); window.scrollTo(0,0); drawText();
 }
 
 // ---------- průběh testu ----------
@@ -509,8 +603,8 @@ function viewStats(){
 // ---------- NASTAVENÍ ----------
 function openSettings(){
   sheet(`<h3>Nastavení</h3>
-    <div class="card" style="margin:0 0 12px"><div class="switch" style="padding:0"><div class="t"><b>CAE Lab</b><span>Verze ${VERSION} · databáze v${D.version}</span></div><button class="btn sec" id="sUpd" style="width:auto;padding:10px 14px;font-size:14px">${I.flip}Zkontrolovat aktualizace</button></div></div>
-    <p class="mini">Databáze: ${D.phrases.length} výrazů, ${["p1","p2","p3","p4"].reduce((n,p)=>n+D[p].length,0)} úloh.</p>
+    <div class="card" style="margin:0 0 12px"><div class="switch" style="padding:0"><div class="t"><b>CAE Lab</b><span>Verze ${VERSION} · databáze v${D.version}.${TX.version}</span></div><button class="btn sec" id="sUpd" style="width:auto;padding:10px 14px;font-size:14px">${I.flip}Zkontrolovat aktualizace</button></div></div>
+    <p class="mini">Databáze: ${D.phrases.length} výrazů, ${["p1","p2","p3","p4"].reduce((n,p)=>n+D[p].length,0)} vět, ${TX.p1.length+TX.p2.length+TX.p3.length} celých textů.</p>
     <div class="h2">Data</div>
     <button class="btn ghost" id="sReset">Vymazat pokrok a historii</button>
     <p class="mini">Vlastní výrazy a oblíbené zůstanou.</p>`);
@@ -520,16 +614,17 @@ function openSettings(){
 async function checkUpdate(){
   toast("Hledám aktualizace…");
   try{
-    const [h,d] = await Promise.all([fetch("./index.html",{cache:"no-store"}).then(r=>r.text()), fetch("./data.js",{cache:"no-store"}).then(r=>r.text())]);
+    const [h,d,x] = await Promise.all(["./index.html","./data.js","./texts.js"].map(u=>fetch(u,{cache:"no-store"}).then(r=>r.text())));
     const v = (h.match(/const VERSION='(\d+)'/)||[])[1];
     const dv = [...d.matchAll(/version\s*[:=]\s*(\d+)/g)].map(m=>m[1]).pop();
-    if((v && v!==VERSION) || (dv && +dv!==D.version)){
+    const xv = [...x.matchAll(/version\s*[:=]\s*(\d+)/g)].map(m=>m[1]).pop();
+    if((v && v!==VERSION) || (dv && +dv!==D.version) || (xv && +xv!==TX.version)){
       const c = await caches.open(CACHE_NAME).catch(()=>null);
-      for(const u of ["./","./index.html","./data.js"]){ const r = await fetch(u,{cache:"reload"}).catch(()=>null); if(c && r && r.ok) await c.put(u, r); }
+      for(const u of ["./","./index.html","./data.js","./texts.js"]){ const r = await fetch(u,{cache:"reload"}).catch(()=>null); if(c && r && r.ok) await c.put(u, r); }
       if(swReg) await swReg.update().catch(()=>{});
-      toast(v && v!==VERSION ? `Aktualizuji na verzi ${v}…` : `Stahuji novou databázi v${dv}…`);
+      toast(v && v!==VERSION ? `Aktualizuji na verzi ${v}…` : `Stahuji nové výrazy a texty…`);
       setTimeout(()=>location.reload(), 700);
-    } else toast(`Máš nejnovější verzi (${VERSION}, databáze v${D.version})`);
+    } else toast(`Máš nejnovější verzi (${VERSION}, databáze v${D.version}.${TX.version})`);
   }catch(e){ toast("Bez připojení – zkus to později"); }
 }
 let toastT;
