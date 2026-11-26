@@ -133,6 +133,13 @@ nav.tabs button.on{color:var(--acc)}
 .spin{width:38px;height:38px;border-radius:50%;border:3px solid var(--s3);border-top-color:var(--acc);animation:sp 1s linear infinite;margin:0 auto 16px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .err{color:var(--bad);font-size:14px;margin-top:10px;line-height:1.45}
+.inrow{display:flex;gap:8px;align-items:stretch}.inrow input{flex:1}
+.helpb{flex:none;width:50px;border-radius:12px;background:var(--s2);border:1px solid var(--line);color:var(--mut);font-size:20px;font-weight:800}
+.helpb.on{color:var(--acc);border-color:rgba(242,184,75,.45);background:rgba(242,184,75,.12)}
+.hintbox{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(242,184,75,.08);border:1px solid rgba(242,184,75,.25);font-size:14px;color:#e8d6ad}
+.hintbox.on{display:block}
+.fb.help{background:rgba(242,184,75,.08);border:1px solid rgba(242,184,75,.35)}.fb.help .ttl{color:var(--acc)}
+.htag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:6px;background:rgba(242,184,75,.14);color:var(--acc);margin-left:6px;vertical-align:1px}
 .mini{font-size:13px;color:var(--mut);line-height:1.45}
 </style>
 </head>
@@ -424,8 +431,9 @@ function drawQ(){
       <input id="ans" placeholder="3–6 slov včetně klíčového slova" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">`;
   } else {
     body = `${q.part==="p3"?`<div class="key wf">${esc(q.w)}</div>`:""}<div class="qtext">${gapped(q.s)}</div>
-      ${q.part==="dr"?`<p class="mini" style="margin-top:-8px">${esc(q.hint)} · začíná na „${esc(q.a[0][0])}“, ${q.a[0].length} písmen</p>`:""}
-      <input id="ans" placeholder="${q.part==="p3"?"Tvar slova":"Jedno slovo"}" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">`;
+      ${q.part==="dr"?`<div class="inrow"><input id="ans" placeholder="Jedno slovo" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"><button class="helpb" id="help" aria-label="Nápověda">?</button></div>
+      <div class="hintbox" id="hintbox">${esc(q.hint)} · začíná na „${esc(q.a[0][0])}“, ${q.a[0].length} písmen<div class="mini" style="margin-top:4px;color:var(--acc)">Bude započítáno jako „s pomocí“.</div></div>`
+      :`<input id="ans" placeholder="${q.part==="p3"?"Tvar slova":"Jedno slovo"}" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">`}`;
   }
   $("view").innerHTML = `<div class="qhead"><span class="qpart">${q.part==="dr"?"Dril výrazů":PARTS[q.part]}</span><span>${q.ai?"AI":""}</span></div>
     <div class="prog"><i style="width:${(R.i/R.qs.length)*100}%"></i></div>
@@ -443,6 +451,7 @@ function drawQ(){
     const check=()=>{ if(R.answered) return; const v=inp.value; if(!v.trim()) return; inp.blur(); answer(q.a.some(a=>norm(a)===norm(v)), v); };
     $("chk").onclick=check; inp.onkeydown=e=>{ if(e.key==="Enter") check(); };
     $("skip").onclick=()=>{ if(R.answered) return; answer(false,"—"); };
+    if($("help")) $("help").onclick=()=>{ if(R.answered) return; q._help=true; $("help").classList.add("on"); $("hintbox").classList.add("on"); inp.focus({preventScroll:true}); };
     setTimeout(()=>inp.focus({preventScroll:true}),60);
   }
 }
@@ -457,32 +466,34 @@ function answer(ok, given){
     if(!norm(given).split(" ").includes(norm(q.k))) warn = "Chybí klíčové slovo – v testu by to bylo za 0.";
     else if(wc>6||wc<3) warn = `Máš ${wc} slov, povolené jsou 3–6.`;
   }
-  R.res.push({q, ok, given, correct});
+  const helped = !!(q._help && ok);
+  if(helped) ok = false;
+  R.res.push({q, ok, given, correct, helped});
   if(!q.ai) record(q.id, ok);
   save();
   const alts = (q.a||[]).length>1 ? `<div class="mini" style="margin-top:6px">Uznává se i: ${q.a.slice(1).map(esc).join(" · ")}</div>` : "";
-  $("fbk").innerHTML = `<div class="fb ${ok?"ok":"bad"}"><div class="ttl">${ok?I.check+"Správně":I.x+"Špatně"}</div>
-    ${ok?"":`Správně: <span class="ans">${esc(correct)}</span>`}${q.part!=="p1"?alts:""}
+  $("fbk").innerHTML = `<div class="fb ${helped?"help":ok?"ok":"bad"}"><div class="ttl">${helped?I.check+"Správně, ale s pomocí":ok?I.check+"Správně":I.x+"Špatně"}</div>
+    ${helped?`<div class="mini" style="color:#e8d6ad">Výraz se přidá mezi slabá místa, ať si ho zopakuješ.</div>`:ok?"":`Správně: <span class="ans">${esc(correct)}</span>`}${q.part!=="p1"?alts:""}
     ${warn?`<div class="err" style="margin-top:6px">${esc(warn)}</div>`:""}
     ${q.e?`<div class="why">${esc(q.e)}</div>`:""}
-    ${!ok&&q.part!=="p1"&&given!=="—"?`<button class="linkb" id="ovr">${I.check}Měl jsem to dobře (uznat)</button>`:""}</div>`;
+    ${!ok&&!helped&&q.part!=="p1"&&given!=="—"?`<button class="linkb" id="ovr">${I.check}Měl jsem to dobře (uznat)</button>`:""}</div>`;
   if($("ovr")) $("ovr").onclick=()=>{ const r=R.res[R.res.length-1]; r.ok=true; if(!q.ai){ const s=S.stats[q.id]; s.w--; s.c++; s.last=1; } save(); $("ovr").remove(); $("fbk").querySelector(".fb").className="fb ok"; };
   $("nav").innerHTML = `<button class="btn" id="nx">${R.i+1<R.qs.length?"Další":"Výsledky"}</button>`;
   $("nx").onclick = ()=>{ R.i++; if(R.i<R.qs.length){ drawQ(); window.scrollTo(0,0); } else results(); };
   if(window.innerWidth<700) setTimeout(()=>{ const n=$("nx"); if(n) n.scrollIntoView({behavior:"smooth",block:"end"}); },80);
 }
 function results(){
-  const res = R.res, ok = res.filter(r=>r.ok).length, pct = Math.round(ok/res.length*100);
+  const res = R.res, ok = res.filter(r=>r.ok).length, pct = Math.round(ok/res.length*100), nh = res.filter(r=>r.helped).length;
   const by = {}; res.forEach(r=>{ const k=r.q.part; by[k]=by[k]||{ok:0,n:0}; by[k].n++; if(r.ok) by[k].ok++; });
   S.history.unshift({d:Date.now(),name:R.name,ok,n:res.length,by}); S.history = S.history.slice(0,60); save();
   setTitle("Výsledek", R.name);
   const wrong = res.filter(r=>!r.ok);
-  $("view").innerHTML = `<div class="card score"><div class="big">${ok}/${res.length}</div><div class="sub">${pct} % · ${pct>=80?"výborně, tohle už sedí":pct>=60?"na hraně C1, ještě dotáhnout":"tohle chce ještě zopakovat"}</div></div>
+  $("view").innerHTML = `<div class="card score"><div class="big">${ok}/${res.length}</div><div class="sub">${pct} %${nh?` · ${nh} s pomocí`:""} · ${pct>=80?"výborně, tohle už sedí":pct>=60?"na hraně C1, ještě dotáhnout":"tohle chce ještě zopakovat"}</div></div>
     ${Object.keys(by).length>1?`<div class="card bars">${Object.entries(by).map(([k,v])=>`<div class="b"><span>${PSHORT[k]}</span><div class="tr"><i style="width:${v.ok/v.n*100}%"></i></div><span>${v.ok}/${v.n}</span></div>`).join("")}</div>`:""}
-    ${wrong.length?`<div class="h2">Chyby k zopakování</div><div class="card">${wrong.map(r=>`<div class="mis"><div class="q">${r.q.part==="p4"?esc(r.q.s1)+" <b>"+esc(r.q.k)+"</b><br>":""}${esc((r.q.s||r.q.s2).replace("___","____"))}</div><div><span class="y">${esc(r.given)}</span> → <span class="c">${esc(r.correct)}</span></div>${r.q.e?`<div class="mini">${esc(r.q.e)}</div>`:""}</div>`).join("")}</div>`:""}
+    ${wrong.length?`<div class="h2">Chyby k zopakování</div><div class="card">${wrong.map(r=>`<div class="mis"><div class="q">${r.q.part==="p4"?esc(r.q.s1)+" <b>"+esc(r.q.k)+"</b><br>":""}${esc((r.q.s||r.q.s2).replace("___","____"))}</div><div>${r.helped?`<span class="c">${esc(r.correct)}</span><span class="htag">s pomocí</span>`:`<span class="y">${esc(r.given)}</span> → <span class="c">${esc(r.correct)}</span>`}</div>${r.q.e?`<div class="mini">${esc(r.q.e)}</div>`:""}</div>`).join("")}</div>`:""}
     ${wrong.length?`<button class="btn" id="again">Zopakovat chyby</button><div style="height:10px"></div>`:""}
     <button class="btn sec" id="new">Nový test</button>`;
-  if($("again")) $("again").onclick=()=>startRun(wrong.map(r=>{ const q=Object.assign({},r.q); delete q._o; return q; }), "Oprava chyb");
+  if($("again")) $("again").onclick=()=>startRun(wrong.map(r=>{ const q=Object.assign({},r.q); delete q._o; delete q._help; return q; }), "Oprava chyb");
   $("new").onclick=()=>go("test");
 }
 
