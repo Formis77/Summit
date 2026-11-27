@@ -1,7 +1,7 @@
 // CAE Lab service worker: aplikace funguje offline z uložené kopie.
 // Nové verze se stahují ručně tlačítkem „Zkontrolovat aktualizace“ v nastavení
 // (stejně jako v Kazetě). Při změně číslo CACHE zvednout spolu s VERSION v index.html.
-const CACHE = 'caelab-v7';
+const CACHE = 'caelab-v8';
 const CORE = ['./', './index.html', './data.js', './texts.js', './writing.js', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

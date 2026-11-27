@@ -2,7 +2,7 @@
 // Hodnocení podle Cambridge: 4 kritéria po 0–5 bodech (Content, Communicative Achievement,
 // Organisation, Language) = max 20 bodů za jednu práci.
 window.CAE_WRITING = {
-version: 1,
+version: 2,
 
 types: {
 essay: {name:"Essay", part:1,
@@ -90,5 +90,149 @@ task:"An international student guide to your town is inviting reviews of cafés 
 // Přidává Claude po ohodnocení. Schéma:
 // {id, prompt:"E01" nebo {type,title,task}, date, text, scores:{content,ca,org,lang},
 //  summary, comments:{content,ca,org,lang}, good:[…], fix:[{orig,fix,why}], phrases:[{en,cz}], improved}
-essays: []
+essays: [
+{
+ "id": "W001",
+ "prompt": "E01",
+ "date": "27. 11. 2026",
+ "text": "Many larger cities all over the world have one big problem that affects lives on daily bases, which is growing traffic. This essay is going to be targetting two possible ways of reducing the traffic connected with upgrading public transport options and turning heavy traffic places into calm padestrian zones.\n\nPeople in general tend to always choose better and cheaper option. This means that if the city provides enough money and invests more into public transport then the price of tickets will go down significantly and residents will use it more over their own vehicle. This action will reduce overall traffic in the city and will help towards saving the environment tremendously.\n\nAnother possible way of reducing the traffic is by turning very busy streets into calmer padestrian zones where cars or any type of vehicle is not allowed. This will be beneficial for the local bussiness because it gives them opportunity for setting up their shops as well as for the residents which can enjoy their time there.\n\nAll things considered, both options are solid and effective ways of reducing increasing traffic problems. Though creating car-free zones would be helpful, it is not as impactful as investing into better public transport. Additionally, if more people pay for buses or any different type of city transport, the investment will eventually turn into profit and that can be used towards another environmental-friendly projects.",
+ "scores": {
+  "content": 4,
+  "ca": 3,
+  "org": 3,
+  "lang": 3
+ },
+ "summary": "Solidní esej na hranici C1 (13/20). Splnil jsi zadání: rozebíráš dva body z poznámek a v závěru jasně říkáš, který je účinnější. Body ztrácíš hlavně na jazyku (pravopis, předložky, členy) a na tom, že argumenty zůstávají dost obecné. Odstavec o pěších zónách vůbec nevysvětluje, jak sníží dopravu.",
+ "comments": {
+  "content": "Oba body jsou pokryté a závěr obsahuje jasný názor, což je klíčové. Odstavec o pěších zónách ale mluví o obchodech a obyvatelích, ne o tom, jak to omezí dopravu. Čtenář tak nedostane argument, který zadání chce. Názory z poznámek jsi nevyužil – nejsou povinné, ale pomohly by k hlubší argumentaci.",
+  "ca": "Styl je neutrální a odpovídá eseji, bez zkratek – dobře. Úvod „This essay is going to be targetting…“ působí neobratně a argumenty jsou spíš jednoduchá tvrzení („the price of tickets will go down significantly“) bez vysvětlení nebo příkladu. Na C1 se čeká přesvědčivější a promyšlenější argumentace.",
+  "org": "Jasná struktura úvod – dva odstavce – závěr, každý odstavec má jedno téma. Spojovací výrazy jsou ale základní (This means, Another possible way, Additionally). Chybí výrazy, které vážou argumenty k sobě: However, Nevertheless, whereas, Provided that.",
+  "lang": "Několik výrazů na úrovni C1 (tremendously, impactful, All things considered), ale hodně chyb: pravopis (padestrian, bussiness, targetting), předložky (invest into, on daily bases), členy (choose better option) a vztažná zájmena (residents which). Chyby neztěžují porozumění, ale je jich na C1 moc a gramatika je dost jednoduchá – chybí podmínkové věty, inverze, trpný rod."
+ },
+ "good": [
+  "Esej má jasnou strukturu a správný rozsah (232 slov).",
+  "V závěru jasně vybíráš, který způsob je účinnější, a zdůvodňuješ to – přesně to Part 1 chce.",
+  "Dobrý nápad v závěru: investice do dopravy se vrátí a peníze půjdou na další projekty.",
+  "Pěkné výrazy: All things considered, tremendously, impactful."
+ ],
+ "fix": [
+  {
+   "orig": "on daily bases",
+   "fix": "on a daily basis",
+   "why": "Pevné spojení, jednotné číslo se členem a."
+  },
+  {
+   "orig": "This essay is going to be targetting",
+   "fix": "This essay will consider / focus on",
+   "why": "Pravopis targeting (jedno t) a „target“ se pro rozbor témat nepoužívá. Průběhový tvar tu nedává smysl."
+  },
+  {
+   "orig": "padestrian",
+   "fix": "pedestrian",
+   "why": "Pravopis: ped- (jako pedál)."
+  },
+  {
+   "orig": "tend to always choose better and cheaper option",
+   "fix": "tend to choose the better and cheaper option",
+   "why": "Chybí člen the. Příslovce always je s tend to zbytečné."
+  },
+  {
+   "orig": "invests more into public transport",
+   "fix": "invests more in public transport",
+   "why": "invest IN, ne into (stejně v závěru: investing in)."
+  },
+  {
+   "orig": "if the city provides … then the price will go down",
+   "fix": "if the city invested …, ticket prices would fall",
+   "why": "Hypotetická situace → druhý kondicionál zní na C1 lépe. Ve formálním textu bez then."
+  },
+  {
+   "orig": "use it more over their own vehicle",
+   "fix": "use it rather than their own cars",
+   "why": "„more over“ není anglicky. Srovnání: rather than / instead of."
+  },
+  {
+   "orig": "where cars or any type of vehicle is not allowed",
+   "fix": "where no vehicles are allowed",
+   "why": "Jednodušší a gramaticky čistší."
+  },
+  {
+   "orig": "the local bussiness",
+   "fix": "local businesses",
+   "why": "Pravopis (jedno s uprostřed) a množné číslo – myslíš všechny obchody."
+  },
+  {
+   "orig": "gives them opportunity for setting up their shops",
+   "fix": "gives them the opportunity to set up shops",
+   "why": "the opportunity TO do sth."
+  },
+  {
+   "orig": "the residents which can enjoy",
+   "fix": "residents, who can enjoy",
+   "why": "Pro lidi who, ne which."
+  },
+  {
+   "orig": "reducing increasing traffic problems",
+   "fix": "tackling growing traffic problems",
+   "why": "reducing increasing zní kostrbatě; tackle a problem je typická kolokace."
+  },
+  {
+   "orig": "another environmental-friendly projects",
+   "fix": "other environmentally friendly projects",
+   "why": "another + jednotné číslo, other + množné. A environmentally (příslovce) friendly."
+  }
+ ],
+ "phrases": [
+  {
+   "en": "on a daily basis",
+   "cz": "denně, každodenně",
+   "ex": "Traffic affects residents' lives on a daily basis.",
+   "key": "basis"
+  },
+  {
+   "en": "invest in sth",
+   "cz": "investovat do",
+   "ex": "The city should invest heavily in public transport.",
+   "key": "in"
+  },
+  {
+   "en": "tackle a problem",
+   "cz": "řešit problém",
+   "ex": "Good public transport tackles the cause of the problem.",
+   "key": "tackles"
+  },
+  {
+   "en": "traffic congestion",
+   "cz": "dopravní zácpy",
+   "ex": "Traffic congestion has become a serious problem.",
+   "key": "congestion"
+  },
+  {
+   "en": "provided that",
+   "cz": "za předpokladu, že",
+   "ex": "Provided that the investment is well planned, it will work.",
+   "key": "Provided"
+  },
+  {
+   "en": "shift the problem elsewhere",
+   "cz": "přesunout problém jinam",
+   "ex": "Car-free zones may only shift the problem elsewhere.",
+   "key": "shift"
+  },
+  {
+   "en": "environmentally friendly",
+   "cz": "šetrný k životnímu prostředí",
+   "ex": "The money could fund other environmentally friendly projects.",
+   "key": "environmentally"
+  },
+  {
+   "en": "put money towards sth",
+   "cz": "použít peníze na",
+   "ex": "The profit could be put towards other projects.",
+   "key": "towards"
+  }
+ ],
+ "improved": "In many cities around the world, traffic congestion has become a problem that affects residents' lives on a daily basis. This essay will consider two possible solutions: improving public transport and turning busy streets into pedestrian zones.\n\nPeople generally tend to choose the option that is cheaper and more convenient. If a city invested heavily in its public transport network, introducing more frequent services and lower fares, many residents would be likely to leave their cars at home. However, this would only work if the alternative were genuinely better: a bus that is cheap but unreliable will hardly persuade anyone to give up driving. Provided that the investment is well planned, it could significantly reduce traffic and help to cut emissions.\n\nAnother option is to ban vehicles from the busiest streets and create car-free zones. Once drivers can no longer use these routes as shortcuts, traffic in the centre tends to fall, and the streets become safer and quieter. Local businesses often benefit too, as pedestrians are more likely to stop and shop than people driving past. Nevertheless, unless people are offered another way of getting around, the traffic may simply move to neighbouring streets.\n\nAll things considered, both measures can make a difference, but I believe that investing in public transport would be more effective. Car-free zones only shift the problem elsewhere, whereas good public transport tackles its cause. What is more, a well-used network would eventually generate income which could be put towards other environmentally friendly projects."
+}
+]
 };

@@ -588,3 +588,22 @@ window.CAE_DATA.p4.push(
 {s1:"I am confident that he will be successful in his career.",k:"CHANCES",s2:"I am confident ___ in his career.",a:["of his chances of success"],e:"be confident of + chances of success."},
 {s1:"If you feel stressed, breathing slowly should calm you down.",k:"MAKE",s2:"Breathing slowly ___ if you feel stressed.",a:["should make you calmer","should make you feel calmer","should make you calm down"],e:"make sb + přídavné jméno / infinitiv bez to."}
 );
+
+// ===================================================================
+// Dávka 3 (27. 11. 2026): chyby a výrazy z Writingu – esej E01
+// ===================================================================
+window.CAE_DATA.version = 3;
+window.CAE_DATA.phrases.push(
+["on a daily basis","denně, každodenně","col","Traffic affects residents' lives on a daily basis.","basis","Ne „on daily bases“ – pevné spojení se členem a v jednotném čísle.","W"],
+["invest in sth","investovat do","prep","The city should invest heavily in public transport.","in","invest IN, ne into.","W"],
+["tackle a problem","řešit problém","col","Good public transport tackles the cause of the problem.","tackles","","W"],
+["traffic congestion","dopravní zácpy","col","Traffic congestion has become a serious problem in many cities.","congestion","","W"],
+["provided (that)","za předpokladu, že","link","Provided that the investment is well planned, it will work.","Provided","","W"],
+["shift the problem elsewhere","přesunout problém jinam","col","Car-free zones may only shift the problem elsewhere.","shift","","W"],
+["environmentally friendly","šetrný k životnímu prostředí","col","The money could fund other environmentally friendly projects.","environmentally","environmentALLY (příslovce) friendly, ne environmental-friendly.","W"],
+["put money towards sth","použít peníze na","col","The profit could be put towards other projects.","towards","","W"],
+["the opportunity to do sth","příležitost něco udělat","prep","It gives businesses the opportunity to set up shops.","opportunity","the opportunity TO do, ne „opportunity for doing“.","W"],
+["rather than","místo, spíše než","link","Residents would use buses rather than their own cars.","rather","Ne „more over“.","W"],
+["another + singular / other + plural","další","link","The money could be used for other projects.","other","another project, other projects.","W"],
+["pedestrian zone","pěší zóna","word","The busiest streets were turned into pedestrian zones.","pedestrian","Pravopis: PEDestrian.","W"]
+);
