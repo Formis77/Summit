@@ -5,6 +5,7 @@ Osobní trenažér na Cambridge C1 Advanced (CAE): databáze záludných kolokac
 - **Slovník:** výrazy s českým významem, příkladovou větou a poznámkou, proč se v nich chybuje. Filtry „Moje chyby“ (z mých testů), „Slabá místa“, oblíbené a podle typu. Vlastní výrazy se dají přidat přímo v aplikaci.
 - **Celé texty:** souvislé texty s 8 mezerami pro Part 1–3 jako u zkoušky (`texts.js`), s vyhodnocením a vysvětlením každé mezery.
 - **Test:** náhodný mix úloh z Part 1–4 (multiple choice, open cloze, word formation, key word transformations) s okamžitou kontrolou a vysvětlením. Výběr se přizpůsobuje tomu, co mi nejde.
+- **Writing:** 24 zadání (eseje a Part 2: letter/email, proposal, report, review) s tipy, editor s počítadlem slov a databáze mých ohodnocených prací (`writing.js`).
 - **Dril:** kartičky anglicky ↔ česky a doplňovačka z příkladových vět.
 - **Pokrok:** úspěšnost po částech, historie testů a seznam výrazů, které nejdou.
 

@@ -160,6 +160,34 @@ nav.tabs button.on{color:var(--acc)}
 .exl b{font-variant-numeric:tabular-nums}
 .tlist{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:13px 2px;border-top:1px solid var(--line)}
 .tlist .t{flex:1}.tlist span{color:var(--mut);font-size:13px}
+nav.tabs button{font-size:10.5px}
+.backb{display:inline-flex;align-items:center;gap:4px;color:var(--mut);font-size:15px;margin:0 0 12px -4px;padding:4px}
+.wcard{display:block;width:100%;text-align:left;background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px}
+.wcard .top2{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.wcard b{font-size:16px}
+.wcard .sc{font-size:20px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums}
+.wtag{font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(79,209,197,.14);color:var(--teal);font-weight:700;letter-spacing:.03em}
+.wtask{white-space:pre-line;font-size:16px;line-height:1.6}
+.notes{background:var(--s2);border-radius:12px;padding:14px;margin-top:14px;font-size:15px;line-height:1.55}
+.notes ol{margin:6px 0 10px;padding-left:22px}
+.notes q{display:block;color:#c4cddc;font-style:italic;margin:6px 0}
+details.tips summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px;color:var(--acc)}
+details.tips summary::-webkit-details-marker{display:none}
+details.tips ul{padding-left:18px;margin:10px 0;line-height:1.5;font-size:14px;color:#c4cddc}
+textarea.wed{min-height:52vh;line-height:1.6;font-size:16px;resize:vertical}
+.wc{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);margin:8px 2px 12px}
+.wc b{font-variant-numeric:tabular-nums}.wc b.ok{color:var(--ok)}.wc b.lo{color:var(--acc)}.wc b.hi{color:var(--bad)}
+.crit{margin:12px 0}
+.crit .hd{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px}
+.crit .hd b{font-variant-numeric:tabular-nums}
+.crit .tr{height:8px;background:var(--s2);border-radius:99px;overflow:hidden}
+.crit .tr i{display:block;height:100%;border-radius:99px;background:var(--teal)}
+.crit p{margin:6px 0 0;font-size:14px;color:#c4cddc;line-height:1.45}
+.fixr{border-top:1px solid var(--line);padding:11px 0;font-size:15px;line-height:1.5}
+.fixr:first-child{border-top:0}
+.fixr s{color:var(--bad);text-decoration-thickness:1.5px}
+.fixr ins{color:var(--ok);text-decoration:none;font-weight:600}
+.etext{white-space:pre-wrap;font-size:15px;line-height:1.65;color:#d7deea}
 .mini{font-size:13px;color:var(--mut);line-height:1.45}
 </style>
 </head>
@@ -175,6 +203,7 @@ nav.tabs button.on{color:var(--acc)}
 
 <script src="data.js"></script>
 <script src="texts.js"></script>
+<script src="writing.js"></script>
 <script>
 "use strict";
 // ---------- ikony (vlastní SVG, žádné emoji) ----------
@@ -195,6 +224,8 @@ const I = {
   back:`<svg width="20" height="20" viewBox="0 0 24 24" ${P}><path d="m15 18-6-6 6-6"/></svg>`,
   flip:`<svg width="14" height="14" viewBox="0 0 24 24" ${P}><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>`,
   trash:`<svg width="16" height="16" viewBox="0 0 24 24" ${P}><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>`,
+  pen:`<svg width="22" height="22" viewBox="0 0 24 24" ${P}><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>`,
+  copy:`<svg width="18" height="18" viewBox="0 0 24 24" ${P}><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>`,
   target:`<svg width="18" height="18" viewBox="0 0 24 24" ${P}><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg>`
 };
 
@@ -202,18 +233,19 @@ const I = {
 const D = window.CAE_DATA;
 const TX = window.CAE_TEXTS || {version:0,p1:[],p2:[],p3:[]};
 const GAP0 = {p1:1,p2:9,p3:17};
+const WR = window.CAE_WRITING || {version:0,types:{},prompts:[],essays:[]};
 const TYPES = {col:"Kolokace",pv:"Frázová slovesa",prep:"Předložky",idiom:"Idiomy",link:"Gramatika",wf:"Tvoření slov",word:"Slovíčka"};
 const PARTS = {p1:"Part 1 · Multiple choice",p2:"Part 2 · Open cloze",p3:"Part 3 · Word formation",p4:"Part 4 · Transformations"};
 const PSHORT = {p1:"Multiple choice",p2:"Open cloze",p3:"Word formation",p4:"Transformations",dr:"Doplňovačka"};
-const VERSION='6';
-const CACHE_NAME = "caelab-v6";
+const VERSION='7';
+const CACHE_NAME = "caelab-v7";
 const KEY = "caelab.v1";
 const SRC = {T1:"Test 1",T2:"Test 2",T3:"Test 3",T6:"Test 6",KWT:"KWT list"};
 const MINE = p => p.src && p.src!=="core" && p.src!=="u";
 let S = load();
 function load(){
   let s; try{ s = JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ s = {}; }
-  return Object.assign({textsDone:{},stats:{},starred:{},custom:[],history:[],settings:{},setup:{parts:{p1:1,p2:1,p3:1,p4:1},n:5,focus:"mix"}}, s);
+  return Object.assign({drafts:{},textsDone:{},stats:{},starred:{},custom:[],history:[],settings:{},setup:{parts:{p1:1,p2:1,p3:1,p4:1},n:5,focus:"mix"}}, s);
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
@@ -250,7 +282,7 @@ function pick(list, n, focus){
 }
 
 // ---------- navigace ----------
-const TABS = [["dict","Slovník",I.book],["test","Test",I.test],["drill","Dril",I.cards],["stats","Pokrok",I.chart]];
+const TABS = [["dict","Slovník",I.book],["test","Test",I.test],["drill","Dril",I.cards],["write","Writing",I.pen],["stats","Pokrok",I.chart]];
 let tab = "dict";
 const $ = id=>document.getElementById(id);
 $("btnSettings").innerHTML = I.gear;
@@ -259,7 +291,8 @@ function renderTabs(){
   $("tabs").innerHTML = TABS.map(([k,l,ic])=>`<button data-t="${k}" class="${tab===k?"on":""}">${ic}${l}</button>`).join("");
   $("tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>go(b.dataset.t));
 }
-function go(t){ tab=t; renderTabs(); window.scrollTo(0,0); ({dict:viewDict,test:viewTestSetup,drill:viewDrill,stats:viewStats})[t](); }
+function go(t){ tab=t; renderTabs(); window.scrollTo(0,0); if(t==="write") W.view="list";
+  ({dict:viewDict,test:viewTestSetup,drill:viewDrill,write:viewWriting,stats:viewStats})[t](); }
 function setTitle(t,sub){ $("title").innerHTML = esc(t)+`<small>${esc(sub||"")}</small>`; }
 
 // ---------- SLOVNÍK ----------
@@ -579,6 +612,110 @@ function drawCard(){
   }
 }
 
+// ---------- WRITING ----------
+let W = {view:"list", seg:"prompts", f:"all", pid:null, eid:null};
+const CRIT = [["content","Content","Obsah – splnil jsi všechny body zadání?"],["ca","Communicative Achievement","Komunikační cíl – styl, tón a forma pro daného čtenáře"],["org","Organisation","Organizace – struktura, odstavce, návaznost"],["lang","Language","Jazyk – rozsah a přesnost slovní zásoby a gramatiky"]];
+function wPrompt(id){ return WR.prompts.find(p=>p.id===id); }
+function wTitle(e){ const p = typeof e.prompt==="string" ? wPrompt(e.prompt) : e.prompt; return p ? p.title : "Vlastní zadání"; }
+function wType(e){ const p = typeof e.prompt==="string" ? wPrompt(e.prompt) : e.prompt; return p && WR.types[p.type] ? WR.types[p.type].name : ""; }
+function wScore(e){ const s=e.scores||{}; return (s.content||0)+(s.ca||0)+(s.org||0)+(s.lang||0); }
+function words(s){ return (String(s).trim().match(/\S+/g)||[]).length; }
+async function copyText(s){
+  try{ await navigator.clipboard.writeText(s); return true; }catch(e){
+    const ta=document.createElement("textarea"); ta.value=s; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+    let ok=false; try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); return ok; }
+}
+function taskText(p){
+  let s = `${WR.types[p.type].name} (Part ${WR.types[p.type].part}) – ${p.title}\n\n${p.task}`;
+  if(p.notes) s += `\n\nNotes\n${p.notes.head}\n${p.notes.points.map((x,i)=>(i+1)+". "+x).join("\n")}\n\nSome opinions expressed:\n${p.notes.opinions.map(o=>"“"+o+"”").join("\n")}`;
+  return s + "\n\nWrite 220–260 words.";
+}
+function viewWriting(){
+  if(W.view==="prompt") return wPromptView();
+  if(W.view==="edit") return wEditor();
+  if(W.view==="essay") return wEssayView();
+  const n = WR.essays.length;
+  setTitle("Writing", `${WR.prompts.length} zadání · ${n} ohodnocených prací`);
+  let html = `<div class="chips"><button class="chip ${W.seg==="prompts"?"on":""}" data-s="prompts">Zadání</button><button class="chip ${W.seg==="mine"?"on":""}" data-s="mine">Moje práce (${n})</button></div>`;
+  if(W.seg==="prompts"){
+    const fs=[["all","Vše"]].concat(Object.entries(WR.types).map(([k,v])=>[k,v.name]));
+    html += `<div class="chips" style="padding-top:0">${fs.map(([k,l])=>`<button class="chip ${W.f===k?"on":""}" data-f="${k}">${l}</button>`).join("")}</div>`;
+    html += WR.prompts.filter(p=>W.f==="all"||p.type===W.f).map(p=>{
+      const mine = WR.essays.filter(e=>e.prompt===p.id), best = mine.length?Math.max(...mine.map(wScore)):null, dr = S.drafts[p.id];
+      return `<button class="wcard" data-p="${p.id}"><div class="top2"><span class="wtag">${esc(WR.types[p.type].name)} · Part ${WR.types[p.type].part}</span>${best!=null?`<span class="sc">${best}/20</span>`:dr&&dr.text?`<span class="mini">rozepsáno · ${words(dr.text)} slov</span>`:""}</div><b>${esc(p.title)}</b><div class="mini" style="margin-top:4px">${esc(p.task.split("\n")[0]).slice(0,110)}…</div></button>`;
+    }).join("");
+  } else {
+    html += n ? WR.essays.slice().reverse().map(e=>`<button class="wcard" data-e="${esc(e.id)}"><div class="top2"><span class="wtag">${esc(wType(e))}</span><span class="sc">${wScore(e)}/20</span></div><b>${esc(wTitle(e))}</b><div class="mini" style="margin-top:4px">${esc(e.date||"")} · ${words(e.text)} slov</div></button>`).join("")
+      : `<div class="card empty">Zatím tu nic není.<br><br>Vyber si zadání, napiš práci a pošli mi ji do chatu (v editoru je tlačítko, které ji zkopíruje i se zadáním). Ohodnotím ji podle kritérií Cambridge a přidám ji sem i s opravami a výrazy k naučení.</div>`;
+  }
+  $("view").innerHTML = html;
+  $("view").querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{ W.seg=b.dataset.s; viewWriting(); });
+  $("view").querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ W.f=b.dataset.f; viewWriting(); });
+  $("view").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ W.view="prompt"; W.pid=b.dataset.p; window.scrollTo(0,0); viewWriting(); });
+  $("view").querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{ W.view="essay"; W.eid=b.dataset.e; window.scrollTo(0,0); viewWriting(); });
+}
+function wBack(to){ return `<button class="backb" id="wBack">${I.back}${to}</button>`; }
+function wPromptView(){
+  const p = wPrompt(W.pid), ty = WR.types[p.type], dr = S.drafts[p.id], mine = WR.essays.filter(e=>e.prompt===p.id);
+  setTitle(ty.name, `Part ${ty.part} · ${p.id}`);
+  $("view").innerHTML = `${wBack("Zadání")}
+    <div class="ttl2">${esc(p.title)}</div><p class="mini" style="margin:0 0 12px">220–260 slov · asi 45 minut</p>
+    <div class="card"><div class="wtask">${esc(p.task)}</div>
+    ${p.notes?`<div class="notes"><b>Notes</b><div>${esc(p.notes.head)}</div><ol>${p.notes.points.map(x=>`<li>${esc(x)}</li>`).join("")}</ol><div class="mini">Some opinions expressed:</div>${p.notes.opinions.map(o=>`<q>${esc(o)}</q>`).join("")}</div>`:""}</div>
+    <div class="card"><details class="tips"><summary>${I.bulb}Jak na ${esc(ty.name.toLowerCase())}</summary><ul>${ty.tips.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="mini" style="margin-top:4px">Užitečné fráze:</div><ul>${ty.phrases.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details></div>
+    <button class="btn" id="wWrite">${I.pen}${dr&&dr.text?`Pokračovat v psaní (${words(dr.text)} slov)`:"Psát v aplikaci"}</button>
+    <div style="height:10px"></div><button class="btn sec" id="wCopyTask">${I.copy}Kopírovat zadání</button>
+    ${mine.length?`<div class="h2">Moje práce k tomuto zadání</div>${mine.map(e=>`<button class="wcard" data-e="${esc(e.id)}"><div class="top2"><span class="mini">${esc(e.date||"")}</span><span class="sc">${wScore(e)}/20</span></div></button>`).join("")}`:""}`;
+  $("wBack").onclick=()=>{ W.view="list"; viewWriting(); };
+  $("wWrite").onclick=()=>{ W.view="edit"; window.scrollTo(0,0); viewWriting(); };
+  $("wCopyTask").onclick=async()=>toast(await copyText(taskText(p))?"Zadání zkopírováno":"Kopírování se nepovedlo");
+  $("view").querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{ W.view="essay"; W.eid=b.dataset.e; window.scrollTo(0,0); viewWriting(); });
+}
+function wEditor(){
+  const p = wPrompt(W.pid), ty = WR.types[p.type];
+  const dr = S.drafts[p.id] || (S.drafts[p.id] = {text:"", started:Date.now()});
+  setTitle("Psaní", `${ty.name} · ${p.id}`);
+  $("view").innerHTML = `${wBack(p.title)}
+    <div class="card"><details class="tips"><summary>${I.book}Zadání</summary><div class="wtask" style="margin-top:10px;font-size:15px">${esc(p.task)}</div>
+    ${p.notes?`<div class="notes"><div>${esc(p.notes.head)}</div><ol>${p.notes.points.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>${p.notes.opinions.map(o=>`<q>${esc(o)}</q>`).join("")}</div>`:""}</details></div>
+    <textarea class="wed" id="wTxt" placeholder="Začni psát…" spellcheck="false">${esc(dr.text)}</textarea>
+    <div class="wc"><span>Počet slov</span><b id="wCount"></b></div>
+    <button class="btn" id="wSend">${I.copy}Zkopírovat pro Clauda</button>
+    <p class="mini" style="text-align:center">Zkopíruje se zadání i text. Pak to jen vlož do chatu se mnou.</p>
+    <button class="btn ghost" id="wClear">Smazat koncept</button>`;
+  const ta=$("wTxt");
+  const upd=()=>{ const n=words(ta.value), el=$("wCount"); el.textContent=`${n} / 220–260`; el.className = n<220?"lo":n>260?"hi":"ok"; };
+  upd();
+  ta.oninput=()=>{ dr.text=ta.value; dr.t=Date.now(); upd(); save(); };
+  $("wBack").onclick=()=>{ W.view="prompt"; viewWriting(); };
+  $("wSend").onclick=async()=>{
+    if(!ta.value.trim()){ toast("Nejdřív něco napiš"); return; }
+    const msg = `CAE Writing – ohodnoť prosím a přidej do aplikace.\nZadání ${p.id}: ${ty.name} – ${p.title}\nPočet slov: ${words(ta.value)}\n\n${ta.value.trim()}`;
+    toast(await copyText(msg)?"Zkopírováno – vlož to do chatu":"Kopírování se nepovedlo");
+  };
+  $("wClear").onclick=()=>{ if(!confirm("Smazat celý rozepsaný text?")) return; delete S.drafts[p.id]; save(); W.view="prompt"; viewWriting(); };
+}
+function wEssayView(){
+  const e = WR.essays.find(x=>x.id===W.eid); if(!e){ W.view="list"; return viewWriting(); }
+  const sc = wScore(e), s = e.scores||{}, c = e.comments||{};
+  setTitle("Hodnocení", `${wType(e)} · ${e.date||""}`);
+  $("view").innerHTML = `${wBack("Zpět")}
+    <div class="ttl2">${esc(wTitle(e))}</div><p class="mini" style="margin:0 0 12px">${esc(e.date||"")} · ${words(e.text)} slov${typeof e.prompt==="string"?" · "+esc(e.prompt):""}</p>
+    <div class="card score" style="padding:18px"><div class="big" style="font-size:48px">${sc}/20</div><div class="sub">${sc>=16?"výborné, jasné C1":sc>=12?"solidní, na hranici C1":sc>=8?"úroveň B2":"je potřeba zapracovat"}</div></div>
+    ${e.summary?`<div class="card" style="font-size:15px;line-height:1.55">${esc(e.summary)}</div>`:""}
+    <div class="card">${CRIT.map(([k,en,cz])=>`<div class="crit"><div class="hd"><span>${en}</span><b>${s[k]||0}/5</b></div><div class="tr"><i style="width:${(s[k]||0)*20}%"></i></div>${c[k]?`<p>${esc(c[k])}</p>`:`<p class="mini">${esc(cz)}</p>`}</div>`).join("")}</div>
+    ${(e.good||[]).length?`<div class="h2">Co se povedlo</div><div class="card"><ul style="margin:0;padding-left:18px;line-height:1.55;font-size:15px">${e.good.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${(e.fix||[]).length?`<div class="h2">Opravy</div><div class="card">${e.fix.map(f=>`<div class="fixr"><s>${esc(f.orig)}</s> → <ins>${esc(f.fix)}</ins>${f.why?`<div class="mini">${esc(f.why)}</div>`:""}</div>`).join("")}</div>`:""}
+    ${(e.phrases||[]).length?`<div class="h2">Výrazy k naučení</div><div class="card">${e.phrases.map((x,i)=>`<div class="hist"><div>${esc(x.en)}<br><span>${esc(x.cz||"")}</span></div><button class="ibtn" data-add="${i}" aria-label="Přidat do slovníku">${I.plus}</button></div>`).join("")}</div>`:""}
+    <div class="h2">Můj text</div><div class="card etext">${esc(e.text)}</div>
+    ${e.improved?`<div class="card"><details class="tips"><summary>${I.spark||I.bulb}Vylepšená verze</summary><div class="etext" style="margin-top:10px">${esc(e.improved)}</div></details></div>`:""}`;
+  $("wBack").onclick=()=>{ W.view = W.pid&&typeof e.prompt==="string"&&e.prompt===W.pid?"prompt":"list"; if(W.view==="list") W.seg="mine"; viewWriting(); };
+  $("view").querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{
+    const x=e.phrases[+b.dataset.add]; if(S.custom.some(c=>c.en===x.en)){ toast("Už je ve slovníku"); return; }
+    S.custom.push({id:"u:"+slug(x.en)+"-"+Date.now().toString(36),en:x.en,cz:x.cz||"",ex:x.ex||"",key:x.key||"",type:"col",note:"Z mého writingu: "+wTitle(e)}); save(); toast("Přidáno do slovníku (Vlastní)");
+  });
+}
+
 // ---------- POKROK ----------
 function viewStats(){
   setTitle("Pokrok","");
@@ -603,7 +740,7 @@ function viewStats(){
 // ---------- NASTAVENÍ ----------
 function openSettings(){
   sheet(`<h3>Nastavení</h3>
-    <div class="card" style="margin:0 0 12px"><div class="switch" style="padding:0"><div class="t"><b>CAE Lab</b><span>Verze ${VERSION} · databáze v${D.version}.${TX.version}</span></div><button class="btn sec" id="sUpd" style="width:auto;padding:10px 14px;font-size:14px">${I.flip}Zkontrolovat aktualizace</button></div></div>
+    <div class="card" style="margin:0 0 12px"><div class="switch" style="padding:0"><div class="t"><b>CAE Lab</b><span>Verze ${VERSION} · databáze v${D.version}.${TX.version}.${WR.version}</span></div><button class="btn sec" id="sUpd" style="width:auto;padding:10px 14px;font-size:14px">${I.flip}Zkontrolovat aktualizace</button></div></div>
     <p class="mini">Databáze: ${D.phrases.length} výrazů, ${["p1","p2","p3","p4"].reduce((n,p)=>n+D[p].length,0)} vět, ${TX.p1.length+TX.p2.length+TX.p3.length} celých textů.</p>
     <div class="h2">Data</div>
     <button class="btn ghost" id="sReset">Vymazat pokrok a historii</button>
@@ -614,17 +751,18 @@ function openSettings(){
 async function checkUpdate(){
   toast("Hledám aktualizace…");
   try{
-    const [h,d,x] = await Promise.all(["./index.html","./data.js","./texts.js"].map(u=>fetch(u,{cache:"no-store"}).then(r=>r.text())));
+    const [h,d,x,w] = await Promise.all(["./index.html","./data.js","./texts.js","./writing.js"].map(u=>fetch(u,{cache:"no-store"}).then(r=>r.text())));
     const v = (h.match(/const VERSION='(\d+)'/)||[])[1];
     const dv = [...d.matchAll(/version\s*[:=]\s*(\d+)/g)].map(m=>m[1]).pop();
     const xv = [...x.matchAll(/version\s*[:=]\s*(\d+)/g)].map(m=>m[1]).pop();
-    if((v && v!==VERSION) || (dv && +dv!==D.version) || (xv && +xv!==TX.version)){
+    const wv = (w.match(/version\s*:\s*(\d+)/)||[])[1];
+    if((v && v!==VERSION) || (dv && +dv!==D.version) || (xv && +xv!==TX.version) || (wv && +wv!==WR.version)){
       const c = await caches.open(CACHE_NAME).catch(()=>null);
-      for(const u of ["./","./index.html","./data.js","./texts.js"]){ const r = await fetch(u,{cache:"reload"}).catch(()=>null); if(c && r && r.ok) await c.put(u, r); }
+      for(const u of ["./","./index.html","./data.js","./texts.js","./writing.js"]){ const r = await fetch(u,{cache:"reload"}).catch(()=>null); if(c && r && r.ok) await c.put(u, r); }
       if(swReg) await swReg.update().catch(()=>{});
-      toast(v && v!==VERSION ? `Aktualizuji na verzi ${v}…` : `Stahuji nové výrazy a texty…`);
+      toast(v && v!==VERSION ? `Aktualizuji na verzi ${v}…` : `Stahuji nová data…`);
       setTimeout(()=>location.reload(), 700);
-    } else toast(`Máš nejnovější verzi (${VERSION}, databáze v${D.version}.${TX.version})`);
+    } else toast(`Máš nejnovější verzi (${VERSION}, databáze v${D.version}.${TX.version}.${WR.version})`);
   }catch(e){ toast("Bez připojení – zkus to později"); }
 }
 let toastT;
